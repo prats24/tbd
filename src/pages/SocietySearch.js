@@ -1,19 +1,15 @@
 import React from 'react';
-import LeaderBoard from '../components/home/LeaderBoard';
 import AboutSection from '../components/home/AboutSection';
 import WhyChooseUs from '../components/home/WhyChooseUs';
-import Homemenu from '../components/home/Homemenu';
 import SocietySearch from '../components/home/SocietySearch';
 import Testimonialsection from '../components/home/Testimonialsection';
 
-export default function Home() {
+export default function Society() {
   return (
     <div>
-      {/* <SocietySearch /> */}
-      <LeaderBoard />
+      <SocietySearch />
       <AboutSection />
       <WhyChooseUs />
-      <Homemenu />
       <Testimonialsection />
     </div>
   );

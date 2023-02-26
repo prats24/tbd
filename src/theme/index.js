@@ -14,9 +14,9 @@ export default createTheme({
       dark: '#2b5ffc',
     },
     error: {
-      light: '#fbe9e7',
-      main: '#f44336',
-      dark: '#c62828',
+      light: '#f2616f',
+      main: '#ef4f5f',
+      dark: '#f23d4f',
     },
     orange: {
       light: '#fbe9e7',
@@ -39,6 +39,7 @@ export default createTheme({
       100: '#f5f5f5',
       500: '#9e9e9e',
     },
+    
     lightdark1: '#333333',
     lightdark2: '#666666',
     lightdark3: '#444444',

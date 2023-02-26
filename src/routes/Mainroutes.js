@@ -9,15 +9,21 @@ import Allfoods from '../pages/Allfoods';
 import Checkout from '../pages/Checkout';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
+import SocietySearch from '../pages/SocietySearch';
+import Kitchens from '../pages/Kitchens';
 
 const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/',
-    element: <Home />,
+    element: <SocietySearch />,
   },
   {
     path: '/allmeals',
     element: <Allfoods />,
+  },
+  {
+    path: '/allkitchens',
+    element: <Kitchens />,
   },
   {
     path: '/checkout',
