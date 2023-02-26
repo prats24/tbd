@@ -22,11 +22,11 @@ export default class Carousel extends Component {
       arrows: true,
     };
     return (
-      <div style={{paddingLeft:"80px",paddingRight:"80px"}}>
+      <div style={{padding:"30px 80px 30px 80px", backgroundColor:"#2d2d2d"}}>
         <Slider {...settings}>
         {items.map((elem)=>{
         return (<div>
-            <img src={elem} style={{marginLeft:"15px",marginRight:"15px"}}></img>
+            <img src={elem} style={{marginLeft:"15px",marginRight:"15px",borderRadius:"5px"}}></img>
         </div>)
         })}
         </Slider>

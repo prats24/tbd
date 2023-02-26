@@ -7,6 +7,7 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { Divider } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 // import { DiscountIcon } from '@material-ui/icons/Discount';
 // import discounticon from 'react-icons/TbDiscount2'
 import { TbDiscount2 } from 'react-icons/tb';
@@ -57,7 +58,7 @@ export default function KitchensCard() {
       </CardActionArea>
       
       <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined">
+        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
         Order Now
         </Button>
         <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
@@ -95,7 +96,7 @@ export default function KitchensCard() {
       </CardActionArea>
       
       <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined">
+        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
         Order Now
         </Button>
         <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
@@ -133,7 +134,7 @@ export default function KitchensCard() {
       </CardActionArea>
       
       <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined">
+        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
         Order Now
         </Button>
         <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
@@ -171,7 +172,7 @@ export default function KitchensCard() {
       </CardActionArea>
       
       <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined">
+        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
         Order Now
         </Button>
         <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
