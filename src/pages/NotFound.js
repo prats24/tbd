@@ -1,5 +1,5 @@
 import React from 'react';
-import Lottie from 'react-lottie';
+// import Lottie from 'react-lottie';
 import { AiOutlineReload } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { Button, Box, makeStyles } from '@material-ui/core';

@@ -12,12 +12,20 @@ import { Link } from 'react-router-dom';
 // import discounticon from 'react-icons/TbDiscount2'
 import { TbDiscount2 } from 'react-icons/tb';
 
-export default function KitchensCard() {
+export default function CarouselKitchen() {
   return (
     <>
+    <Box sx={{marginTop:5,marginLeft:10,marginRight:10,fontSize:20}}>
+      <Typography gutterBottom variant="text" fontWeight={700} fontSize={30} component="div">
+        Biryani Night
+      </Typography>
+      <Typography variant="text" color="text.secondary" fontWeight={300} fontSize={12}>
+        Description
+      </Typography>
+    </Box>
     <Box sx={{marginTop:5,marginLeft:10,marginRight:10,fontSize:20,display:"flex",alignItems:"center"}}>
     <Box sx={{display:"flex",justifyContent:"space-between", width: "1248px"}}>
-    <Button sx={{display:"flex",alignItems:"center"}}>121 kitchens</Button>
+    <Box sx={{display:"flex",alignItems:"center"}}>120 home kitchens in your society</Box>
     <Box sx={{display:"flex",alignItems:"center"}}>
     <Button>Revelance</Button>
     <Button>Ratings</Button>
@@ -181,9 +189,6 @@ export default function KitchensCard() {
       </CardActions>
     </Card>
     </Grid>
-
-    
-
     </Grid>
     </Box>
     </>

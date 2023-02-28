@@ -1,8 +1,9 @@
 import React from 'react';
-import AboutSection from '../components/home/AboutSection';
-import WhyChooseUs from '../components/home/WhyChooseUs';
-import SocietySearch from '../components/home/SocietySearch';
-import Testimonialsection from '../components/home/Testimonialsection';
+import AboutSection from '../layouts/home/AboutSection';
+import WhyChooseUs from '../layouts/home/WhyChooseUs';
+import SocietySearch from '../layouts/home/SocietySearch';
+import Testimonialsection from '../layouts/home/Testimonialsection';
+
 
 export default function Society() {
   return (

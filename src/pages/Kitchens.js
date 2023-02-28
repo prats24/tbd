@@ -1,12 +1,12 @@
 import React from 'react';
-import KitchenCard from '../components/home/KitchenCard';
-import Testimonialsection from '../components/home/Testimonialsection';
-import Carousel from '../components/home/Carousel'
+import KitchenCard from '../layouts/home/KitchenCard';
+import Testimonialsection from '../layouts/home/Testimonialsection';
+import Carousel from '../layouts/home/Carousel'
 
 export default function Kitchen() {
   return (
     <div>
-      <Carousel items={['c1.jpeg','c2.jpeg','c3.jpeg','c4.jpeg']}/>
+      <Carousel items={['1.jpeg','2.jpeg','3.jpeg','4.jpeg','5.jpeg']}/>
       <KitchenCard />
       <Testimonialsection />
     </div>

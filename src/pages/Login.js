@@ -10,9 +10,9 @@ import {
 import { BsArrowLeft } from 'react-icons/bs';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import Snackbar from '../components/reusables/Snackbar';
-import SignInForm from '../components/auth/SignInForm';
-import SignUpForm from '../components/auth/SignUpForm';
+import Snackbar from '../layouts/reusables/Snackbar';
+import SignInForm from '../layouts/auth/SignInForm';
+import SignUpForm from '../layouts/auth/SignUpForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -151,10 +151,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login() {
-  let location = useLocation();
-  let from = location.state?.from;
-  let show = location.state?.show;
-  const [state, setstate] = useState(show || 'login');
+  // let location = useLocation();
+  // console.log(location)
+  // let from = location.state?.from;
+  // from.push('/profile','login')
+  // let from = window.location.pathname("/admin")
+  // console.log(from)
+  // let show = location.state?.show;
+  // console.log(show)
+  // const [state, setstate] = useState(show || 'login');
+  const [state, setstate] = useState('login');
   const {
     root,
     root_logo,
@@ -169,7 +175,7 @@ export default function Login() {
     recommendation,
     recommendation_link,
   } = useStyles();
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
   const [alertContent, setAlertContent] = React.useState({
     type: 'error',
     content: '',
@@ -191,6 +197,7 @@ export default function Login() {
   return (
     <div className={root}>
       <Snackbar
+        // alertContent={alertContent}
         alertContent={alertContent}
         open={open}
         handleClose={handleClose}
@@ -199,7 +206,7 @@ export default function Login() {
         <div className={root_left_upper}>
           <div
             onClick={() => {
-              navigate(`${from || '/'}`);
+              navigate(`${'admin' || '/'}`);
             }}
             className={root_logo_wrapper}
           >
@@ -226,11 +233,11 @@ export default function Login() {
             showToast={handleClick}
             setClickData={setAlertContent}
             onclick={setstate}
-            path={from}
+            path={'admin'}
           />
         ) : (
           <SignUpForm
-            path={from}
+            path={'admin'}
             showToast={handleClick}
             setClickData={setAlertContent}
             onclick={setstate}

@@ -4,6 +4,8 @@ import "slick-carousel/slick/slick-theme.css";
 import React, { Component } from "react";
 import Slider from "react-slick";
 import { padding } from "@mui/system";
+import { Button, CardActionArea, CardActions } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default class Carousel extends Component {
   render() {
@@ -26,7 +28,7 @@ export default class Carousel extends Component {
         <Slider {...settings}>
         {items.map((elem)=>{
         return (<div>
-            <img src={elem} style={{marginLeft:"15px",marginRight:"15px",borderRadius:"5px"}}></img>
+            <Button component={Link} to='/carouselkitchen'><img src={elem} style={{marginLeft:"15px",marginRight:"15px",borderRadius:"5px", width:"252px", height:"252px"}}></img></Button>
         </div>)
         })}
         </Slider>

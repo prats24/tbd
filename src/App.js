@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import './App.css';
 
 import theme from './theme';
-import ScrollToTop from './components/reusables/ScrollToTop';
-import Navbar from './components/reusables/Navbar';
-import Footer from './components/reusables/Footer';
+import ScrollToTop from './layouts/reusables/ScrollToTop';
+import Navbar from './layouts/reusables/Navbar';
+import Footer from './layouts/reusables/Footer';
 import { getAllMeals } from './store/actions/productActions';
 import useOnline from './hooks/useOnline.js';
 
@@ -19,9 +19,12 @@ function App() {
     // <ThemeProvider theme={theme}>
       <>
       <ScrollToTop />
-      <Navbar />
+      {/* <Navbar /> */}
+      {window.location.pathname.startsWith("/admin") ? null : <Navbar />}
       <Routes />
-      <Footer />
+      {/* {window.location.pathname.startsWith("/admin") ? null : <Routes />} */}
+      {/* <Footer /> */}
+      {window.location.pathname.startsWith("/admin") ? null : <Footer />}
       </>
     // </ThemeProvider>
   );
