@@ -67,6 +67,9 @@ class Api {
   getuserorders = () => {
     return this.init().get('/orders/myorders');
   };
+  getLoginDetails = () => {
+    return this.init().get('/users/me');
+  }
 }
 
 export default new Api();

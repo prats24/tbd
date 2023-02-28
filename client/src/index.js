@@ -5,14 +5,16 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistedStore } from './store';
 import App from './App';
-
+import AuthContext from './context/AuthContext';
 
 ReactDOM.render(
 
       <React.StrictMode>
+        <AuthContext>  
         <Router>
           <App />
         </Router>
+        </AuthContext>
       </React.StrictMode>
 ,
   document.getElementById('root')

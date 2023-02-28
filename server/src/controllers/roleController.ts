@@ -31,7 +31,7 @@ export const createRole = CatchAsync(async(req:Request, res:Response, next: Next
         status: status
     });
 
-    res.status(201).json({status: 'Success', message: 'Role created', data: newRole});
+    res.status(201).json({status: 'success', message: 'Role created', data: newRole});
 });
 
 export const getRoles = CatchAsync(async(req:Request, res:Response, next: NextFunction)=>{
@@ -39,7 +39,7 @@ export const getRoles = CatchAsync(async(req:Request, res:Response, next: NextFu
 
     if(!roles) return next(createCustomError('Can\'t get roles', 404 ));
 
-    res.status(200).json({status: 'Success', data: roles, results: roles.length });
+    res.status(200).json({status: 'success', data: roles, results: roles.length });
 
 
 });
@@ -58,7 +58,7 @@ export const editRole = CatchAsync(async (req:Request, res: Response, next:NextF
     unitData!.status = status
 
     await unitData!.save();
-    res.status(201).json({status: "Success", data:unitData});
+    res.status(201).json({status: "success", data:unitData});
     
 });
 
@@ -71,7 +71,7 @@ export const deleteRole = CatchAsync(async (req:Request, res: Response, next:Nex
     try{
         const roleDetail = await Role.updateOne(filter, update);
         console.log("this is roledetail", roleDetail);
-        res.status(201).json({massage : "data delete succesfully"});
+        res.status(200).json({massage : "data delete succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to delete data"});
     }    

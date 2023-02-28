@@ -42,7 +42,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
     if(!user) return next(createCustomError('Couldn\'t create user', 400));
 
-    res.status(201).json({status: "Success", data:user});
+    res.status(201).json({status: "success", data:user});
     
 });
 
@@ -52,7 +52,7 @@ export const getUsers = CatchAsync(async (req: Request, res: Response, next: Nex
 
     if(!users) return next(createCustomError('No users found.', 404));
     
-    res.status(200).json({status:"Success", data: users, results: users.length});
+    res.status(200).json({status:"success", data: users, results: users.length});
 
 });
 export const deleteUser = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
@@ -64,7 +64,7 @@ export const deleteUser = CatchAsync(async (req:Request, res: Response, next:Nex
     try{
         const userDetail = await User.updateOne(filter, update);
         console.log("this is userdetail", userDetail);
-        res.status(201).json({massage : "data delete succesfully"});
+        res.status(200).json({massage : "data delete succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to delete data"});
     }    
@@ -79,7 +79,7 @@ export const getUser = CatchAsync(async (req: Request, res: Response, next: Next
 
     if(!user) return next(createCustomError('No such user found.', 404));
     
-    res.status(200).json({status:"Success", data: user});
+    res.status(200).json({status:"success", data: user});
 
 });
 
@@ -100,6 +100,6 @@ export const editUser = CatchAsync(async (req: Request, res: Response, next: Nex
         new: true,
         runValidators: true
       }).select('-__v -password -role');
-    res.status(200).json({status: "Success", data:updatedUser});
+    res.status(200).json({status: "success", data:updatedUser});
 
 });
