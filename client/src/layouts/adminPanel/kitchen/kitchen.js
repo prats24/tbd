@@ -19,9 +19,9 @@ export default function ComplexGrid() {
   return (
     <>
     <Box sx={{marginTop:10,marginLeft:2,marginRight:1,marginBottom:2,fontSize:20,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <Typography>HomeChefs</Typography>
+      <Typography>Kitchens</Typography>
       <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="outlined">
-        Create HomeChef
+        Create Kitchen
       </Button>
     </Box>
     <Box>
@@ -41,20 +41,20 @@ export default function ComplexGrid() {
       <Grid container spacing={2}>
         <Grid item>
           <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img alt="mummy" src="1.jpeg" />
+            <Img alt="mummy" src="c2.jpeg" />
           </ButtonBase>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                Anamika Verma
+                Anamika's Kitchen
               </Typography>
               <Typography variant="body2" gutterBottom>
                 Palm Olympia Apartment
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Homechef ID: 1030114
+                Kitchen ID: 1030134
               </Typography>
             </Grid>
             <Grid item>

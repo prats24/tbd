@@ -7,6 +7,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Box from "@mui/material/Box";
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import { fontWeight } from '@mui/system';
+import { Link } from 'react-router-dom';
 
 const Img = styled('img')({
   margin: 'auto',
@@ -19,9 +20,9 @@ export default function ComplexGrid() {
   return (
     <>
     <Box sx={{marginTop:10,marginLeft:2,marginRight:1,marginBottom:2,fontSize:20,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <Typography>HomeChefs</Typography>
-      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="outlined">
-        Create HomeChef
+      <Typography>Socities</Typography>
+      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="outlined" component={Link} to={'/createsociety'}>
+        Create Society
       </Button>
     </Box>
     <Box>
@@ -41,24 +42,24 @@ export default function ComplexGrid() {
       <Grid container spacing={2}>
         <Grid item>
           <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img alt="mummy" src="1.jpeg" />
+            <Img alt="po" src="PalmOlympia.jpeg" />
           </ButtonBase>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                Anamika Verma
+                Palm Olympia
               </Typography>
               <Typography variant="body2" gutterBottom>
-                Palm Olympia Apartment
+                Gaur City 2
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Homechef ID: 1030114
+                Society ID: 103020
               </Typography>
             </Grid>
             <Grid item>
-              <Button sx={{ cursor: 'pointer', fontSize: 10 }} font="small" variant="outlined">
+              <Button sx={{ cursor: 'pointer', fontSize: 10 }} font="small" variant="outlined" component={Link} to={'/createsociety'}>
                 View Details
               </Button>
             </Grid>
