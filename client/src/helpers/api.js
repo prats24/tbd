@@ -5,12 +5,12 @@ class Api {
   constructor() {
     this.api_token = null;
     this.client = null;
-    // this.api_url = 'http://localhost:5000';
+    this.api_url = 'http://localhost:8092/api/v1';
     // this.api_url = process.env.REACT_APP_API_ENDPOINT;
   }
 
   init = () => {
-    this.api_token = getCookie(window.store.getState().authReducer.token);
+    // this.api_token = getCookie(window.store.getState().authReducer.token);
 
     let headers = {
       Accept: 'application/json',
@@ -21,9 +21,10 @@ class Api {
     }
 
     this.client = axios.create({
-      // baseURL: this.api_url,
+      baseURL: this.api_url,
       timeout: 31000,
       headers: headers,
+      withCredentials: true,
     });
 
     return this.client;
@@ -40,7 +41,7 @@ class Api {
   };
   //user sign In
   signIn = (data) => {
-    return this.init().post('/signin', data);
+    return this.init().post('/users/login', data);
   };
   //user sign In
   signUp = (data) => {
