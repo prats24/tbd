@@ -1,0 +1,36 @@
+.app {
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 200px;
+    background-color: #eee;
+    padding: 20px;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .sidebar li:hover {
+    background-color: #ddd;
+  }
+  
+  .sidebar li.active {
+    background-color: #0077ff;
+    color: #fff;
+  }
+  
+  .view {
+    flex: 1;
+    padding: 20px;
+  }
+
+  
