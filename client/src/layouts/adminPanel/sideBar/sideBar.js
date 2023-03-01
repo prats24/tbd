@@ -20,7 +20,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
-import { useRoutes } from 'react-router-dom';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import AdminRoutes from '../../../routes/Adminroutes';
 import AdminNotificationRoute from '../../../routes/AdminNotificationsRoute'
 
@@ -94,6 +94,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer({activeMenuItem, onMenuClick}) {
+
+  const navigate = useNavigate();
+
   console.log(activeMenuItem,onMenuClick)
   const links = []
   AdminRoutes.map((elem)=>{links.push([elem.name,elem.icon])})
@@ -150,7 +153,13 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
-                onClick={() => onMenuClick(text[0])}
+                onClick={() => {
+                  if(window.location.pathname != '/adminpanel'){
+                    console.log('moving');
+                    navigate('/adminpanel');
+                  }
+                  onMenuClick(text[0]);
+                }}
               >
                 <ListItemIcon
                   sx={{
