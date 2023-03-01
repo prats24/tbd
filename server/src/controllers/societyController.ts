@@ -2,23 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import Society from '../models/Society';
 import {createCustomError} from '../errors/customError';
 import CatchAsync from '../middlewares/CatchAsync';
-import homeChef from '../models/HomeChef';
 
 interface Society{
-    firstName: string,
-    lastName: string,
-    dateOfBirth: Date,
-    gender: string,
-    email: string,
-    bankDetails:Object
-    password: string,
-    phone: string,
-    city: string,
-    state: string,
-    role: string,
-    address: string,
-    society?: string,
-    description?:string
+    societyName: string,
+    societyGeoLocation: [Number, Number]
+    societyTowers: Number,
+    societyPinCode:string,
+    societyAddress: string,
+    societyType: string,
 }
 
 const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)[]): Partial<T> => {
@@ -33,30 +24,35 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     return newObj;
   };
 
-  export const createSociety =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
-    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, 
-        bankDetails, description, }: Society = req.body;
-    console.log("User :",(req as any).user)
+  export const createSociety = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
+    const{societyName,
+        societyGeoLocation,
+        societyTowers,
+        societyPinCode,
+        societyAddress,
+        societyType }: Society = req.body;
     //Check for required fields 
-    if(!(email ||password || phone || firstName || lastName || gender))return next(createCustomError('Enter all mandatory fields.', 401));
+    if(!(societyName || societyPinCode))return next(createCustomError('Enter all mandatory fields.', 401));
 
     //Check if user exists
-    if(await Society.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const homeChef = await Society.create({firstName, lastName, gender, dateOfBirth, email, password, phone, city, society, address });
+    if(await Society.findOne({isDeleted: false, societyName, societyPinCode})) return next(createCustomError('Society with this email already exists. Please edit the existing society.', 401));
+    const society = await Society.create({societyName, societyPinCode, societyGeoLocation, createdBy: (req as any).user._id, 
+        societyTowers, societyAddress});
 
-    if(!homeChef) return next(createCustomError('Couldn\'t create user', 400));
+    if(!society) return next(createCustomError('Couldn\'t create user', 400));
 
-    res.status(201).json({status: "success", data:homeChef});
+    res.status(201).json({status: "success", data:society});
     
 });
 
 export const getSocieties = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const homeChefs = await Society.find({isDeleted: false})
+    console.log('here');
+    const societies = await Society.find({isDeleted: false});
 
 
-    if(!homeChefs) return next(createCustomError('No users found.', 404));
+    if(!societies) return next(createCustomError('No societies found.', 404));
     
-    res.status(200).json({status:"success", data: homeChefs, results: homeChefs.length});
+    res.status(200).json({status:"success", data: societies, results: societies.length});
 
 });
 export const deleteSociety = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
@@ -66,44 +62,45 @@ export const deleteSociety = CatchAsync(async (req:Request, res: Response, next:
     const update = { $set: { isDeleted: true } };
 
     try{
-        const userDetail = await Society.updateOne(filter, update);
-        console.log("this is userdetail", userDetail);
-        res.status(200).json({massage : "data delete succesfully"});
+        const society = await Society.updateOne(filter, update);
+        res.status(200).json({message : "Society deleted succesfully"});
     } catch (e){
-        res.status(500).json({error:"Failed to delete data"});
+        res.status(401).json({error:"Failed to delete data"});
     }    
     
 });
 
-export const getSociery = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const getSociety = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const user = await Society.findOne({_id: id, isDeleted: false}).select('-__v -password')
-    .populate({path : "role", select: "roleName"});
+    const society = await Society.findOne({_id: id, isDeleted: false}).select('-__v');
 
-    if(!user) return next(createCustomError('No such user found.', 404));
+    if(!society) return next(createCustomError('No such society found.', 404));
     
-    res.status(200).json({status:"success", data: user});
+    res.status(200).json({status:"success", data: society});
 
 });
 
 export const editSociety = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, state, address }: Society = req.body;
-    const user = await Society.findOne({_id: id, isDeleted: false}).select('-__v -password -role');
+    const{societyName,
+        societyGeoLocation,
+        societyTowers,
+        societyPinCode,
+        societyAddress,
+        societyType }: Society = req.body;
+    const society = await Society.findOne({_id: id, isDeleted: false}).select('-__v');
 
-    if(!user) return next(createCustomError('No such user found.', 404));
+    if(!society) return next(createCustomError('No such user found.', 404));
 
-    const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email', 'phone', 'profilePhoto', 'city', 'society', 'dateOfBirth', 'lastModifiedBy', 'address', 'gender');
+    const filteredBody = filterObj(req.body, 'societyName', 'societyGeoLocation', 'societyTowers', 'societyTowers',
+    'societyPinCode', 'societyAddress', 'societyType');
     
     filteredBody.lastModifiedBy = id;
-    if ((req as any).file) filteredBody.profilePhoto = (req as any).profilePhotoUrl;
-
     
-    const updatedHomeChef = await Society.findByIdAndUpdate(id, filteredBody, {
+    const updatedSociety = await Society.findByIdAndUpdate(id, filteredBody, {
         new: true,
         runValidators: true
-      }).select('-__v -password -role');
-    res.status(200).json({status: "success", data:updatedHomeChef});
-
+      }).select('-__v');
+    res.status(200).json({status: "success", data:updatedSociety});
 });

@@ -16,8 +16,8 @@ interface UserCred{
     profilePhoto?: string,
 };
 
-export const protect = (Model:any = User) =>{return CatchAsync(async (req: Request, res:Response, next: NextFunction): Promise<void> => {
-
+export const protect = (Model:any = User) =>{return async (req: Request, res:Response, next: NextFunction): Promise<void> => {
+    console.log('checking');
     let token: string;
     if (
         req.headers.authorization &&
@@ -28,6 +28,7 @@ export const protect = (Model:any = User) =>{return CatchAsync(async (req: Reque
     // console.log((req ))
     if (req.cookies) {
         if(req.cookies.jwt) token = req.cookies.jwt;
+        console.log(req.cookies.jwt);
     }
 
     if (!token!) return next(createCustomError('You are not logged in. Please log in to continue.',401));
@@ -48,7 +49,7 @@ export const protect = (Model:any = User) =>{return CatchAsync(async (req: Reque
     (req as any).user = freshUser;
     (req as any).token = token;
     next();
-    });
+    };
 }
 
 
