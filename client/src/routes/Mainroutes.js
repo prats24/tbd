@@ -14,7 +14,7 @@ import Kitchens from '../pages/Kitchens';
 import CarouselKitchen from '../pages/CarouselKitchen'
 import AdminLogin from '../pages/AdminLogin'
 import AdminPanel from '../pages/Admin_Panel'
-import CreateSociety from '../layouts/adminPanel/society/create_society'
+import CreateSociety from '../pages/Create_Society'
 
 const AuthenticationRoutes = (isLoggedIn) => [
   {

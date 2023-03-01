@@ -2,7 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Form, Field } from 'react-final-form';
 import { TextField } from 'final-form-material-ui';
-import { Paper, Grid, Button } from '@material-ui/core';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import ButtonBase from '@mui/material/ButtonBase';
+import Box from "@mui/material/Box";
+import { Button, CardActionArea, CardActions } from '@mui/material';
+import { fontWeight } from '@mui/system';
+import { Link } from 'react-router-dom';
 
 const onSubmit = async (values) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -10,6 +18,14 @@ const onSubmit = async (values) => {
   console.log(values.firstName);
   window.alert(JSON.stringify(values, 0, 2));
 };
+
+const Img = styled('img')({
+  margin: 'auto',
+  display: 'block',
+  maxWidth: '100%',
+  maxHeight: '100%',
+});
+
 const validate = (values) => {
   const errors = {};
   if (!values.firstName) {
