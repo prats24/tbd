@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import Society from '../models/Society';
+import HomeChef from '../models/HomeChef';
 import {createCustomError} from '../errors/customError';
 import CatchAsync from '../middlewares/CatchAsync';
 import homeChef from '../models/HomeChef';
 
-interface Society{
+interface HomeChef{
     firstName: string,
     lastName: string,
     dateOfBirth: Date,
@@ -33,16 +33,15 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     return newObj;
   };
 
-  export const createSociety =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
-    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, 
-        bankDetails, description, }: Society = req.body;
+  export const createHomeChef =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
+    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, }: HomeChef = req.body;
     console.log("User :",(req as any).user)
     //Check for required fields 
     if(!(email ||password || phone || firstName || lastName || gender))return next(createCustomError('Enter all mandatory fields.', 401));
 
     //Check if user exists
-    if(await Society.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const homeChef = await Society.create({firstName, lastName, gender, dateOfBirth, email, password, phone, city, society, address });
+    if(await HomeChef.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
+    const homeChef = await HomeChef.create({firstName, lastName, gender, dateOfBirth, email, password, phone, city, society, address });
 
     if(!homeChef) return next(createCustomError('Couldn\'t create user', 400));
 
@@ -50,8 +49,8 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     
 });
 
-export const getSocieties = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const homeChefs = await Society.find({isDeleted: false})
+export const getHomeChefs = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+    const homeChefs = await HomeChef.find({isDeleted: false})
 
 
     if(!homeChefs) return next(createCustomError('No users found.', 404));
@@ -59,14 +58,14 @@ export const getSocieties = CatchAsync(async (req: Request, res: Response, next:
     res.status(200).json({status:"success", data: homeChefs, results: homeChefs.length});
 
 });
-export const deleteSociety = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
+export const deleteHomeChef = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     const {id} = req.params;
 
     const filter = { _id: id };
     const update = { $set: { isDeleted: true } };
 
     try{
-        const userDetail = await Society.updateOne(filter, update);
+        const userDetail = await HomeChef.updateOne(filter, update);
         console.log("this is userdetail", userDetail);
         res.status(200).json({massage : "data delete succesfully"});
     } catch (e){
@@ -75,10 +74,10 @@ export const deleteSociety = CatchAsync(async (req:Request, res: Response, next:
     
 });
 
-export const getSociery = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const getHomeChef = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const user = await Society.findOne({_id: id, isDeleted: false}).select('-__v -password')
+    const user = await HomeChef.findOne({_id: id, isDeleted: false}).select('-__v -password')
     .populate({path : "role", select: "roleName"});
 
     if(!user) return next(createCustomError('No such user found.', 404));
@@ -87,10 +86,10 @@ export const getSociery = CatchAsync(async (req: Request, res: Response, next: N
 
 });
 
-export const editSociety = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const editHomeChef = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, state, address }: Society = req.body;
-    const user = await Society.findOne({_id: id, isDeleted: false}).select('-__v -password -role');
+    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, state, address }: HomeChef = req.body;
+    const user = await HomeChef.findOne({_id: id, isDeleted: false}).select('-__v -password -role');
 
     if(!user) return next(createCustomError('No such user found.', 404));
 
@@ -100,7 +99,7 @@ export const editSociety = CatchAsync(async (req: Request, res: Response, next: 
     if ((req as any).file) filteredBody.profilePhoto = (req as any).profilePhotoUrl;
 
     
-    const updatedHomeChef = await Society.findByIdAndUpdate(id, filteredBody, {
+    const updatedHomeChef = await HomeChef.findByIdAndUpdate(id, filteredBody, {
         new: true,
         runValidators: true
       }).select('-__v -password -role');

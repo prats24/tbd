@@ -1,12 +1,12 @@
 import React from 'react';
 import Resturantdetail from '../layouts/all_foods/Resturantdetail';
 import Foodlist from '../layouts/all_foods/Foodlist';
-import AdminLogin from '../layouts/adminAuth/adminLogin';
+import HomeChefLogin from '../layouts/homeChefAuth/homeChefLogin';
 
-export default function Allfoods() {
+export default function HomeChefLogin() {
   return (
     <div>
-      <AdminLogin />
+      <HomeChefLogin />
     </div>
   );
 }

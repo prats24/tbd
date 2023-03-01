@@ -4,6 +4,7 @@ import {createCustomError} from '../errors/customError';
 import {promisifiedVerify, signToken} from '../utils/authUtil';
 import CatchAsync from '../middlewares/CatchAsync';
 import crypto from 'crypto';
+import mongoose from 'mongoose';
 
 
 interface UserCred{
@@ -15,7 +16,7 @@ interface UserCred{
     profilePhoto?: string,
 };
 
-export const protect = async (req: Request, res:Response, next: NextFunction): Promise<void> => {
+export const protect = (Model:any = User) =>{return CatchAsync(async (req: Request, res:Response, next: NextFunction): Promise<void> => {
 
     let token: string;
     if (
@@ -35,7 +36,7 @@ export const protect = async (req: Request, res:Response, next: NextFunction): P
 
     // console.log(decoded);
 
-    const freshUser = await User.findById(decoded._id);
+    const freshUser = await Model.findById(decoded._id);
 
     if(!freshUser){
         return next(createCustomError('User no longer exixts.', 401));
@@ -47,15 +48,17 @@ export const protect = async (req: Request, res:Response, next: NextFunction): P
     (req as any).user = freshUser;
     (req as any).token = token;
     next();
+    });
 }
 
-export const login = async (req: Request, res:Response, next: NextFunction) =>{
+
+export const login = (Model:any = User)=>{return CatchAsync(async (req: Request, res:Response, next: NextFunction) =>{
     const {email, password}: UserCred = req.body;
     if (!email)
         return next(createCustomError('Username or email needed', 401));
     if (!password) return next(createCustomError('Password is needed', 401));
   
-    const user = await User.findOne({
+    const user = await Model.findOne({
         email: email
     });
 
@@ -77,13 +80,14 @@ export const login = async (req: Request, res:Response, next: NextFunction) =>{
         data: user,
     });
     
+ });
 }
 
-export const signup = async (req: Request, res:Response, next: NextFunction) =>{
+export const signup = (Model:any = User)=>{return CatchAsync(async (req: Request, res:Response, next: NextFunction) =>{
 
     const {email, password, mobile, firstName, lastName }: UserCred = req.body;
 
-    const newUser = await User.create({
+    const newUser = await Model.create({
         email,
         password,
         firstName,
@@ -99,4 +103,5 @@ export const signup = async (req: Request, res:Response, next: NextFunction) =>{
         },
     });
         
+  });
 }

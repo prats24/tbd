@@ -7,6 +7,8 @@ import cors from 'cors';
 import cookieParser from "cookie-parser";
 import userRoutes from './routes/userRoutes';
 import roleRoutes from './routes/roleRoutes';
+import homeChefRoutes from './routes/homeChefRoutes';
+import societyRoutes from './routes/societyRoutes';
 import errorHandler from './middlewares/errorHandler';
 
 
@@ -35,7 +37,9 @@ app.get('/', (req:Request,res:Response)=>{
 });
 
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/homeChefs', homeChefRoutes);
 app.use('/api/v1/roles', roleRoutes);
+app.use('/api/v1/societies', societyRoutes);
 
 
 app.use(errorHandler);
