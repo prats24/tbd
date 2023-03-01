@@ -16,13 +16,13 @@ export default function KitchensCard() {
   return (
     <>
     <Box sx={{marginTop:5,marginLeft:10,marginRight:10,fontSize:20,display:"flex",alignItems:"center"}}>
-    <Box sx={{display:"flex",justifyContent:"space-between", width: "1248px"}}>
-    <Box sx={{display:"flex",alignItems:"center"}}>121 home kitchens in your society</Box>
-    <Box sx={{display:"flex",alignItems:"center"}}>
-    <Button>Revelance</Button>
-    <Button>Ratings</Button>
-    <Button>Cost High to Low</Button>
-    <Button>Cost Low to High</Button>
+    <Box sx={{display:"flex",justifyContent:"space-between", width: "1359px"}}>
+    <Box sx={{display:"flex",alignItems:"center", fontFamily:"roboto",color:"#d32f2f"}}>121 home kitchens in your society</Box>
+    <Box sx={{display:"flex",alignItems:"center",textAlign:"right"}}>
+    <Button sx={{color:"#d32f2f"}} variant='text'>Revelance</Button>
+    <Button sx={{color:"#d32f2f"}} variant='text'>Ratings</Button>
+    <Button sx={{color:"#d32f2f"}} variant='text'>Cost High to Low</Button>
+    <Button sx={{color:"#d32f2f"}} variant='text'>Cost Low to High</Button>
     </Box>
     </Box>
     </Box>

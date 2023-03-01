@@ -46,14 +46,14 @@ function Login() {
 
   return loading ? (<div></div>):(
     <div className="login-container">
-      <h1>Login</h1>
+      <p className='welcometitle'>Welcome back</p>
       <form onSubmit={handleSubmit}>
-        <label>
-          Username:
+        <label className="user_name">
+          <p>Username:</p>
           <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
-        <label>
-          Password:
+        <label className="pass_word">
+          <p>Password:</p>
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
         <button type="submit">Log In</button>

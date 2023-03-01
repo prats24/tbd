@@ -5,7 +5,7 @@
   .sidebar {
     width: 200px;
     background-color: #eee;
-    padding: 20px;
+    padding: 0px;
   }
   
   .sidebar ul {
@@ -15,7 +15,7 @@
   
   .sidebar li {
     cursor: pointer;
-    padding: 10px;
+    padding: 0px;
     margin-bottom: 5px;
   }
   
@@ -30,7 +30,8 @@
   
   .view {
     flex: 1;
-    padding: 20px;
+    padding: 0px;
+    margin-left: -60px;
   }
 
   

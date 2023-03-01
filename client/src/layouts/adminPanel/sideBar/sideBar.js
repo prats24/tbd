@@ -22,6 +22,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import MailIcon from '@mui/icons-material/Mail';
 import { useRoutes } from 'react-router-dom';
 import AdminRoutes from '../../../routes/Adminroutes';
+import AdminNotificationRoute from '../../../routes/AdminNotificationsRoute'
 
 const drawerWidth = 240;
 
@@ -97,6 +98,9 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
   const links = []
   AdminRoutes.map((elem)=>{links.push([elem.name,elem.icon])})
   console.log(links)
+  const notificationlinks = []
+  AdminNotificationRoute.map((elem)=>{links.push([elem.name,elem.icon])})
+  console.log(notificationlinks)
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -165,8 +169,8 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
         </List>
         <Divider />
         <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+          {notificationlinks.map((text, index) => (
+            <ListItem key={text[0]} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -181,9 +185,9 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {text[1]}
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={text[0]} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}

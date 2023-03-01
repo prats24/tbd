@@ -8,7 +8,7 @@ export default function Kitchen() {
     <div>
       <Carousel items={['1.jpeg','2.jpeg','3.jpeg','4.jpeg','5.jpeg']}/>
       <KitchenCard />
-      <Testimonialsection />
+      {/* <Testimonialsection /> */}
     </div>
   );
 }
