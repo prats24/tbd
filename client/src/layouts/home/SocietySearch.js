@@ -22,12 +22,12 @@ const useStyles = makeStyles(() => ({
       display: 'flex',
       paddingRight: '79px',
       paddingLeft: '118px',
-      background: "url('home_bg.jpg')",
-      backgroundRepeat: 'no-repeat',
-      objectFit: 'contain',
-      backgroundPosition: '1050px -100px',
-      backgroundSize: '700px',
-      height: '100vh',
+      background: "url('Background.jpg')",
+      // backgroundRepeat: 'no-repeat',
+      objectFit: 'cover',
+      // backgroundPosition: '1050px -100px',
+       backgroundSize: '1080px',
+       height: '100vh',
   
       '@media (max-width: 900px)': {
         paddingLeft: '20px',
