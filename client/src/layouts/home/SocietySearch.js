@@ -10,6 +10,7 @@ import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import { fontFamily } from '@mui/system';
 
 const useStyles = makeStyles(() => ({
+  
     header: {
       backgroundColor: '#400CCC',
       paddingRight: '79px',
@@ -22,11 +23,12 @@ const useStyles = makeStyles(() => ({
       display: 'flex',
       paddingRight: '79px',
       paddingLeft: '118px',
-      background: "url('Background.jpg')",
-      // backgroundRepeat: 'no-repeat',
+       background: "url('home_bg.jpg')",
+       backgroundRepeat: 'no-repeat',
       objectFit: 'cover',
-      // backgroundPosition: '1050px -100px',
-       backgroundSize: '1080px',
+       backgroundPosition: '1050px -100px',
+       mixBlendMode:'multiply',
+       backgroundSize: '700px',
        height: '100vh',
   
       '@media (max-width: 900px)': {
@@ -106,6 +108,7 @@ const useStyles = makeStyles(() => ({
         gap: '0px',
       },
     },
+    
   }));
 
 export function SocietySearch() {
@@ -139,7 +142,7 @@ export function SocietySearch() {
     ]
 
   return (
-    <div>
+    <div style={{background:"url('Background.jpg')",backgroundSize: '1080px'}}>
       <div className={leaderBoard}>
         <div className={leaderBoard_left} display="flex">
           <Typography
@@ -242,7 +245,7 @@ export function SocietySearch() {
         </div>
         <div className={left}></div>
       </div>
-    </div>
+      </div>
   )
 }
 
