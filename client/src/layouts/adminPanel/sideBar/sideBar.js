@@ -16,10 +16,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PersonIcon from '@mui/icons-material/Person';
-import MailIcon from '@mui/icons-material/Mail';
 import { useNavigate, useRoutes } from 'react-router-dom';
 import AdminRoutes from '../../../routes/Adminroutes';
 import AdminNotificationRoute from '../../../routes/AdminNotificationsRoute'
@@ -105,7 +101,7 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
   AdminNotificationRoute.map((elem)=>{links.push([elem.name,elem.icon])})
   console.log(notificationlinks)
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -121,7 +117,7 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
       <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
-            color="inherit"
+            color="successs"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"

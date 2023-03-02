@@ -13,8 +13,11 @@ import { fontWeight } from '@mui/system';
 import { Link } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import FormLabel from '@mui/material/FormLabel';
 
 const onSubmit = async (values) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -48,13 +51,16 @@ const validate = (values) => {
     errors.societyPincode = 'Required';
   }
   if (!values.societyNoOfTower) {
-    errors.societyNoOfTower = '';
+    errors.societyNoOfTower = 'Required';
   }
   if (!values.societyGeoLocation) {
     errors.societyGeoLocation = 'Required';
   }
   if (!values.societyImage) {
     errors.societyImage = 'Required';
+  }
+  if (!values.status) {
+    errors.status = 'Required';
   }
   return errors;
 };
@@ -69,7 +75,7 @@ function Create_Society() {
   return (
     <>
     {/* <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}> */}
-    <Box sx={{marginTop:10,marginLeft:2,marginRight:1,marginBottom:2,fontSize:20}}>
+    <Box>
     <Typography sx={{marginTop:2,marginBotton:2, color:"white",fontWeight:600, backgroundColor:"grey", padding:1, borderTopLeftRadius:5,borderTopRightRadius:5}}>Create Society</Typography>
     <Typography>
       <Form
@@ -80,7 +86,7 @@ function Create_Society() {
           <form onSubmit={handleSubmit} noValidate>
             <Paper style={{ padding: 16 }}>
               <Grid container alignItems="flex-start" spacing={2}>
-                <Grid item xs={4}>
+                <Grid item xs={12} lg={12}>
                   <Field
                     fullWidth
                     required
@@ -90,23 +96,56 @@ function Create_Society() {
                     label="Society Name"
                   />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={12} lg={12}>
+                  <Field
+                    name="societyAddress"
+                    fullWidth
+                    required
+                    component={TextField}
+                    multiline
+                    label="Society Address"
+                  />
+                </Grid>
+
+                
+                <Grid item xs={12} lg={4}>
                   <Field
                     fullWidth
                     required
-                    name="societyId"
+                    name="societyGeoLocation"
                     component={TextField}
-                    type="text"
-                    label="Society ID"
+                    type="point"
+                    label="Society GeoLocation"
                   />
                 </Grid>
-                <Grid item xs={2}>
+
+                <Grid item xs={12} lg={4} >
+                  <Field
+                    fullWidth
+                    required
+                    name="societyPincode"
+                    component={TextField}
+                    type="text"
+                    label="Society Pincode"
+                  />
+                </Grid>
+                <Grid item xs={12} lg={4}>
+                  <Field
+                    fullWidth
+                    name="societyNoOfTowers"
+                    component={TextField}
+                    type="number"
+                    label="# of Towers"
+                  />
+                </Grid>
+                {/* <Grid item xs={4}>
                 <FormControl variant="standard" sx={{ m: 0, minWidth: 210 }}>
                   <InputLabel id="demo-simple-select-standard-label">Society Type</InputLabel>
                   <Select
                     labelId="demo-simple-select-standard-label"
                     id="demo-simple-select-standard"
                     required
+                    // fullWidth
                     name="societyType"
                     component={TextField}
                     value={societyType}
@@ -122,74 +161,67 @@ function Create_Society() {
                     <MenuItem value={30}>Low</MenuItem>
                   </Select>
                 </FormControl>
+                </Grid> */}
+                
+                {/* <Grid item xs={12} lg={0}>
+                  <TextField></TextField>
+                </Grid> */}
+                <Grid item xs={12} lg={4} marginTop="5px" >
+                  <Typography display="flex" alignItems="center">
+                <FormLabel id="demo-row-radio-buttons-group-label">Status</FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                  >
+                    <FormControlLabel value="Active" control={<Radio />} label="Active" />
+                    <FormControlLabel value="Inactive" control={<Radio />} label="Inactive" />
+                  </RadioGroup>
+                  </Typography>
                 </Grid>
-                <Grid item xs={2}>
-                  <Field
-                    fullWidth
-                    required
-                    name="societyGeoLocation"
-                    component={TextField}
-                    type="Point"
-                    label="Society GeoLocation"
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                  <Field
-                    name="societyAddress"
-                    fullWidth
-                    required
-                    component={TextField}
-                    multiline
-                    label="Society Address"
-                  />
-                </Grid>
-
-                <Grid item xs={2}>
-                  <Field
-                    fullWidth
-                    name="societyPincode"
-                    component={TextField}
-                    type="text"
-                    label="Society Pincode"
-                  />
-                </Grid>
-                <Grid item xs={2}>
-                  <Field
-                    fullWidth
-                    name="societyNoOfTowers"
-                    component={TextField}
-                    type="number"
-                    label="# of Towers"
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <Button item style={{ marginTop: 16 }}
-                    variant="contained"
+                <Grid item xs={12} lg={4} display="flex" alignContent="center" marginTop="17px">
+                  {/* <Button item 
+                    variant="outlined"
                     component="label"
-                    >
-                    Upload Society Image
+                    > */}
+                    <Typography sx={{fontWeight:400, color:"grey"}} xs={12} lg={4.5}>
+                    Society Image*
+                    </Typography>
+                    <Typography xs={12} lg={4}>
                     <input
                       type="file"
-                      hidden
+                      visible
+                      required
                     />
-                  </Button>
+                    </Typography>
+                  {/* </Button> */}
                 </Grid>
-                <Grid item xs={4}>
+                {/* <Grid item xs={12} lg={2.75}>
                   
-                </Grid>
-                <Grid item xs={4} style={{ marginTop: 16, textAlign:"right" }}>
+                </Grid> */}
+                <Grid item xs={12} lg={4} display="flex" alignContent="flex-end" justifyContent="space-around" marginTop="15px">
                   <Button
                     variant="contained"
                     color="primary"
                     type="submit"
+                    width="45%"
                     disabled={submitting}
                   >
                     Create
                   </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    type="reset"
+                    width="45%"
+                    disabled={submitting}
+                  >
+                    Cancel
+                  </Button>
                 </Grid>
               </Grid>
             </Paper>
-            <pre>{JSON.stringify(values, 0, 2)}</pre>
+            {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
           </form>
         )}
       />

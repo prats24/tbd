@@ -19,15 +19,15 @@ const Img = styled('img')({
 export default function ComplexGrid() {
   return (
     <>
-    <Box sx={{marginTop:10,marginLeft:2,marginRight:1,marginBottom:2,fontSize:20,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <Typography>Socities</Typography>
-      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="outlined" component={Link} to={'/createsociety'}>
+    <Box sx={{marginTop:3, fontSize:20,borderRadius:1, padding:"8px", backgroundColor:"grey", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <Typography sx={{color:"white", marginLeft:2, fontWeight:500}}>Society List</Typography>
+      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="contained" component={Link} to={'/createsociety'}>
         Create Society
       </Button>
     </Box>
     <Box>
       
-      <Grid container spacing={2}>
+      <Grid container spacing={2} mt={0.1}>
         <Grid item xs={12} md={6} lg={4}>
     <Paper
       sx={{
@@ -64,18 +64,11 @@ export default function ComplexGrid() {
               </Button>
             </Grid>
           </Grid>
-          <Grid item>
-            <Typography variant="subtitle1" component="div">
-            <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
-            &#x2605; 4.3
-            </Box>
-            </Typography>
-          </Grid>
         </Grid>
       </Grid>
     </Paper>
         </Grid>
-        <Grid item xs={12} md={6} lg={4}>
+        {/* <Grid item xs={12} md={6} lg={4}>
         <Paper
       sx={{
         p: 2,
@@ -168,7 +161,7 @@ export default function ComplexGrid() {
         </Grid>
       </Grid>
     </Paper>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
     </>

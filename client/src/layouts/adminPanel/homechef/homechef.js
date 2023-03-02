@@ -18,15 +18,15 @@ const Img = styled('img')({
 export default function ComplexGrid() {
   return (
     <>
-    <Box sx={{marginTop:10,marginLeft:2,marginRight:1,marginBottom:2,fontSize:20,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <Typography>HomeChefs</Typography>
-      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="outlined">
+    <Box sx={{marginTop:3, fontSize:20,borderRadius:1, padding:"8px", backgroundColor:"grey", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <Typography sx={{color:"white", marginLeft:2, fontWeight:500}}>HomeChef List</Typography>
+      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="contained">
         Create HomeChef
       </Button>
     </Box>
     <Box>
       
-      <Grid container spacing={2}>
+      <Grid container spacing={2} mt={0.1}>
         <Grid item xs={12} md={6} lg={4}>
     <Paper
       sx={{
