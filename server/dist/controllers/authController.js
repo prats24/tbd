@@ -20,7 +20,6 @@ const CatchAsync_1 = __importDefault(require("../middlewares/CatchAsync"));
 ;
 const protect = (Model = User_1.default) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('checking');
         let token;
         if (req.headers.authorization &&
             req.headers.authorization.startsWith('Bearer')) {
@@ -30,7 +29,6 @@ const protect = (Model = User_1.default) => {
         if (req.cookies) {
             if (req.cookies.jwt)
                 token = req.cookies.jwt;
-            console.log(req.cookies.jwt);
         }
         if (!token)
             return next((0, customError_1.createCustomError)('You are not logged in. Please log in to continue.', 401));

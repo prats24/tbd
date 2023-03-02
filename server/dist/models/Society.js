@@ -49,6 +49,7 @@ const societySchema = new mongoose_1.default.Schema({
             //   required: true
         }
     },
+    societyPhoto: String,
     societyAddress: {
         type: String,
     },
