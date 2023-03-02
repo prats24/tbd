@@ -119,6 +119,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
         societyType }: Society = req.body;
     const societyPhoto = (req as any).uploadUrl;     
     //Check for required fields 
+    console.log(req.body);
     if(!(societyName || societyPinCode))return next(createCustomError('Enter all mandatory fields.', 401));
 
     //Check if user exists
