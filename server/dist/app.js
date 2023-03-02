@@ -11,6 +11,8 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const roleRoutes_1 = __importDefault(require("./routes/roleRoutes"));
+const homeChefRoutes_1 = __importDefault(require("./routes/homeChefRoutes"));
+const societyRoutes_1 = __importDefault(require("./routes/societyRoutes"));
 const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
 const app = (0, express_1.default)();
 app.use((0, cookie_parser_1.default)());
@@ -22,7 +24,7 @@ const limiter = (0, express_rate_limit_1.default)({
 app.use((0, cors_1.default)({
     credentials: true,
     // origin: "http://3.6.178.87/", 
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3001",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 }));
 app.use((0, helmet_1.default)());
@@ -33,6 +35,8 @@ app.get('/', (req, res) => {
     res.send('TBD');
 });
 app.use('/api/v1/users', userRoutes_1.default);
+app.use('/api/v1/homeChefs', homeChefRoutes_1.default);
 app.use('/api/v1/roles', roleRoutes_1.default);
+app.use('/api/v1/societies', societyRoutes_1.default);
 app.use(errorHandler_1.default);
 exports.default = app;

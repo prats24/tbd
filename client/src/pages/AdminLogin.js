@@ -7,7 +7,6 @@ export default function Allfoods() {
   return (
     <div>
       <AdminLogin />
-
     </div>
   );
 }

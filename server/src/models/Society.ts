@@ -7,9 +7,16 @@ const societySchema = new mongoose.Schema({
         required: true,
     },
     societyGeoLocation:{
-        type: "Point",
-        coordinates:[Number, Number]
-    },
+        type: {
+          type: String, // Don't do `{ location: { type: String } }`
+          enum: ['Point'], // 'location.type' must be 'Point'
+        //   required: true
+        },
+        coordinates: {
+          type: [Number],
+        //   required: true
+        }
+      },
     societyAddress:{
         type: String,
     },
@@ -36,9 +43,35 @@ const societySchema = new mongoose.Schema({
     lastModifiedBy:{
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
+    },
+    isDeleted:{
+        type: Boolean,
+        default: false
+    },
+    societyId:{
+        type: String,
+    },
 });
 
+societySchema.pre('save', async function(next){
+    if(!this.societyId|| this.isNew){
+        const count = await Society.countDocuments();
+        const sId = "HRS" + (count + 1).toString().padStart(8, "0");
+        this.societyId = sId;
+        next();
+    }
+    next();
+});
+
+societySchema.pre('save', function (next) {
+    (this.lastModifiedOn as any) = Date.now();
+    next();
+});
+
+societySchema.pre('findOneAndUpdate', function(next){
+    this.set({lastModifiedOn: Date.now()});
+    next();
+});
 
 const Society = mongoose.model("Society", societySchema);
 export default Society;

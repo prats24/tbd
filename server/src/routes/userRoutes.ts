@@ -1,6 +1,7 @@
 import express, {Router, Request, Response, NextFunction} from 'express';
 import { login, signup, protect} from '../controllers/authController';
 import {getUser, editUser, deleteUser, createUser, getUsers} from '../controllers/userController';
+import User from '../models/User';
 
 const router = express.Router();
 const currentUser = (req: Request,res: Response,next:NextFunction) =>{
@@ -8,9 +9,9 @@ const currentUser = (req: Request,res: Response,next:NextFunction) =>{
     next(); 
 }
 router.route('/').get(getUsers).post(createUser);
-router.route('/login').post(login);
-router.route('/signup').post(signup);
-router.use(protect);
+router.route('/login').post(login(User));
+router.route('/signup').post(signup(User));
+router.use(protect(User));
 router.route('/me').get(currentUser, getUser).patch(currentUser, editUser).delete(currentUser, deleteUser);
 router.route('/:id').get(getUser).patch(editUser).delete(deleteUser);
 

@@ -14,11 +14,16 @@ import Kitchens from '../pages/Kitchens';
 import CarouselKitchen from '../pages/CarouselKitchen'
 import AdminLogin from '../pages/AdminLogin'
 import AdminPanel from '../pages/Admin_Panel'
+import CreateSociety from '../pages/Create_Society'
 
 const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/',
     element: <SocietySearch />,
+  },
+  {
+    path: '/createsociety',
+    element: <CreateSociety />,
   },
   {
     path: '/adminpanel',

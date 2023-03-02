@@ -16,12 +16,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PersonIcon from '@mui/icons-material/Person';
-import MailIcon from '@mui/icons-material/Mail';
-import { useRoutes } from 'react-router-dom';
+import { useNavigate, useRoutes } from 'react-router-dom';
 import AdminRoutes from '../../../routes/Adminroutes';
+import AdminNotificationRoute from '../../../routes/AdminNotificationsRoute'
 
 const drawerWidth = 240;
 
@@ -93,12 +90,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer({activeMenuItem, onMenuClick}) {
+
+  const navigate = useNavigate();
+
   console.log(activeMenuItem,onMenuClick)
   const links = []
   AdminRoutes.map((elem)=>{links.push([elem.name,elem.icon])})
   console.log(links)
+  const notificationlinks = []
+  AdminNotificationRoute.map((elem)=>{links.push([elem.name,elem.icon])})
+  console.log(notificationlinks)
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -114,7 +117,7 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
       <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
-            color="inherit"
+            color="successs"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
@@ -146,7 +149,13 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
-                onClick={() => onMenuClick(text[0])}
+                onClick={() => {
+                  if(window.location.pathname != '/adminpanel'){
+                    console.log('moving');
+                    navigate('/adminpanel');
+                  }
+                  onMenuClick(text[0]);
+                }}
               >
                 <ListItemIcon
                   sx={{
@@ -165,8 +174,8 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
         </List>
         <Divider />
         <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+          {notificationlinks.map((text, index) => (
+            <ListItem key={text[0]} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -181,9 +190,9 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {text[1]}
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={text[0]} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
