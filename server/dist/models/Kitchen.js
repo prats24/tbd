@@ -31,51 +31,69 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const homeChefSchema = new mongoose_1.default.Schema({
-    firstName: String,
-    lastName: String,
-    email: {
-        type: String,
-        // required: true
+const kitchenSchema = new mongoose_1.default.Schema({
+    kitchenName: String,
+    homeChef: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'HomeChef',
+        required: true,
     },
-    password: {
-        type: String,
-        // required: true,
-    },
+    kitchenType: String,
     phone: String,
-    dateOfBirth: Date,
-    gender: {
-        type: String,
-        enum: ['male', 'female', 'others']
-    },
+    email: String,
     society: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Society'
     },
-    kitchenProfile: {
-        type: [mongoose_1.Schema.Types.ObjectId],
-        ref: 'KitchenProfile'
-    },
-    description: String,
-    displayPhoto: String,
-    bankDetails: {
-        upiId: String,
-        upiNumber: String,
-        bankName: String,
-        branchName: String,
-        bankIFSC: String,
-        bankAccountNumber: String,
-        gstNumber: String,
-        gstPercentage: Number
-    },
     address: String,
     city: String,
+    kitchenPinCode: String,
+    geoLocation: {
+        type: {
+            type: String,
+            enum: ['Point'], // 'location.type' must be 'Point'
+            //   required: true
+        },
+        coordinates: {
+            type: [Number],
+            //   required: true
+        }
+    },
+    foodPreference: String,
+    orders: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Order' }],
+    cart: [],
+    payouts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Payment' }],
+    reviews: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' }],
+    customers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Kitchen' }],
+    kitchenCuisine: [String],
+    description: String,
+    displayPhoto: String,
+    coverPhoto: String,
+    foodLicenseNumber: String,
+    foodLicensePhoto: String,
+    platformRating: [
+        { rating: Number, createdOn: Date }
+    ],
+    customerRating: [{
+            rating: Number,
+            customer: {
+                type: mongoose_1.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            description: String,
+            createdOn: Date,
+        }],
+    discounts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Discount' }],
+    foodMenu: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'FoodMenu' }],
+    gstApplicable: Boolean,
+    deliveryChargeType: {
+        type: String,
+        enum: ['flat', 'percentage'],
+    },
+    deliveryCharge: String,
+    costForTwo: Number,
     createdOn: {
         type: Date,
         default: new Date().toISOString().split('T').join(' ').split('.')[0],
@@ -95,56 +113,27 @@ const homeChefSchema = new mongoose_1.default.Schema({
         type: Boolean,
         default: false,
     },
-    passwordChangedAt: Date,
-    homeChefId: String,
+    kitchenId: String,
 });
-homeChefSchema.methods.correctPassword = function (candidatePassword, userPassword) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield bcryptjs_1.default.compare(candidatePassword, userPassword);
-    });
-};
-//check if password has changed after issuing the token 
-homeChefSchema.methods.changedPasswordAfter = function (jwtTimeStamp) {
-    if (this.passwordChangedAt) {
-        const changedTimeStamp = parseInt(String(this.passwordChangedAt.getTime() / 1000), 10);
-        return jwtTimeStamp < changedTimeStamp;
-    }
-    return false;
-};
-homeChefSchema.pre('save', function (next) {
-    if (!this.isModified('password') || this.isNew) {
-        this.lastModifiedOn = Date.now();
-        return next();
-    }
-    ;
+kitchenSchema.pre('save', function (next) {
     this.lastModifiedOn = Date.now();
-    this.passwordChangedAt = Date.now() - 1000;
     next();
 });
-homeChefSchema.pre('findOneAndUpdate', function (next) {
+kitchenSchema.pre('findOneAndUpdate', function (next) {
     this.set({ lastModifiedOn: Date.now() });
     next();
 });
-//Hashing user password  
-homeChefSchema.pre('save', function (next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!this.isModified('password'))
-            return next();
-        this.password = yield bcryptjs_1.default.hash(this.password, 12);
-        next();
-    });
-});
 //Adding the jk id before saving
-homeChefSchema.pre('save', function (next) {
+kitchenSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!this.homeChefId || this.isNew) {
-            const count = yield homeChef.countDocuments();
-            const userId = "HRHC" + (count + 1).toString().padStart(8, "0");
-            this.homeChefId = userId;
+        if (!this.kitchenId || this.isNew) {
+            const count = yield kitchen.countDocuments();
+            const kitchenId = "HRK" + (count + 1).toString().padStart(8, "0");
+            this.kitchenId = kitchenId;
             next();
         }
         next();
     });
 });
-const homeChef = mongoose_1.default.model("HomeChef", homeChefSchema);
-exports.default = homeChef;
+const kitchen = mongoose_1.default.model("HomeChef", kitchenSchema);
+exports.default = kitchen;

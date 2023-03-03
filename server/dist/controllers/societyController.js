@@ -112,6 +112,7 @@ exports.createSociety = (0, CatchAsync_1.default)((req, res, next) => __awaiter(
     const { societyName, societyGeoLocation, societyTowers, societyPinCode, societyAddress, societyType } = req.body;
     const societyPhoto = req.uploadUrl;
     //Check for required fields 
+    console.log(req.body);
     if (!(societyName || societyPinCode))
         return next((0, customError_1.createCustomError)('Enter all mandatory fields.', 401));
     //Check if user exists
