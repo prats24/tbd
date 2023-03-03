@@ -37,7 +37,7 @@ app.get('/', (req:Request,res:Response)=>{
 });
 
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/homeChefs', homeChefRoutes);
+app.use('/api/v1/homechefs', homeChefRoutes);
 app.use('/api/v1/roles', roleRoutes);
 app.use('/api/v1/societies', societyRoutes);
 

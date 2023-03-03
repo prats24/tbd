@@ -41,21 +41,6 @@ const homeChefSchema = new mongoose.Schema({
     },
     address: String,
     city: String,
-    geoLocation:{
-        type: {
-          type: String, // Don't do `{ location: { type: String } }`
-          enum: ['Point'], // 'location.type' must be 'Point'
-        //   required: true
-        },
-        coordinates: {
-          type: [Number],
-        //   required: true
-        }
-      },
-    foodPreference: String,
-    orders: [{type: Schema.Types.ObjectId, ref: 'Order'}],
-    payments:[{type: Schema.Types.ObjectId, ref: 'Payment'}],
-    reviews:[{type: Schema.Types.ObjectId, ref: 'Review'}],
     createdOn:{
         type: Date,
         default: new Date().toISOString().split('T').join(' ').split('.')[0],
@@ -71,8 +56,12 @@ const homeChefSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    isDeleted: {
+        type: Boolean,
+        default: false, 
+    },
     passwordChangedAt: Date,
-    appID: String,
+    homeChefId: String,
 });
 
 homeChefSchema.methods.correctPassword = async function (
@@ -119,10 +108,10 @@ homeChefSchema.pre('save', async function (next) {
 
 //Adding the jk id before saving
 homeChefSchema.pre('save', async function(next){
-    if(!this.appID|| this.isNew){
+    if(!this.homeChefId|| this.isNew){
         const count = await homeChef.countDocuments();
-        const userId = "TBD" + (count + 1).toString().padStart(8, "0");
-        this.appID = userId;
+        const userId = "HRHC" + (count + 1).toString().padStart(8, "0");
+        this.homeChefId = userId;
         next();
     }
     next();
