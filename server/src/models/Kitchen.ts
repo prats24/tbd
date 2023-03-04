@@ -83,6 +83,11 @@ const kitchenSchema = new mongoose.Schema({
         default: false, 
     },
     kitchenId: String,
+    status: {
+        type: String,
+        enum:['active', 'inactive'],
+        default: 'inactive'
+    }
 });
 
 
