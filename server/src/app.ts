@@ -23,7 +23,7 @@ const limiter = rateLimit({
 app.use(cors({
     credentials: true,
     // origin: "http://3.6.178.87/", 
-    origin: "http://localhost:3001", 
+    origin: "http://localhost:3000", 
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   }));
 app.use(helmet());
@@ -37,7 +37,7 @@ app.get('/', (req:Request,res:Response)=>{
 });
 
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/homeChefs', homeChefRoutes);
+app.use('/api/v1/homechefs', homeChefRoutes);
 app.use('/api/v1/roles', roleRoutes);
 app.use('/api/v1/societies', societyRoutes);
 

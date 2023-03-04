@@ -24,7 +24,7 @@ const limiter = (0, express_rate_limit_1.default)({
 app.use((0, cors_1.default)({
     credentials: true,
     // origin: "http://3.6.178.87/", 
-    origin: "http://localhost:3001",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 }));
 app.use((0, helmet_1.default)());
@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
     res.send('TBD');
 });
 app.use('/api/v1/users', userRoutes_1.default);
-app.use('/api/v1/homeChefs', homeChefRoutes_1.default);
+app.use('/api/v1/homechefs', homeChefRoutes_1.default);
 app.use('/api/v1/roles', roleRoutes_1.default);
 app.use('/api/v1/societies', societyRoutes_1.default);
 app.use(errorHandler_1.default);

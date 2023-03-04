@@ -33,12 +33,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const societySchema = new mongoose_1.default.Schema({
-    societyName: {
-        type: String,
+const kitchenSchema = new mongoose_1.default.Schema({
+    kitchenName: String,
+    homeChef: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'HomeChef',
         required: true,
     },
-    societyGeoLocation: {
+    kitchenType: String,
+    phone: String,
+    email: String,
+    society: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Society'
+    },
+    address: String,
+    city: String,
+    kitchenPinCode: String,
+    geoLocation: {
         type: {
             type: String,
             enum: ['Point'], // 'location.type' must be 'Point'
@@ -49,19 +61,39 @@ const societySchema = new mongoose_1.default.Schema({
             //   required: true
         }
     },
-    societyPhoto: String,
-    societyAddress: {
+    foodPreference: String,
+    orders: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Order' }],
+    cart: [],
+    payouts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Payment' }],
+    reviews: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' }],
+    customers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Kitchen' }],
+    kitchenCuisine: [String],
+    description: String,
+    displayPhoto: String,
+    coverPhoto: String,
+    foodLicenseNumber: String,
+    foodLicensePhoto: String,
+    platformRating: [
+        { rating: Number, createdOn: Date }
+    ],
+    customerRating: [{
+            rating: Number,
+            customer: {
+                type: mongoose_1.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            description: String,
+            createdOn: Date,
+        }],
+    discounts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Discount' }],
+    foodMenu: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'FoodMenu' }],
+    gstApplicable: Boolean,
+    deliveryChargeType: {
         type: String,
+        enum: ['flat', 'percentage'],
     },
-    societyPinCode: {
-        type: String
-    },
-    societyType: {
-        type: String
-    },
-    societyTowers: {
-        type: Number
-    },
+    deliveryCharge: String,
+    costForTwo: Number,
     createdOn: {
         type: Date,
         default: new Date().toISOString().split('T').join(' ').split('.')[0],
@@ -79,30 +111,29 @@ const societySchema = new mongoose_1.default.Schema({
     },
     isDeleted: {
         type: Boolean,
-        default: false
+        default: false,
     },
-    societyId: {
-        type: String,
-    },
+    kitchenId: String,
 });
-societySchema.pre('save', function (next) {
+kitchenSchema.pre('save', function (next) {
+    this.lastModifiedOn = Date.now();
+    next();
+});
+kitchenSchema.pre('findOneAndUpdate', function (next) {
+    this.set({ lastModifiedOn: Date.now() });
+    next();
+});
+//Adding the jk id before saving
+kitchenSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!this.societyId || this.isNew) {
-            const count = yield Society.countDocuments();
-            const sId = "HRS" + (count + 1).toString().padStart(8, "0");
-            this.societyId = sId;
+        if (!this.kitchenId || this.isNew) {
+            const count = yield kitchen.countDocuments();
+            const kitchenId = "HRK" + (count + 1).toString().padStart(8, "0");
+            this.kitchenId = kitchenId;
             next();
         }
         next();
     });
 });
-societySchema.pre('save', function (next) {
-    this.lastModifiedOn = Date.now();
-    next();
-});
-societySchema.pre('findOneAndUpdate', function (next) {
-    this.set({ lastModifiedOn: Date.now() });
-    next();
-});
-const Society = mongoose_1.default.model("Society", societySchema);
-exports.default = Society;
+const kitchen = mongoose_1.default.model("HomeChef", kitchenSchema);
+exports.default = kitchen;

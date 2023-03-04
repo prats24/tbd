@@ -33,7 +33,7 @@ exports.createHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter
     console.log("User :", req.user);
     //Check for required fields 
     if (!(email || password || phone || firstName || lastName || gender))
-        return next((0, customError_1.createCustomError)('Enter all mandatory fields.', 401));
+        return next((0, customError_1.createCustomError)('Enter all mandatory fields.', 400));
     //Check if user exists
     if (yield HomeChef_1.default.findOne({ isDeleted: false, email }))
         return next((0, customError_1.createCustomError)('User with this email already exists. Please login with existing email.', 401));
@@ -72,7 +72,7 @@ exports.getHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(vo
 exports.editHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
     const { firstName, lastName, gender, dateOfBirth, email, password, phone, city, state, address } = req.body;
-    const user = yield HomeChef_1.default.findOne({ _id: id, isDeleted: false }).select('-__v -password -role');
+    const user = yield HomeChef_1.default.findOne({ _id: id }).select('-__v -password -role');
     if (!user)
         return next((0, customError_1.createCustomError)('No such user found.', 404));
     const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email', 'phone', 'profilePhoto', 'city', 'society', 'dateOfBirth', 'lastModifiedBy', 'address', 'gender');

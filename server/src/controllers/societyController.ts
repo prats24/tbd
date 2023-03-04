@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import Society from '../models/Society';
 import {createCustomError} from '../errors/customError';
 import CatchAsync from '../middlewares/CatchAsync';
+import multer from 'multer';
+import AWS from 'aws-sdk';
+import sharp from 'sharp';
 
 interface Society{
     societyName: string,
@@ -11,6 +14,89 @@ interface Society{
     societyAddress: string,
     societyType: string,
 }
+
+const storage = multer.memoryStorage();
+const fileFilter = (req: Request, file: Express.Multer.File, cb:any) => {
+if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+} else {
+    cb(new Error("Invalid file type"), false);
+}
+}
+// AWS.config.update({
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//     region: process.env.AWS_REGION
+//     // accessKeyId: "AKIASR77BQMICZATCLPV",
+//     // secretAccessKey: "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",
+  
+//   });
+  
+const upload = multer({ storage, fileFilter }).single("photo");
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
+
+export const uploadMulter = upload;
+
+export const resizePhoto = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.file) {
+      // no file uploaded, skip to next middleware
+      console.log('no file');
+      next();
+      return;
+    }
+    sharp(req.file.buffer).resize({ width: 400, height: 400 }).toBuffer()
+    .then((resizedImageBuffer) => {
+      req.file!.buffer = resizedImageBuffer;
+      next();
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send({ message: "Error resizing photo" });
+    });
+}; 
+
+export const uploadToS3 = async(req: Request, res: Response, next: NextFunction) => {
+    if (!req.file) {
+      // no file uploaded, skip to next middleware
+      next();
+      return;
+    }
+  
+    // create S3 upload parameters
+    let societyName;
+    if(req.body.societyName && req.body.societyPinCode){
+        societyName = req.body.societyName + req.body.societyPinCode;
+    }else{
+        let society = await Society.findById(req.params.id);
+        societyName = `${society?.societyName}`+`${society?.societyPinCode}`;
+    }
+    const key = `societies/${societyName}/photos/${(Date.now()) + req.file.originalname}`;
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: key,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+      ACL: 'public-read',
+    };
+  
+    // upload image to S3 bucket
+    
+    s3.upload((params as any)).promise()
+      .then((s3Data) => {
+        console.log('file uploaded');
+        (req as any).uploadUrl = s3Data.Location;
+        next();
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Error uploading to S3" });
+      });
+  };
 
 const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)[]): Partial<T> => {
     const newObj: Partial<T> = {};
@@ -31,13 +117,15 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
         societyPinCode,
         societyAddress,
         societyType }: Society = req.body;
+    const societyPhoto = (req as any).uploadUrl;     
     //Check for required fields 
+    console.log(req.body);
     if(!(societyName || societyPinCode))return next(createCustomError('Enter all mandatory fields.', 401));
 
     //Check if user exists
     if(await Society.findOne({isDeleted: false, societyName, societyPinCode})) return next(createCustomError('Society with this email already exists. Please edit the existing society.', 401));
     const society = await Society.create({societyName, societyPinCode, societyGeoLocation, createdBy: (req as any).user._id, 
-        societyTowers, societyAddress});
+        societyTowers, societyAddress, societyPhoto});
 
     if(!society) return next(createCustomError('Couldn\'t create user', 400));
 
@@ -47,7 +135,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
 export const getSocieties = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
     console.log('here');
-    const societies = await Society.find({isDeleted: false});
+    const societies = await Society.find({isDeleted: false}).sort({societyId:-1});
 
 
     if(!societies) return next(createCustomError('No societies found.', 404));
@@ -97,6 +185,7 @@ export const editSociety = CatchAsync(async (req: Request, res: Response, next: 
     'societyPinCode', 'societyAddress', 'societyType');
     
     filteredBody.lastModifiedBy = id;
+    if(req.file) filteredBody.societyPhoto = (req as any).uploadUrl;
     
     const updatedSociety = await Society.findByIdAndUpdate(id, filteredBody, {
         new: true,

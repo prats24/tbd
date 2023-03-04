@@ -17,7 +17,6 @@ interface UserCred{
 };
 
 export const protect = (Model:any = User) =>{return async (req: Request, res:Response, next: NextFunction): Promise<void> => {
-    console.log('checking');
     let token: string;
     if (
         req.headers.authorization &&
@@ -28,7 +27,6 @@ export const protect = (Model:any = User) =>{return async (req: Request, res:Res
     // console.log((req ))
     if (req.cookies) {
         if(req.cookies.jwt) token = req.cookies.jwt;
-        console.log(req.cookies.jwt);
     }
 
     if (!token!) return next(createCustomError('You are not logged in. Please log in to continue.',401));

@@ -76,21 +76,6 @@ const homeChefSchema = new mongoose_1.default.Schema({
     },
     address: String,
     city: String,
-    geoLocation: {
-        type: {
-            type: String,
-            enum: ['Point'], // 'location.type' must be 'Point'
-            //   required: true
-        },
-        coordinates: {
-            type: [Number],
-            //   required: true
-        }
-    },
-    foodPreference: String,
-    orders: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Order' }],
-    payments: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Payment' }],
-    reviews: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' }],
     createdOn: {
         type: Date,
         default: new Date().toISOString().split('T').join(' ').split('.')[0],
@@ -106,8 +91,12 @@ const homeChefSchema = new mongoose_1.default.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User'
     },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
     passwordChangedAt: Date,
-    appID: String,
+    homeChefId: String,
 });
 homeChefSchema.methods.correctPassword = function (candidatePassword, userPassword) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -148,10 +137,10 @@ homeChefSchema.pre('save', function (next) {
 //Adding the jk id before saving
 homeChefSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!this.appID || this.isNew) {
+        if (!this.homeChefId || this.isNew) {
             const count = yield homeChef.countDocuments();
-            const userId = "TBD" + (count + 1).toString().padStart(8, "0");
-            this.appID = userId;
+            const userId = "HRHC" + (count + 1).toString().padStart(8, "0");
+            this.homeChefId = userId;
             next();
         }
         next();

@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import { fontWeight } from '@mui/system';
 import { Link } from 'react-router-dom';
+import Api from '../../../helpers/api'
 
 const Img = styled('img')({
   margin: 'auto',
@@ -16,7 +17,15 @@ const Img = styled('img')({
   maxHeight: '100%',
 });
 
-export default function ComplexGrid() {
+export default function ComplexGrid () {
+  const [socities,setSocities] = React.useState([])
+
+  React.useEffect(async()=>{
+  let res = await Api.getSocieties()
+  console.log(res.data.data)
+  setSocities(res.data.data)
+  },[])
+
   return (
     <>
     <Box sx={{marginTop:3, fontSize:20,borderRadius:1, padding:"8px", backgroundColor:"grey", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -28,6 +37,10 @@ export default function ComplexGrid() {
     <Box>
       
       <Grid container spacing={2} mt={0.1}>
+      {
+      socities?.map((e)=>{
+        console.log(e._id)
+      return(
         <Grid item xs={12} md={6} lg={4}>
     <Paper
       sx={{
@@ -42,25 +55,37 @@ export default function ComplexGrid() {
       <Grid container spacing={2}>
         <Grid item>
           <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img alt="po" src="PalmOlympia.jpeg" />
+            <Img alt="po" src={e.societyPhoto ? e.societyPhoto : "PalmOlympia.jpeg"} />
           </ButtonBase>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                Palm Olympia
+                {e.societyName}
               </Typography>
-              <Typography variant="body2" gutterBottom>
-                Gaur City 2
+              <Typography variant="body2"  gutterBottom>
+                <p style={{wrap:"ellipsis"}}>{e.societyAddress}</p>
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Society ID: 103020
+                {e.societyId}
               </Typography>
             </Grid>
             <Grid item>
-              <Button sx={{ cursor: 'pointer', fontSize: 10 }} font="small" variant="outlined" component={Link} to={'/createsociety'}>
+              {/* <Button sx={{ cursor: 'pointer', fontSize: 10 }} font="small" variant="outlined" component={Link} to={'/viewsociety'} props={{ id: e._id }}>
                 View Details
+              </Button> */}
+              <Button
+                sx={{ cursor: 'pointer', fontSize: 10 }}
+                font="small"
+                variant="outlined"
+                component={Link}
+                // to={{ 
+                //   pathname: '/viewsociety', 
+                //   state: { _id: e._id }
+                // }}
+              >
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewsociety' state={{id:e._id}}> View Details </Link>
               </Button>
             </Grid>
           </Grid>
@@ -68,100 +93,10 @@ export default function ComplexGrid() {
       </Grid>
     </Paper>
         </Grid>
-        {/* <Grid item xs={12} md={6} lg={4}>
-        <Paper
-      sx={{
-        p: 2,
-        margin: 'auto',
-        maxWidth: 500,
-        flexGrow: 1,
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid item>
-          <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img alt="mummy" src="2.jpeg" />
-          </ButtonBase>
-        </Grid>
-        <Grid item xs={12} sm container>
-          <Grid item xs container direction="column" spacing={2}>
-            <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
-                Kavita Kumari
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                Palm Olympia Apartment
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Homechef ID: 1030113
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Button sx={{ cursor: 'pointer', fontSize: 10 }} font="small" variant="outlined">
-                View Details
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle1" component="div">
-            <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
-            &#x2605; 4.3
-            </Box>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Paper>
-        </Grid>
-        <Grid item xs={12} md={6} lg={4}>
-        <Paper
-      sx={{
-        p: 2,
-        margin: 'auto',
-        maxWidth: 500,
-        flexGrow: 1,
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid item>
-          <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img alt="mummy" src="3.jpeg" />
-          </ButtonBase>
-        </Grid>
-        <Grid item xs={12} sm container>
-          <Grid item xs container direction="column" spacing={2}>
-            <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
-                Radhika Apte
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                Palm Olympia Apartment
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Homechef ID: 1030111
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Button sx={{ cursor: 'pointer', fontSize: 10 }} font="small" variant="outlined">
-                View Details
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle1" component="div">
-            <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
-            &#x2605; 4.3
-            </Box>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Paper>
-        </Grid> */}
+
+      )})
+      }
+
       </Grid>
     </Box>
     </>

@@ -37,7 +37,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, }: HomeChef = req.body;
     console.log("User :",(req as any).user)
     //Check for required fields 
-    if(!(email ||password || phone || firstName || lastName || gender))return next(createCustomError('Enter all mandatory fields.', 401));
+    if(!(email ||password || phone || firstName || lastName || gender))return next(createCustomError('Enter all mandatory fields.', 400));
 
     //Check if user exists
     if(await HomeChef.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
@@ -89,7 +89,7 @@ export const getHomeChef = CatchAsync(async (req: Request, res: Response, next: 
 export const editHomeChef = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, state, address }: HomeChef = req.body;
-    const user = await HomeChef.findOne({_id: id, isDeleted: false}).select('-__v -password -role');
+    const user = await HomeChef.findOne({_id: id}).select('-__v -password -role');
 
     if(!user) return next(createCustomError('No such user found.', 404));
 

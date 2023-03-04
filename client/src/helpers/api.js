@@ -70,6 +70,15 @@ class Api {
   getLoginDetails = () => {
     return this.init().get('/users/me');
   }
+  createSociety = (data) => {
+    return this.init().post('/societies', data);
+  }
+  getSocieties = () => {
+    return this.init().get('/societies');
+  }
+  getSocietyById = (id) => {
+    return this.init().get(`/societies/${id}`);
+  }
 }
 
 export default new Api();
