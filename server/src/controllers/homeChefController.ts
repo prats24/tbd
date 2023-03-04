@@ -35,7 +35,8 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
   export const createHomeChef =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, }: HomeChef = req.body;
-    console.log("User :",(req as any).user)
+    // console.log("User :",(req as any).user)
+    console.log(req.body)
     //Check for required fields 
     if(!(email ||password || phone || firstName || lastName || gender))return next(createCustomError('Enter all mandatory fields.', 400));
 
