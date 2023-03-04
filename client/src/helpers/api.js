@@ -83,6 +83,9 @@ class Api {
     console.log("Inside API File: ",data)
     return this.init().post('/homechefs', data);
   }
+  getHomeChef = () => {
+    return this.init().get('/homechefs');
+  }
 }
 
 export default new Api();
