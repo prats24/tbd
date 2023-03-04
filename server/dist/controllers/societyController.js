@@ -126,7 +126,7 @@ exports.createSociety = (0, CatchAsync_1.default)((req, res, next) => __awaiter(
 }));
 exports.getSocieties = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('here');
-    const societies = yield Society_1.default.find({ isDeleted: false });
+    const societies = yield Society_1.default.find({ isDeleted: false }).sort({ societyId: -1 });
     if (!societies)
         return next((0, customError_1.createCustomError)('No societies found.', 404));
     res.status(200).json({ status: "success", data: societies, results: societies.length });

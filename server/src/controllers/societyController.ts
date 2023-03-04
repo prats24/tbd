@@ -135,7 +135,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
 export const getSocieties = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
     console.log('here');
-    const societies = await Society.find({isDeleted: false});
+    const societies = await Society.find({isDeleted: false}).sort({societyId:-1});
 
 
     if(!societies) return next(createCustomError('No societies found.', 404));
