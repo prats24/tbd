@@ -73,8 +73,17 @@ class Api {
   createSociety = (data) => {
     return this.init().post('/societies', data);
   }
+  createKitchen = (data) => {
+    return this.init().post('/kitchens', data);
+  }
   getSocieties = () => {
     return this.init().get('/societies');
+  }
+  getHomeChef = () => {
+    return this.init().get('/homechefs');
+  }
+  getKitchen = () => {
+    return this.init().get('/kitchens');
   }
   getSocietyById = (id) => {
     return this.init().get(`/societies/${id}`);
@@ -82,13 +91,14 @@ class Api {
   getHomeChefById = (id) => {
     return this.init().get(`/homechefs/${id}`);
   }
+  getKitchenById = (id) => {
+    return this.init().get(`/kitchens/${id}`);
+  }
   createHomeChef = (data) => {
     console.log("Inside API File: ",data)
     return this.init().post('/homechefs', data);
   }
-  getHomeChef = () => {
-    return this.init().get('/homechefs');
-  }
+  
 }
 
 export default new Api();

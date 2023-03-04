@@ -17,9 +17,11 @@ import AdminPanel from '../pages/Admin_Panel'
 import CreateSociety from '../pages/Create_Society'
 import ViewSociety from '../pages/View_Society'
 import ViewHomeChef from '../pages/View_HomeChef'
+import ViewKitchen from '../pages/View_Kitchen'
 import ViewCarousel from '../pages/View_Carousel'
 import AdminCarousel from '../pages/Admin_Carousel'
 import CreateHomeChef from '../pages/Create_Homechef'
+import CreateKitchen from '../pages/Create_Kitchen'
 import CreateCarousel from '../pages/Create_Carousel'
 
 const AuthenticationRoutes = (isLoggedIn) => [
@@ -36,6 +38,10 @@ const AuthenticationRoutes = (isLoggedIn) => [
     element: <CreateHomeChef />,
   },
   {
+    path: '/createkitchen',
+    element: <CreateKitchen />,
+  },
+  {
     path: '/createcarousel',
     element: <CreateCarousel />,
   },
@@ -46,6 +52,10 @@ const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/viewhomechef',
     element: <ViewHomeChef />,
+  },
+  {
+    path: '/viewkitchen',
+    element: <ViewKitchen />,
   },
   {
     path: '/viewcarousel',
