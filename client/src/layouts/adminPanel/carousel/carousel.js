@@ -1,57 +1,100 @@
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
+import ButtonBase from '@mui/material/ButtonBase';
+import Box from "@mui/material/Box";
 import { Button, CardActionArea, CardActions } from '@mui/material';
+import { fontWeight } from '@mui/system';
+import { Link } from 'react-router-dom';
+import Api from '../../../helpers/api'
 
-export default function AdminCarousel() {
-  const theme = useTheme();
+const Img = styled('img')({
+  margin: 'auto',
+  display: 'block',
+  maxWidth: '100%',
+  maxHeight: '100%',
+});
+
+export default function ComplexGrid () {
+  const [homeChefs,setHomeChef] = React.useState([])
+
+  React.useEffect(async()=>{
+  let res = await Api.getHomeChef()
+  console.log(res.data.data)
+  setHomeChef(res.data.data)
+  },[])
 
   return (
     <>
-    <Box sx={{marginTop:3, fontSize:20,borderRadius:1, padding:"8px", backgroundColor:"grey", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <Typography sx={{color:"white", marginLeft:2, fontWeight:500}}>Kitchen List</Typography>
-      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="contained">
-        Create Kitchen
+    <Box sx={{marginTop:2,borderRadius:1, padding:1, backgroundColor:"#e8e8e8", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <Typography sx={{color:"black", marginLeft:2, fontWeight:400}}>Carousel List</Typography>
+      <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="contained" component={Link} to={'/createcarousel'}>
+        Create Carousel
       </Button>
     </Box>
-    <Box></Box>
-    <Card sx={{ display: 'flex' }} xs={12} lg={4} mt={0.1}>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <CardContent sx={{ flex: '1 0 auto' }}>
-          <Typography component="div" variant="h5">
-            Live From Space
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" component="div">
-            Mac Miller
-          </Typography>
-        </CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-          <IconButton aria-label="previous">
-            {theme.direction === 'rtl' ? <SkipNextIcon /> : <SkipPreviousIcon />}
-          </IconButton>
-          <IconButton aria-label="play/pause">
-            <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-          </IconButton>
-          <IconButton aria-label="next">
-            {theme.direction === 'rtl' ? <SkipPreviousIcon /> : <SkipNextIcon />}
-          </IconButton>
-        </Box>
-      </Box>
-      <CardMedia
-        component="img"
-        sx={{ width: 151 }}
-        image="1.jpeg"
-        alt="Live from space album cover"
-      />
-    </Card>
+    <Box>
+      
+      <Grid container spacing={2} mt={0.1}>
+      {
+      homeChefs?.map((e)=>{
+        console.log(e._id)
+      return(
+        <Grid item xs={12} md={6} lg={4}>
+    <Paper
+      sx={{
+        p: 2,
+        margin: 'auto',
+        maxWidth: 500,
+        flexGrow: 1,
+        backgroundColor: (theme) =>
+          theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+      }}
+    >
+      <Grid container spacing={2}>
+        <Grid item>
+          <ButtonBase sx={{ width: 128, height: 128 }}>
+            <Img borderRadius="100px" alt="po" src={e.displayPhoto ? e.displayPhoto : "PalmOlympia.jpeg"} />
+          </ButtonBase>
+        </Grid>
+        <Grid item xs={12} sm container>
+          <Grid item xs container direction="column" spacing={2}>
+            <Grid item xs>
+              <Typography gutterBottom variant="subtitle1" component="div">
+                Name: {e.firstName} {e.lastName}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {e.email}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Mobile No.: {e.phone}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                HC ID: {e.homeChefId}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                sx={{ cursor: 'pointer', fontSize: 10 }}
+                font="small"
+                variant="outlined"
+                component={Link}
+              >
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewhomechef' state={{id:e._id}}> View Details </Link>
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Paper>
+        </Grid>
+
+      )})
+      }
+
+      </Grid>
+    </Box>
     </>
   );
 }

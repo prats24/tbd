@@ -17,8 +17,10 @@ import AdminPanel from '../pages/Admin_Panel'
 import CreateSociety from '../pages/Create_Society'
 import ViewSociety from '../pages/View_Society'
 import ViewHomeChef from '../pages/View_HomeChef'
+import ViewCarousel from '../pages/View_Carousel'
 import AdminCarousel from '../pages/Admin_Carousel'
 import CreateHomeChef from '../pages/Create_Homechef'
+import CreateCarousel from '../pages/Create_Carousel'
 
 const AuthenticationRoutes = (isLoggedIn) => [
   {
@@ -34,12 +36,20 @@ const AuthenticationRoutes = (isLoggedIn) => [
     element: <CreateHomeChef />,
   },
   {
+    path: '/createcarousel',
+    element: <CreateCarousel />,
+  },
+  {
     path: '/viewsociety',
     element: <ViewSociety />,
   },
   {
     path: '/viewhomechef',
     element: <ViewHomeChef />,
+  },
+  {
+    path: '/viewcarousel',
+    element: <ViewCarousel />,
   },
   {
     path: '/admincarousel',
