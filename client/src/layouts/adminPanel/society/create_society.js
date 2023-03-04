@@ -67,11 +67,6 @@ const validate = (values) => {
 
 function Create_Society() {
 
-  const [societyType, setSocietyType] = React.useState('');
-  const handleChange = (event) => {
-  setSocietyType(event.target.value)
-}
-
   return (
     <>
     {/* <div style={{ padding: 16, margin: 'auto', maxWidth: 600 }}> */}
@@ -221,7 +216,7 @@ function Create_Society() {
                 </Grid>
               </Grid>
             </Paper>
-            {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
+            <pre>{JSON.stringify(values, 0, 2)}</pre>
           </form>
         )}
       />

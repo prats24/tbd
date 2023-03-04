@@ -15,6 +15,7 @@ import CarouselKitchen from '../pages/CarouselKitchen'
 import AdminLogin from '../pages/AdminLogin'
 import AdminPanel from '../pages/Admin_Panel'
 import CreateSociety from '../pages/Create_Society'
+import AdminCarousel from '../pages/Admin_Carousel'
 
 const AuthenticationRoutes = (isLoggedIn) => [
   {
@@ -24,6 +25,10 @@ const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/createsociety',
     element: <CreateSociety />,
+  },
+  {
+    path: '/admincarousel',
+    element: <AdminCarousel />,
   },
   {
     path: '/adminpanel',
