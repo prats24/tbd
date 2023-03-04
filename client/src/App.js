@@ -24,7 +24,7 @@ function App() {
       <Routes />
       {/* {window.location.pathname.startsWith("/admin") ? null : <Routes />} */}
       {/* <Footer /> */}
-      {window.location.pathname.startsWith("/admin") ? null : <Footer />}
+      {/* {window.location.pathname.startsWith("/admin") ? null : <Footer />} */}
       </>
     // </ThemeProvider>
   );
