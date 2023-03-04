@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import HomeChef from '../models/HomeChef';
 import {createCustomError} from '../errors/customError';
 import CatchAsync from '../middlewares/CatchAsync';
-import homeChef from '../models/HomeChef';
+import multer from 'multer';
+import AWS from 'aws-sdk';
+import sharp from 'sharp';
 
 interface HomeChef{
     firstName: string,
@@ -21,6 +23,90 @@ interface HomeChef{
     description?:string
 }
 
+const storage = multer.memoryStorage();
+const fileFilter = (req: Request, file: Express.Multer.File, cb:any) => {
+if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+} else {
+    cb(new Error("Invalid file type"), false);
+}
+}
+// AWS.config.update({
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//     region: process.env.AWS_REGION
+//     // accessKeyId: "AKIASR77BQMICZATCLPV",
+//     // secretAccessKey: "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",
+  
+//   });
+  
+const upload = multer({ storage, fileFilter }).single("photo");
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
+
+export const uploadMulter = upload;
+
+export const resizePhoto = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.file) {
+      // no file uploaded, skip to next middleware
+      console.log('no file');
+      next();
+      return;
+    }
+    sharp(req.file.buffer).resize({ width: 400, height: 400 }).toBuffer()
+    .then((resizedImageBuffer) => {
+      req.file!.buffer = resizedImageBuffer;
+      next();
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send({ message: "Error resizing photo" });
+    });
+}; 
+
+export const uploadToS3 = async(req: Request, res: Response, next: NextFunction) => {
+    if (!req.file) {
+      // no file uploaded, skip to next middleware
+      next();
+      return;
+    }
+  
+    // create S3 upload parameters
+    let homeChefName;
+    if(req.body.firstName && req.body.lastName && req.body.phone){
+        homeChefName = req.body.firstName + req.body.lastName + req.body.phone;
+    }else{
+        let homeChef = await HomeChef.findById(req.params.id);
+        homeChefName = `${homeChef?.firstName}`+`${homeChef?.lastName}` + `${homeChef?.phone}` ;
+    }
+    const key = `homechefs/${homeChefName}/photos/${(Date.now()) + req.file.originalname}`;
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: key,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+      ACL: 'public-read',
+    };
+  
+    // upload image to S3 bucket
+    
+    s3.upload((params as any)).promise()
+      .then((s3Data) => {
+        console.log('file uploaded');
+        (req as any).uploadUrl = s3Data.Location;
+        next();
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Error uploading to S3" });
+      });
+  };
+
+
 const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)[]): Partial<T> => {
     const newObj: Partial<T> = {};
     Object.keys(obj).forEach((el) => {
@@ -36,13 +122,15 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
   export const createHomeChef =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, }: HomeChef = req.body;
     // console.log("User :",(req as any).user)
-    console.log(req.body)
+    const displayPhoto = (req as any).uploadUrl;
+    console.log(displayPhoto);
     //Check for required fields 
     if(!(email ||password || phone || firstName || lastName || gender))return next(createCustomError('Enter all mandatory fields.', 400));
 
     //Check if user exists
     if(await HomeChef.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const homeChef = await HomeChef.create({firstName, lastName, gender, dateOfBirth, email, password, phone, city, society, address });
+    const homeChef = await HomeChef.create({firstName, lastName, gender, dateOfBirth, email, password, 
+        displayPhoto, phone, city, society, address });
 
     if(!homeChef) return next(createCustomError('Couldn\'t create user', 400));
 

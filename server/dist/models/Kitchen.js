@@ -114,6 +114,11 @@ const kitchenSchema = new mongoose_1.default.Schema({
         default: false,
     },
     kitchenId: String,
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'inactive'
+    }
 });
 kitchenSchema.pre('save', function (next) {
     this.lastModifiedOn = Date.now();

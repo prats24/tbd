@@ -12,10 +12,90 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editHomeChef = exports.getHomeChef = exports.deleteHomeChef = exports.getHomeChefs = exports.createHomeChef = void 0;
+exports.editHomeChef = exports.getHomeChef = exports.deleteHomeChef = exports.getHomeChefs = exports.createHomeChef = exports.uploadToS3 = exports.resizePhoto = exports.uploadMulter = void 0;
 const HomeChef_1 = __importDefault(require("../models/HomeChef"));
 const customError_1 = require("../errors/customError");
 const CatchAsync_1 = __importDefault(require("../middlewares/CatchAsync"));
+const multer_1 = __importDefault(require("multer"));
+const aws_sdk_1 = __importDefault(require("aws-sdk"));
+const sharp_1 = __importDefault(require("sharp"));
+const storage = multer_1.default.memoryStorage();
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+        cb(null, true);
+    }
+    else {
+        cb(new Error("Invalid file type"), false);
+    }
+};
+// AWS.config.update({
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//     region: process.env.AWS_REGION
+//     // accessKeyId: "AKIASR77BQMICZATCLPV",
+//     // secretAccessKey: "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",
+//   });
+const upload = (0, multer_1.default)({ storage, fileFilter }).single("photo");
+const s3 = new aws_sdk_1.default.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
+exports.uploadMulter = upload;
+const resizePhoto = (req, res, next) => {
+    if (!req.file) {
+        // no file uploaded, skip to next middleware
+        console.log('no file');
+        next();
+        return;
+    }
+    (0, sharp_1.default)(req.file.buffer).resize({ width: 400, height: 400 }).toBuffer()
+        .then((resizedImageBuffer) => {
+        req.file.buffer = resizedImageBuffer;
+        next();
+    })
+        .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Error resizing photo" });
+    });
+};
+exports.resizePhoto = resizePhoto;
+const uploadToS3 = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.file) {
+        // no file uploaded, skip to next middleware
+        next();
+        return;
+    }
+    // create S3 upload parameters
+    let homeChefName;
+    if (req.body.firstName && req.body.lastName && req.body.phone) {
+        homeChefName = req.body.firstName + req.body.lastName + req.body.phone;
+    }
+    else {
+        let homeChef = yield HomeChef_1.default.findById(req.params.id);
+        homeChefName = `${homeChef === null || homeChef === void 0 ? void 0 : homeChef.firstName}` + `${homeChef === null || homeChef === void 0 ? void 0 : homeChef.lastName}` + `${homeChef === null || homeChef === void 0 ? void 0 : homeChef.phone}`;
+    }
+    const key = `homechefs/${homeChefName}/photos/${(Date.now()) + req.file.originalname}`;
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+        ACL: 'public-read',
+    };
+    // upload image to S3 bucket
+    s3.upload(params).promise()
+        .then((s3Data) => {
+        console.log('file uploaded');
+        req.uploadUrl = s3Data.Location;
+        next();
+    })
+        .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Error uploading to S3" });
+    });
+});
+exports.uploadToS3 = uploadToS3;
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
     Object.keys(obj).forEach((el) => {
@@ -30,14 +110,17 @@ const filterObj = (obj, ...allowedFields) => {
 };
 exports.createHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, } = req.body;
-    console.log("User :", req.user);
+    // console.log("User :",(req as any).user)
+    const displayPhoto = req.uploadUrl;
+    console.log(displayPhoto);
     //Check for required fields 
     if (!(email || password || phone || firstName || lastName || gender))
         return next((0, customError_1.createCustomError)('Enter all mandatory fields.', 400));
     //Check if user exists
     if (yield HomeChef_1.default.findOne({ isDeleted: false, email }))
         return next((0, customError_1.createCustomError)('User with this email already exists. Please login with existing email.', 401));
-    const homeChef = yield HomeChef_1.default.create({ firstName, lastName, gender, dateOfBirth, email, password, phone, city, society, address });
+    const homeChef = yield HomeChef_1.default.create({ firstName, lastName, gender, dateOfBirth, email, password,
+        displayPhoto, phone, city, society, address });
     if (!homeChef)
         return next((0, customError_1.createCustomError)('Couldn\'t create user', 400));
     res.status(201).json({ status: "success", data: homeChef });
