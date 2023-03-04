@@ -82,6 +82,9 @@ class Api {
   editSociety = (id, data) =>{
     return this.init().patch(`/societies/${id}`, data);
   }
+  getHomeChefById = (id) => {
+    return this.init().get(`/homechefs/${id}`);
+  }
   createHomeChef = (data) => {
     console.log("Inside API File: ",data)
     return this.init().post('/homechefs', data);
