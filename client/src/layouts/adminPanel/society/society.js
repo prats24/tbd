@@ -28,8 +28,8 @@ export default function ComplexGrid () {
 
   return (
     <>
-    <Box sx={{marginTop:3, fontSize:20,borderRadius:1, padding:"8px", backgroundColor:"grey", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <Typography sx={{color:"white", marginLeft:2, fontWeight:500}}>Society List</Typography>
+    <Box sx={{marginTop:2,borderRadius:1, padding:1, backgroundColor:"#e8e8e8", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <Typography sx={{color:"black", marginLeft:2, fontWeight:400}}>Society List</Typography>
       <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="contained" component={Link} to={'/createsociety'}>
         Create Society
       </Button>
@@ -65,25 +65,18 @@ export default function ComplexGrid () {
                 {e.societyName}
               </Typography>
               <Typography variant="body2"  gutterBottom>
-                <p style={{wrap:"ellipsis"}}>{e.societyAddress}</p>
+                <p style={{width:"120px", whiteSpace: "nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{e.societyAddress}</p>
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {e.societyId}
               </Typography>
             </Grid>
             <Grid item>
-              {/* <Button sx={{ cursor: 'pointer', fontSize: 10 }} font="small" variant="outlined" component={Link} to={'/viewsociety'} props={{ id: e._id }}>
-                View Details
-              </Button> */}
               <Button
                 sx={{ cursor: 'pointer', fontSize: 10 }}
                 font="small"
                 variant="outlined"
                 component={Link}
-                // to={{ 
-                //   pathname: '/viewsociety', 
-                //   state: { _id: e._id }
-                // }}
               >
                 <Link style={{textDecoration:'none',color:'inherit'}} to='/viewsociety' state={{id:e._id}}> View Details </Link>
               </Button>
