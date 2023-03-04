@@ -40,7 +40,7 @@ if (file.mimetype.startsWith("image/")) {
   
 //   });
   
-const upload = multer({ storage, fileFilter }).single("photo");
+const upload = multer({ storage, fileFilter }).single("displayPhoto");
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -97,6 +97,7 @@ export const uploadToS3 = async(req: Request, res: Response, next: NextFunction)
     s3.upload((params as any)).promise()
       .then((s3Data) => {
         console.log('file uploaded');
+        console.log(s3Data.Location);
         (req as any).uploadUrl = s3Data.Location;
         next();
       })
@@ -184,7 +185,8 @@ export const editHomeChef = CatchAsync(async (req: Request, res: Response, next:
     const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email', 'phone', 'profilePhoto', 'city', 'society', 'dateOfBirth', 'lastModifiedBy', 'address', 'gender');
     
     filteredBody.lastModifiedBy = id;
-    if ((req as any).file) filteredBody.profilePhoto = (req as any).profilePhotoUrl;
+    console.log((req as any).puploadUrl);
+    if ((req as any).file) filteredBody.displayPhoto = (req as any).uploadUrl;
 
     
     const updatedHomeChef = await HomeChef.findByIdAndUpdate(id, filteredBody, {

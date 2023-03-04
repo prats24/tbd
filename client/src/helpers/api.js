@@ -92,6 +92,9 @@ class Api {
   getHomeChef = () => {
     return this.init().get('/homechefs');
   }
+  editHomeChef = (id, data) =>{
+    return this.init().patch(`/homechefs/${id}`, data);
+  }
 }
 
 export default new Api();

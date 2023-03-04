@@ -18,5 +18,5 @@ router.route('/login').post((0, authController_1.login)(HomeChef_1.default));
 router.route('/signup').post((0, authController_1.signup)(HomeChef_1.default));
 router.route('/me').get((0, authController_1.protect)(HomeChef_1.default), currentHomeChef, homeChefController_1.getHomeChef).patch((0, authController_1.protect)(HomeChef_1.default), currentHomeChef, homeChefController_1.editHomeChef)
     .delete((0, authController_1.protect)(HomeChef_1.default), currentHomeChef, homeChefController_1.deleteHomeChef);
-router.route('/:id').get((0, authController_1.protect)(User_1.default), homeChefController_1.getHomeChef).patch((0, authController_1.protect)(User_1.default), homeChefController_1.editHomeChef).delete((0, authController_1.protect)(User_1.default), homeChefController_1.deleteHomeChef);
+router.route('/:id').get((0, authController_1.protect)(User_1.default), homeChefController_1.getHomeChef).patch((0, authController_1.protect)(User_1.default), homeChefController_1.uploadMulter, homeChefController_1.resizePhoto, homeChefController_1.uploadToS3, homeChefController_1.editHomeChef).delete((0, authController_1.protect)(User_1.default), homeChefController_1.deleteHomeChef);
 exports.default = router;
