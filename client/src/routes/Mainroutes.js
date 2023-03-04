@@ -17,6 +17,7 @@ import AdminPanel from '../pages/Admin_Panel'
 import CreateSociety from '../pages/Create_Society'
 import ViewSociety from '../pages/View_Society'
 import AdminCarousel from '../pages/Admin_Carousel'
+import CreateHomeChef from '../pages/Create_Homechef'
 
 const AuthenticationRoutes = (isLoggedIn) => [
   {
@@ -26,6 +27,10 @@ const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/createsociety',
     element: <CreateSociety />,
+  },
+  {
+    path: '/createhomechef',
+    element: <CreateHomeChef />,
   },
   {
     path: '/viewsociety',

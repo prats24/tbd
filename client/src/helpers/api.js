@@ -79,6 +79,10 @@ class Api {
   getSocietyById = (id) => {
     return this.init().get(`/societies/${id}`);
   }
+  createHomeChef = (data) => {
+    console.log("Inside API File: ",data)
+    return this.init().post('/homechefs', data);
+  }
 }
 
 export default new Api();
