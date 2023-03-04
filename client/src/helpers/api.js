@@ -88,6 +88,9 @@ class Api {
   getSocietyById = (id) => {
     return this.init().get(`/societies/${id}`);
   }
+  editSociety = (id, data) =>{
+    return this.init().patch(`/societies/${id}`, data);
+  }
   getHomeChefById = (id) => {
     return this.init().get(`/homechefs/${id}`);
   }
@@ -99,6 +102,9 @@ class Api {
     return this.init().post('/homechefs', data);
   }
   
+  editHomeChef = (id, data) =>{
+    return this.init().patch(`/homechefs/${id}`, data);
+  }
 }
 
 export default new Api();

@@ -16,12 +16,18 @@ function SocietyForm({society}) {
       const formData = new FormData();
       Object.keys(data).forEach((key) => {if(key!='photo')formData.append(key, data[key])});
       formData.append('photo', data.photo[0]);
-      const res = await api.createSociety(formData);
+      const res = await api.editSociety(society._id, formData);
       console.log('response', res.data.data);
+      if(res.data.status == 'success'){
+        window.alert('Edit Successful');
+        setEditable(false);
+      }
     }catch(e){
+      window.alert(e);
       console.log(e);
     }
   };
+
 
   return (
     <>
@@ -82,7 +88,7 @@ function SocietyForm({society}) {
     </Grid>}
 
     {editable && <Grid item xs={12} md={6} lg={4}>
-       <button type="reset" className="form-submit" onClick={()=>{setEditable(false)}}>Save</button>
+       <button type="submit" className="form-submit">Save</button>
     </Grid>}
 
     {editable && <Grid item xs={12} md={6} lg={4}>

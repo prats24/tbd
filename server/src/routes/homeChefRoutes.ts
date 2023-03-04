@@ -15,7 +15,7 @@ router.route('/login').post(login(HomeChef));
 router.route('/signup').post(signup(HomeChef));
 router.route('/me').get(protect(HomeChef),currentHomeChef, getHomeChef).patch(protect(HomeChef), currentHomeChef, editHomeChef)
 .delete(protect(HomeChef),currentHomeChef, deleteHomeChef);
-router.route('/:id').get(protect(User), getHomeChef).patch(protect(User),editHomeChef).delete(protect(User), deleteHomeChef);
+router.route('/:id').get(protect(User), getHomeChef).patch(protect(User),uploadMulter, resizePhoto, uploadToS3, editHomeChef).delete(protect(User), deleteHomeChef);
 
 
 export default router;

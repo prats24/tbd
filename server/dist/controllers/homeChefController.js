@@ -35,7 +35,7 @@ const fileFilter = (req, file, cb) => {
 //     // accessKeyId: "AKIASR77BQMICZATCLPV",
 //     // secretAccessKey: "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",
 //   });
-const upload = (0, multer_1.default)({ storage, fileFilter }).single("photo");
+const upload = (0, multer_1.default)({ storage, fileFilter }).single("displayPhoto");
 const s3 = new aws_sdk_1.default.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -87,6 +87,7 @@ const uploadToS3 = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     s3.upload(params).promise()
         .then((s3Data) => {
         console.log('file uploaded');
+        console.log(s3Data.Location);
         req.uploadUrl = s3Data.Location;
         next();
     })
@@ -146,8 +147,7 @@ exports.deleteHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter
 }));
 exports.getHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
-    const user = yield HomeChef_1.default.findOne({ _id: id, isDeleted: false }).select('-__v -password')
-        .populate({ path: "role", select: "roleName" });
+    const user = yield HomeChef_1.default.findOne({ _id: id, isDeleted: false }).select('-__v -password');
     if (!user)
         return next((0, customError_1.createCustomError)('No such user found.', 404));
     res.status(200).json({ status: "success", data: user });
@@ -160,8 +160,9 @@ exports.editHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(v
         return next((0, customError_1.createCustomError)('No such user found.', 404));
     const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email', 'phone', 'profilePhoto', 'city', 'society', 'dateOfBirth', 'lastModifiedBy', 'address', 'gender');
     filteredBody.lastModifiedBy = id;
+    console.log(req.puploadUrl);
     if (req.file)
-        filteredBody.profilePhoto = req.profilePhotoUrl;
+        filteredBody.displayPhoto = req.uploadUrl;
     const updatedHomeChef = yield HomeChef_1.default.findByIdAndUpdate(id, filteredBody, {
         new: true,
         runValidators: true
