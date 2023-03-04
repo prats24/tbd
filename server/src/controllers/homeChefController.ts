@@ -166,8 +166,7 @@ export const deleteHomeChef = CatchAsync(async (req:Request, res: Response, next
 export const getHomeChef = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const user = await HomeChef.findOne({_id: id, isDeleted: false}).select('-__v -password')
-    .populate({path : "role", select: "roleName"});
+    const user = await HomeChef.findOne({_id: id, isDeleted: false}).select('-__v -password');
 
     if(!user) return next(createCustomError('No such user found.', 404));
     

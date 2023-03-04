@@ -29,7 +29,7 @@ export default function ComplexGrid () {
   return (
     <>
     <Box sx={{marginTop:2,borderRadius:1, padding:1, backgroundColor:"#e8e8e8", display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <Typography sx={{color:"black", marginLeft:2, fontWeight:400}}>Society List</Typography>
+      <Typography sx={{color:"black", marginLeft:2, fontWeight:400}}>HomeChef List</Typography>
       <Button sx={{ cursor: 'pointer', fontSize: 10, marginRight:3 }} font="small" variant="contained" component={Link} to={'/createhomechef'}>
         Create HomeChef
       </Button>
@@ -55,20 +55,23 @@ export default function ComplexGrid () {
       <Grid container spacing={2}>
         <Grid item>
           <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img alt="po" src={e.homeChefPhoto ? e.homeChefPhoto : "PalmOlympia.jpeg"} />
+            <Img borderRadius="100px" alt="po" src={e.displayPhoto ? e.displayPhoto : "PalmOlympia.jpeg"} />
           </ButtonBase>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                {e.firstName}
-              </Typography>
-              <Typography variant="body2"  gutterBottom>
-                <p style={{width:"120px", whiteSpace: "nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{e.societyAddress}</p>
+                Name: {e.firstName} {e.lastName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {e.secondName}
+                {e.email}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Mobile No.: {e.phone}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                HC ID: {e.homeChefId}
               </Typography>
             </Grid>
             <Grid item>
@@ -78,7 +81,7 @@ export default function ComplexGrid () {
                 variant="outlined"
                 component={Link}
               >
-                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewsociety' state={{id:e._id}}> View Details </Link>
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewhomechef' state={{id:e._id}}> View Details </Link>
               </Button>
             </Grid>
           </Grid>
