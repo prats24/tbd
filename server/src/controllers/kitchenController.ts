@@ -10,11 +10,18 @@ interface Kitchen{
     kitchenName: string,
     homeChef: string,
     kitchenType: string,
+    kitchenCuisine: [string],
     email: string,
+    liveDate: Date,
     phone: string,
-    city: string,
-    address: string,
+    flat: string,
+    floor: string,
+    tower: string,
+    costForOne: Number,
+    deliveryCharges: Number,
+    deliveryChargeType: string,
     society?: string,
+    status: string,
     description?:string
 }
 
@@ -130,17 +137,17 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
   export const createKitchen =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     console.log('createKitchen', req.body);
-    const{kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
-        deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
-        description, homeChef, kitchenPinCode} = req.body;
+    const{kitchenName, kitchenType,liveDate, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+        deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo, floor,tower, society, 
+        description,status, homeChef} = req.body;
     //Check for required fields 
     if(!(kitchenName ||phone || homeChef || society))return next(createCustomError('Enter all mandatory fields.', 400));
 
     //Check if user exists
     if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const kitchen = await Kitchen.create({kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
-        deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
-        description, homeChef, kitchenPinCode});
+    const kitchen = await Kitchen.create({kitchenName, kitchenType,liveDate, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+        deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo,floor, tower, society, 
+        description,status, homeChef});
 
     if(!kitchen) return next(createCustomError('Couldn\'t create kithcen', 400));
 
