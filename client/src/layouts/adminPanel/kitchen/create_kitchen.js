@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller} from "react-hook-form";
 import React from "react";
 import '../styles/inputFormStyle.css';
 import Box from '@mui/material/Box';
@@ -12,29 +12,45 @@ import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Api from '../../../helpers/api'
 
 function KitchenForm() {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
+  const { register, handleSubmit, formState: { errors }, watch, control } = useForm();
   let [photo,setPhoto] = useState('/default/chef.gif')
   const [societies,setSocieties] = useState([]);
-
+  const [homeChefs,setHomeChefs] = useState([]);
+  const [homeChef,setHomeChef] = useState([]);
+  const [society,setSociety] = useState([]);
+  
   React.useEffect(async()=>{
     let res = await Api.getSocieties()
     console.log(res.data.data)
-    setSocieties(res.data.data)
+    setSocieties(res.data.data);
     },[])
-
+  
+    React.useEffect(async()=>{
+      let res = await Api.getHomeChef()
+      console.log(res.data.data)
+      setHomeChefs(res.data.data);
+      },[])
+    
   const onSubmit = async (data) => {
+    console.log('onsubmit');
     console.log(data);
     try{
       const formData = new FormData();
-    //   Object.keys(data).forEach((key) => {if(key!='photo')formData.append(key, data[key])});
-    //   Object.keys(data).forEach((key) => {if(key!='photo')console.log(key, data[key])});
-    //   formData.append('photo', data.photo[0]);
+      Object.keys(data).forEach((key) => {if(key!='displayPhoto' && data[key] && key!='coverPhoto')formData.append(key, data[key])});
+      if(data.displayPhoto[0])formData.append('displayPhoto', data?.displayPhoto[0]);
+      if(data.coverPhoto[0])formData.append('coverPhoto', data?.coverPhoto[0]);
       const res = await Api.createKitchen(formData);
       console.log('response', res.data.data);
-      setPhoto(res.data.data.displayPhoto)
-      window.alert("Kitchen Created Successfully")
+      if(res.data.status == 'success'){
+        window.alert('kitchen created successfully');
+        setEditable(false);
+      }
+      else{
+        window.alert(res.data);
+      }
     }catch(e){
       console.log(e);
+      window.alert(e.toString());
     }
   };
 
@@ -67,7 +83,7 @@ function KitchenForm() {
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">HomeChef Name</label>
-      <input className="form-control" {...register("homeChef", { required: true })} />
+      <input className="form-control" {...register("homeChefName", { required: true })} />
       {errors.homeChef && <span className="form-error">This field is required</span>}
     </Grid>
 
@@ -124,10 +140,61 @@ function KitchenForm() {
                 />
       {errors.society && <span className="form-error">This field is required</span>}
     </Grid>
+    <Grid item xs={12} md={6} lg={12}>
+    <Controller
+        name="society"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <Autocomplete
+            // options={[{ societyId: 1, societyName: "Society A" }, { societyId: 2, societyName: "Society B" }]}
+            options={societies?.map((elem) => ({
+              societyName: elem.societyName,
+              societyId: elem._id,
+            }))}
+            getOptionLabel={(option) => option.societyName}
+            value={society}
+            onChange={(event, newValue) => {
+              setSociety(newValue);
+              field.onChange(newValue ? newValue.societyId : "");
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Society" variant="outlined" />
+            )}
+          />
+        )}
+      />
+    </Grid>
+    <Grid item xs={12} md={6} lg={12}>
+    <Controller
+        name="homeChef"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <Autocomplete
+            // options={[{ societyId: 1, societyName: "Society A" }, { societyId: 2, societyName: "Society B" }]}
+            options={homeChefs?.map((elem) => ({
+              homeChefName: elem.firstName +' '+ elem.lastName,
+              homeChefId: elem._id,
+            }))}
+            getOptionLabel={(option) => option.homeChefName}
+            value={homeChef}
+            onChange={(event, newValue) => {
+              setHomeChef(newValue);
+              field.onChange(newValue ? newValue.homeChefId : "");
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="HomeChef" variant="outlined" />
+            )}
+          />
+        )}
+      />
+    </Grid>
+
 
     <Grid item xs={12} md={6} lg={4}>
       <label className="form-label">Live Date</label>
-      <input type="date" className="form-control" {...register("liveDate", { required: true })} />
+      <input type="date" className="form-control" {...register("liveDate")} />
       {errors.liveDate && <span className="form-error">This field is required</span>}
     </Grid>
 
@@ -164,13 +231,13 @@ function KitchenForm() {
 
     <Grid item xs={12} md={6} lg={6}>
       <label className="form-label">Kitchen Display Image</label>
-      <input type="file" className="form-control" {...register("displayPhoto", { required: true })} />
+      <input type="file" className="form-control" {...register("displayPhoto")} />
       {errors.displayPhoto && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
       <label className="form-label">Kitchen Cover Image</label>
-      <input type="file" className="form-control" {...register("coverPhoto", { required: true })} />
+      <input type="file" className="form-control" {...register("coverPhoto")} />
       {errors.coverPhoto && <span className="form-error">This field is required</span>}
     </Grid>
 

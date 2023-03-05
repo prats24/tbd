@@ -105,6 +105,22 @@ class Api {
   editHomeChef = (id, data) =>{
     return this.init().patch(`/homechefs/${id}`, data);
   }
+  createCarousel = (data) => {
+    return this.init().post('/carousels',data);
+  }
+  getCarousels = () =>{
+    return this.init().get('/carousels');
+  }
+  getCarouselById = (id) =>{
+    return this.init().get(`/carousels/${id}`);
+  }
+  editCarousel = (id, data) => {
+    return this.init().patch(`/carousels/${id}`, data);
+  }
+  deleteCarousel = (id) =>{
+    return this.init().delete(`/carousels/${id}`);
+  }
+
 }
 
 export default new Api();

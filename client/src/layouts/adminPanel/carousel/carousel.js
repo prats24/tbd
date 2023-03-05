@@ -18,12 +18,12 @@ const Img = styled('img')({
 });
 
 export default function ComplexGrid () {
-  const [homeChefs,setHomeChef] = React.useState([])
+  const [carousels,setCarousels] = React.useState([])
 
   React.useEffect(async()=>{
-  let res = await Api.getHomeChef()
+  let res = await Api.getCarousels()
   console.log(res.data.data)
-  setHomeChef(res.data.data)
+  setCarousels(res.data.data)
   },[])
 
   return (
@@ -38,7 +38,7 @@ export default function ComplexGrid () {
       
       <Grid container spacing={2} mt={0.1}>
       {
-      homeChefs?.map((e)=>{
+      carousels?.map((e)=>{
         console.log(e._id)
       return(
         <Grid item xs={12} md={6} lg={4}>
@@ -55,23 +55,23 @@ export default function ComplexGrid () {
       <Grid container spacing={2}>
         <Grid item>
           <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img borderRadius="100px" alt="po" src={e.displayPhoto ? e.displayPhoto : "PalmOlympia.jpeg"} />
+            <Img borderRadius="100px" alt="po" src={e.carouselPhoto ? e.carouselPhoto : "PalmOlympia.jpeg"} />
           </ButtonBase>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                Name: {e.firstName} {e.lastName}
+                Name: {e.carouselName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {e.email}
+                {e.description}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Mobile No.: {e.phone}
+                Dates: {e.startDate}-{e.endDate}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                HC ID: {e.homeChefId}
+                HC ID: {e.carouselId}
               </Typography>
             </Grid>
             <Grid item>
@@ -81,7 +81,7 @@ export default function ComplexGrid () {
                 variant="outlined"
                 component={Link}
               >
-                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewhomechef' state={{id:e._id}}> View Details </Link>
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewcarousel' state={{id:e._id}}> View Details </Link>
               </Button>
             </Grid>
           </Grid>

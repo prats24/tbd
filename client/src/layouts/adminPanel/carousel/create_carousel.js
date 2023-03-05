@@ -24,12 +24,12 @@ function CarouselForm() {
     
     try{
       const formData = new FormData();
-      Object.keys(data).forEach((key) => {if(key!='photo')formData.append(key, data[key])});
+      Object.keys(data).forEach((key) => {if(key!='carouselPhoto')formData.append(key, data[key])});
     //   Object.keys(data).forEach((key) => {if(key!='photo')console.log(key, data[key])});
-      formData.append('photo', data.photo[0]);
-      const res = await api.createHomeChef(formData);
+      formData.append('carouselPhoto', data.carouselPhoto[0]);
+      const res = await api.createCarousel(formData);
       console.log('response', res.data.data);
-      setPhoto(res.data.data.displayPhoto)
+      setPhoto(res.data.data.carouselPhoto)
       window.alert("Carousel Created Successfully")
     }catch(e){
       console.log(e);
@@ -52,13 +52,13 @@ function CarouselForm() {
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Carousel Title</label>
-      <input className="form-control" {...register("title", { required: true })} />
+      <input className="form-control" {...register("carouselName", { required: true })} />
       {errors.title && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Carousel Description</label>
-      <input className="form-control" {...register("lastName", { required: true })} />
+      <input className="form-control" {...register("description", { required: true })} />
       {errors.description && <span className="form-error">This field is required</span>}
     </Grid>
 
@@ -102,7 +102,7 @@ function CarouselForm() {
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Carousel Image</label>
-      <input type="file" className="form-control" {...register("crouselPhoto", { required: true })} />
+      <input type="file" className="form-control" {...register("carouselPhoto", { required: true })} />
       {errors.carouselPhoto && <span className="form-error">This field is required</span>}
     </Grid>
 

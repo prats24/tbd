@@ -7,7 +7,7 @@ const kitchenSchema = new mongoose.Schema({
     homeChef:{
         type: Schema.Types.ObjectId,
         ref: 'HomeChef',
-        required: true,
+        // required: true,
     },
     kitchenType:String,
     phone: String,
@@ -115,5 +115,5 @@ kitchenSchema.pre('save', async function(next){
 })  
 
 
-const kitchen = mongoose.model("HomeChef", kitchenSchema);
+const kitchen = mongoose.model("Kitchen", kitchenSchema);
 export default kitchen;

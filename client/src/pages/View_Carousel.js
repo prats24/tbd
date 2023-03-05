@@ -20,7 +20,7 @@ function App() {
  const {activeMenuItem,handleMenuClick,getView} = useContext(ViewContext)
   useEffect(async()=>{
   try{
-   const res = await Api.geCarouselById(id)
+   const res = await Api.getCarouselById(id)
    setCarousel(res.data.data)
   }
   catch(e){
