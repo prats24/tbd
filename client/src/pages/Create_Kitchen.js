@@ -21,6 +21,7 @@ function App() {
   try{
    const res = await Api.getKitchenById(id)
    console.log("Kitchen Data in Create Kitchen Page: ",res.data.data._id)
+   console.log(res.data.data)
    setKitchen(res.data.data)
   }
   catch(e){
@@ -32,6 +33,8 @@ function App() {
 else{
   console.log("Inside Create Kitchen Button")
 }
+
+console.log("Kitchen Object: ",kitchen)
 
   return (
     <div className="app">

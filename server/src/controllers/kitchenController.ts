@@ -14,7 +14,7 @@ interface Kitchen{
     email: string,
     liveDate: Date,
     phone: string,
-    flat: string,
+    flatNo: string,
     floor: string,
     tower: string,
     costForOne: Number,
