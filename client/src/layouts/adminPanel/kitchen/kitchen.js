@@ -73,6 +73,9 @@ export default function ComplexGrid () {
               <Typography variant="body2" color="text.secondary">
                 HC ID: {e.costForOne}
               </Typography>
+              <Typography variant="body2" color="text.secondary">
+                ID: {e._id}
+              </Typography>
             </Grid>
             <Grid item>
               <Button
@@ -81,7 +84,7 @@ export default function ComplexGrid () {
                 variant="outlined"
                 component={Link}
               >
-                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewhomechef' state={{id:e._id}}> View Details </Link>
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/createkitchen' state={{id:e._id}}> View Details </Link>
               </Button>
             </Grid>
           </Grid>
