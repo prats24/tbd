@@ -18,12 +18,12 @@ const Img = styled('img')({
 });
 
 export default function ComplexGrid () {
-  const [homeChefs,setHomeChef] = React.useState([])
+  const [kitchens,setKitchens] = React.useState([])
 
   React.useEffect(async()=>{
-  let res = await Api.getHomeChef()
+  let res = await Api.getKitchen()
   console.log(res.data.data)
-  setHomeChef(res.data.data)
+  setKitchens(res.data.data)
   },[])
 
   return (
@@ -38,7 +38,7 @@ export default function ComplexGrid () {
       
       <Grid container spacing={2} mt={0.1}>
       {
-      homeChefs?.map((e)=>{
+      kitchens?.map((e)=>{
         console.log(e._id)
       return(
         <Grid item xs={12} md={6} lg={4}>
@@ -62,7 +62,7 @@ export default function ComplexGrid () {
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
               <Typography gutterBottom variant="subtitle1" component="div">
-                Name: {e.firstName} {e.lastName}
+                {e.kitchenName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {e.email}
@@ -71,7 +71,10 @@ export default function ComplexGrid () {
                 Mobile No.: {e.phone}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                HC ID: {e.homeChefId}
+                HC ID: {e.costForOne}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                ID: {e._id}
               </Typography>
             </Grid>
             <Grid item>
@@ -81,7 +84,7 @@ export default function ComplexGrid () {
                 variant="outlined"
                 component={Link}
               >
-                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewhomechef' state={{id:e._id}}> View Details </Link>
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/createkitchen' state={{id:e._id}}> View Details </Link>
               </Button>
             </Grid>
           </Grid>

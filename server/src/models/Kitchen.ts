@@ -16,20 +16,9 @@ const kitchenSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Society'
     },
-    address: String,
-    city: String,
-    kitchenPinCode: String,
-    geoLocation:{
-        type: {
-          type: String, // Don't do `{ location: { type: String } }`
-          enum: ['Point'], // 'location.type' must be 'Point'
-        //   required: true
-        },
-        coordinates: {
-          type: [Number],
-        //   required: true
-        }
-      },
+    flatNo: String,
+    floor: String,
+    tower: String,
     foodPreference: String,
     orders: [{type: Schema.Types.ObjectId, ref: 'Order'}],
     cart:[],
@@ -59,10 +48,10 @@ const kitchenSchema = new mongoose.Schema({
     gstApplicable: Boolean,
     deliveryChargeType:{
         type: String,
-        enum:['flat', 'percentage'],
+        enum:['Flat', 'Percentage'],
     },
-    deliveryCharge: String,
-    costForTwo: Number, 
+    deliveryCharges: Number,
+    costForOne: Number, 
     createdOn:{
         type: Date,
         default: new Date().toISOString().split('T').join(' ').split('.')[0],
@@ -72,6 +61,9 @@ const kitchenSchema = new mongoose.Schema({
         ref: 'User'
     },
     lastModifiedOn:{
+        type: Date,
+    },
+    liveDate:{
         type: Date,
     },
     lastModifiedBy:{

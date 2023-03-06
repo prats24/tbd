@@ -10,11 +10,18 @@ interface Kitchen{
     kitchenName: string,
     homeChef: string,
     kitchenType: string,
+    kitchenCuisine: [string],
     email: string,
+    liveDate: Date,
     phone: string,
-    city: string,
-    address: string,
+    flatNo: string,
+    floor: string,
+    tower: string,
+    costForOne: Number,
+    deliveryCharges: Number,
+    deliveryChargeType: string,
     society?: string,
+    status: string,
     description?:string
 }
 
@@ -166,17 +173,24 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     }
     console.log(displayPhoto);
     console.log(coverPhoto);
-    const{kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
-        deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
-        description, homeChef, kitchenPinCode} = req.body;
+    // const{kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+    //     deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
+    //     description, homeChef, kitchenPinCode} = req.body;
+    const{kitchenName, kitchenType,liveDate, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+        deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo, floor,tower, society, 
+        description,status, homeChef} = req.body;
     //Check for required fields 
     if(!(kitchenName ||phone || homeChef || society))return next(createCustomError('Enter all mandatory fields.', 400));
 
     //Check if user exists
-    if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('User with this email already exists.', 401));
-    const kitchen = await Kitchen.create({kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
-        deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
-        description, homeChef, kitchenPinCode, displayPhoto, coverPhoto});
+    // if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('User with this email already exists.', 401));
+    // const kitchen = await Kitchen.create({kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+    //     deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
+    //     description, homeChef, kitchenPinCode, displayPhoto, coverPhoto});
+    if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('Kitchen with this email already exists.', 401));
+    const kitchen = await Kitchen.create({kitchenName, kitchenType,liveDate, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+        deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo,floor, tower, society, 
+        description,status, homeChef, displayPhoto, coverPhoto});
 
     if(!kitchen) return next(createCustomError('Couldn\'t create kithcen', 400));
 
@@ -227,11 +241,14 @@ export const editKitchen = CatchAsync(async (req: Request, res: Response, next: 
 
     if(!user) return next(createCustomError('No such user found.', 404));
 
-    const filteredBody = filterObj(req.body, 'kitchenName', 'email', 'phone', 'city', 'society', 
-    'lastModifiedBy', 'address', 'kitchenType', 'kitchenCuisine', 'description', 'foodlicenseNumber', 
-    'discounts', 'foodMenu', 'gstApplicable', 'deliveryChargeType', 'deliveryCharge', 'costForTwo');
-    
+    const filteredBody = filterObj(req.body, 'kitchenName', 'kitchenType','liveDate', 'kitchenCuisine', 'foodLicenseNumber', 'discount', 
+    'foodMenu', 'gstApplicable', 
+        'deliveryChargeType', 'deliveryCharges', 'costForOne', 'email', 'phone', 'flatNo','floor', 'tower', 'society', 
+        'description','status', 'homeChef');
+
     filteredBody.lastModifiedBy = id;
+    if((req as any).displayPhotoUrl) filteredBody.displayPhoto = (req as any).displayPhotoUrl;
+    if((req as any).coverPhotoUrl) filteredBody.coverPhoto = (req as any).coverPhotoUrl;
     
     
     const updatedKitchen = await Kitchen.findByIdAndUpdate(id, filteredBody, {

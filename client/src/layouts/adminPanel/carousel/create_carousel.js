@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
-import api from "../../../helpers/api";
+import Api from "../../../helpers/api";
+import React from "react";
 import '../styles/inputFormStyle.css';
 import Box from '@mui/material/Box';
 import { useState } from "react";
@@ -12,12 +13,18 @@ import { MultiSelect } from "react-multi-select-component";
 function CarouselForm() {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
   let [photo,setPhoto] = useState('/default/chef.gif')
-  const [selected, setSelected] = useState([]);
+  const [kitchens, setKitchens] = useState([]);
   const options = [
     { label: "Anamika's Kitchen", value: "Anamika's Kitchen" },
     { label: "Kavita's Kitchen", value: "Kavita's Kitchen" },
     { label: "Mummy's Kitchen", value: "Mummy's Kitchen", disabled: true },
   ];
+
+  React.useEffect(async()=>{
+    let res = await Api.getKitchens()
+    console.log(res.data.data)
+    setKitchens(res.data.data);
+    },[])
   
   const onSubmit = async (data) => {
     console.log(data);
@@ -25,9 +32,8 @@ function CarouselForm() {
     try{
       const formData = new FormData();
       Object.keys(data).forEach((key) => {if(key!='carouselPhoto')formData.append(key, data[key])});
-    //   Object.keys(data).forEach((key) => {if(key!='photo')console.log(key, data[key])});
       formData.append('carouselPhoto', data.carouselPhoto[0]);
-      const res = await api.createCarousel(formData);
+      const res = await Api.createCarousel(formData);
       console.log('response', res.data.data);
       setPhoto(res.data.data.carouselPhoto)
       window.alert("Carousel Created Successfully")
@@ -78,10 +84,12 @@ function CarouselForm() {
       <label className="form-label">Select Kitchens which will show up in the Carousel</label>
       {/* <input type="text" className="form-control" {...register("password", { required: true })} /> */}
       <MultiSelect
+        name="kitchens"
         options={options}
-        value={selected}
-        onChange={setSelected}
+        value={kitchens}
+        onChange={setKitchens}
         labelledBy="Select"
+        // {...register("kitchens[0].value")}
       />
       {errors.password && <span className="form-error">This field is required</span>}
     </Grid>
@@ -129,3 +137,4 @@ function CarouselForm() {
   );
 }
 export default CarouselForm;
+
