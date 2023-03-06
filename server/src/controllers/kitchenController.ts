@@ -50,8 +50,7 @@ export const uploadMulter = upload;
 export const uploadMulterMultiple = uploadMultiple;
 
 export const resizePhoto = async (req: Request, res: Response, next: NextFunction) => {
-    console.log('files', req.files);
-    console.log('file', req.file);
+    console.log('resize func');
     if (!req.files) {
       // no file uploaded, skip to next middleware
       console.log('no file');
@@ -76,45 +75,74 @@ export const resizePhoto = async (req: Request, res: Response, next: NextFunctio
       next();
 }; 
 
-export const uploadToS3 = async(req: Request, res: Response, next: NextFunction) => {
-    if (!req.file) {
+
+export const uploadToS3 = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.files) {
       // no file uploaded, skip to next middleware
+      console.log('no files bro');
       next();
       return;
     }
   
-    // create S3 upload parameters
-    let homeChefName;
-    if(req.body.firstName && req.body.lastName && req.body.phone){
-        homeChefName = req.body.firstName + req.body.lastName + req.body.phone;
-    }else{
-        let kitchen = await Kitchen.findById(req.params.id);
-        homeChefName = `${kitchen?.kitchenName}` ;
-    }
-    const key = `homechefs/${homeChefName}/photos/${(Date.now()) + req.file.originalname}`;
-    const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: key,
-      Body: req.file.buffer,
-      ContentType: req.file.mimetype,
-      ACL: 'public-read',
-    };
+    try {
+      if ((req.files as any).displayPhoto) {
+        let kitchenName;
+        if (req.body.kitchenName) {
+          kitchenName = req.body.kitchenName;
+        } else {
+          const kitchen = await Kitchen.findById(req.params.id);
+          kitchenName = `${kitchen?.kitchenName}`;
+        }
+        const key = `homechefs/${kitchenName}/photos/display/${Date.now() + (req.files as any).displayPhoto[0].originalname}`;
+        const params = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: key,
+          Body: (req.files as any).displayPhotoBuffer,
+          ContentType: (req.files as any).displayPhoto.mimetype,
+          ACL: 'public-read',
+        };
   
-    // upload image to S3 bucket
-    
-    s3.upload((params as any)).promise()
-      .then((s3Data) => {
+        // upload image to S3 bucket
+        const s3Data = await s3.upload(params as any).promise();
         console.log('file uploaded');
         console.log(s3Data.Location);
-        (req as any).uploadUrl = s3Data.Location;
-        next();
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send({ message: "Error uploading to S3" });
-      });
+        (req as any).displayPhotoUrl = s3Data.Location;
+        console.log('calling next after upload');
+        console.log('next called');
+      }
+  
+      if ((req.files as any).coverPhoto) {
+        let kitchenName;
+        if (req.body.kitchenName) {
+          kitchenName = req.body.kitchenName;
+        } else {
+          const kitchen = await Kitchen.findById(req.params.id);
+          kitchenName = `${kitchen?.kitchenName}`;
+        }
+        const key = `homechefs/${kitchenName}/photos/cover/${Date.now() + (req.files as any).coverPhoto[0].originalname}`;
+        const params = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: key,
+          Body: (req.files as any).coverPhotoBuffer,
+          ContentType: (req.files as any).coverPhoto.mimetype,
+          ACL: 'public-read',
+        };
+  
+        // upload image to S3 bucket
+        const s3Data = await s3.upload(params as any).promise();
+        console.log('file uploaded');
+        console.log(s3Data.Location);
+        (req as any).coverPhotoUrl = s3Data.Location;
+      }
+  
+      console.log('calling next of s3 upload func');
+      next();
+    } catch (err) {
+      console.error(err);
+      res.status(500).send({ message: 'Error uploading to S3' });
+    }
   };
-
+  
 
 const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)[]): Partial<T> => {
     const newObj: Partial<T> = {};
@@ -130,6 +158,14 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
   export const createKitchen =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     console.log('createKitchen', req.body);
+    let coverPhoto, displayPhoto;
+    if(req.files){
+        if((req as any).displayPhotoUrl) displayPhoto = (req as any).displayPhotoUrl;
+        if((req as any).coverPhotoUrl) coverPhoto = (req as any).coverPhotoUrl;
+
+    }
+    console.log(displayPhoto);
+    console.log(coverPhoto);
     const{kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
         deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
         description, homeChef, kitchenPinCode} = req.body;
@@ -137,10 +173,10 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     if(!(kitchenName ||phone || homeChef || society))return next(createCustomError('Enter all mandatory fields.', 400));
 
     //Check if user exists
-    if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
+    if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('User with this email already exists.', 401));
     const kitchen = await Kitchen.create({kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
         deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
-        description, homeChef, kitchenPinCode});
+        description, homeChef, kitchenPinCode, displayPhoto, coverPhoto});
 
     if(!kitchen) return next(createCustomError('Couldn\'t create kithcen', 400));
 

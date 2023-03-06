@@ -43,7 +43,6 @@ function KitchenForm() {
       console.log('response', res.data.data);
       if(res.data.status == 'success'){
         window.alert('kitchen created successfully');
-        setEditable(false);
       }
       else{
         window.alert(res.data);
@@ -237,8 +236,7 @@ function KitchenForm() {
 
     <Grid item xs={12} md={6} lg={6}>
       <label className="form-label">Kitchen Cover Image</label>
-      <input type="file" className="form-control" {...register("coverPhoto")} />
-      {errors.coverPhoto && <span className="form-error">This field is required</span>}
+      <input type="file" className="form-control" {...register("coverPhoto")}/>
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
