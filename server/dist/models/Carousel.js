@@ -33,104 +33,71 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const kitchenSchema = new mongoose_1.default.Schema({
-    kitchenName: String,
-    homeChef: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'HomeChef',
-        // required: true,
-    },
-    kitchenType: String,
-    phone: String,
-    email: String,
-    society: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Society'
-    },
-    flatNo: String,
-    floor: String,
-    tower: String,
-    foodPreference: String,
-    orders: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Order' }],
-    cart: [],
-    payouts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Payment' }],
-    reviews: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' }],
-    customers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Kitchen' }],
-    kitchenCuisine: [String],
-    description: String,
-    displayPhoto: String,
-    coverPhoto: String,
-    foodLicenseNumber: String,
-    foodLicensePhoto: String,
-    platformRating: [
-        { rating: Number, createdOn: Date }
-    ],
-    customerRating: [{
-            rating: Number,
-            customer: {
-                type: mongoose_1.Schema.Types.ObjectId,
-                ref: 'User'
-            },
-            description: String,
-            createdOn: Date,
-        }],
-    discounts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Discount' }],
-    foodMenu: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'FoodMenu' }],
-    gstApplicable: Boolean,
-    deliveryChargeType: {
+const carouselSchema = new mongoose_1.default.Schema({
+    carouselName: {
         type: String,
-        enum: ['Flat', 'Percentage'],
+        required: true
     },
-    deliveryCharges: Number,
-    costForOne: Number,
+    description: {
+        type: String,
+        required: true
+    },
+    startDate: Date,
+    carouselPhoto: String,
+    endDate: Date,
+    kitchens: [{
+            type: mongoose_1.Schema.Types.ObjectId,
+        }],
     createdOn: {
         type: Date,
-        default: new Date().toISOString().split('T').join(' ').split('.')[0],
+        default: Date.now(),
+        required: true
     },
     createdBy: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
     lastModifiedOn: {
         type: Date,
-    },
-    liveDate: {
-        type: Date,
+        // required : true
     },
     lastModifiedBy: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        // required : true
     },
     isDeleted: {
         type: Boolean,
         default: false,
+        // required : true
     },
-    kitchenId: String,
+    carouselId: String,
     status: {
         type: String,
         enum: ['active', 'inactive'],
         default: 'inactive'
     }
 });
-kitchenSchema.pre('save', function (next) {
+carouselSchema.pre('save', function (next) {
     this.lastModifiedOn = Date.now();
     next();
 });
-kitchenSchema.pre('findOneAndUpdate', function (next) {
+carouselSchema.pre('findOneAndUpdate', function (next) {
     this.set({ lastModifiedOn: Date.now() });
     next();
 });
 //Adding the jk id before saving
-kitchenSchema.pre('save', function (next) {
+carouselSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!this.kitchenId || this.isNew) {
-            const count = yield kitchen.countDocuments();
-            const kitchenId = "HRK" + (count + 1).toString().padStart(8, "0");
-            this.kitchenId = kitchenId;
+        if (!this.carouselId || this.isNew) {
+            const count = yield carousel.countDocuments();
+            const carouselId = "HRCL" + (count + 1).toString().padStart(8, "0");
+            this.carouselId = carouselId;
             next();
         }
         next();
     });
 });
-const kitchen = mongoose_1.default.model("Kitchen", kitchenSchema);
-exports.default = kitchen;
+const carousel = mongoose_1.default.model("Carousel", carouselSchema);
+exports.default = carousel;

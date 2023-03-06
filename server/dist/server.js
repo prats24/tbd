@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8091;
 console.log(dB);
 mongoose_1.default.connect(dB).then(() => {
     console.log('Database Connected!');
-});
+}).catch((e) => console.log(e));
 const server = app_1.default.listen(PORT, () => {
     console.log(`Server running at ${PORT}`);
 });
