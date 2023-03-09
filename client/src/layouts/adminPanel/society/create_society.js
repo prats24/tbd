@@ -2,14 +2,27 @@ import { useForm } from "react-hook-form";
 import api from "../../../helpers/api";
 import '../styles/inputFormStyle.css';
 import Box from '@mui/material/Box';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import {Link} from 'react-router-dom'
-import { Typography } from "@mui/material";
+import { Typography } from "@mui/material"; 
 
-function SocietyForm() {
+function SocietyForm({society}) {
+  console.log("Society Value: ",society)
+  const [initialValues,setInitialValues] = useState(society);
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
   let [photo,setPhoto] = useState('/default/building.gif')
+  const [editable,setEditable] = useState('') 
+  const [isObjectNew,setIsNewObject] = useState('');
+  const [statusDefaultValue, setStatusDefaultValue] = useState(false);
+
+  useEffect(async()=>{
+    setEditable(society.length === 0 ? true : false)
+    console.log("Editable set as: ",editable)
+    setIsNewObject(society.length === 0 ? true : false)
+    console.log(society.length,editable,isObjectNew)
+  },[society])
+
   const onSubmit = async (data) => {
     console.log(data);
     try{
@@ -40,41 +53,49 @@ function SocietyForm() {
     <Grid container spacing={1}>
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Society Name</label>
-      <input className="form-control"{...register("societyName", { required: true })} />
+      <input disabled={!editable} defaultValue={society.societyName} className="form-control"{...register("societyName", { required: true })} />
       {errors.societyName && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Society Address</label>
-      <input className="form-control" {...register("societyAddress", { required: true })} />
+      <input disabled={!editable} defaultValue={society.societyAddress} className="form-control" {...register("societyAddress", { required: true })} />
       {errors.societyAddress && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Society Pin Code</label>
-      <input className="form-control" {...register("societyPinCode", { required: true })} />
+      <input disabled={!editable} defaultValue={society.societyPinCode} className="form-control" {...register("societyPinCode", { required: true })} />
       {errors.societyPinCode && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Society Geolocation</label>
-      <input className="form-control" {...register("societyGeoLocation")} />
+      <input disabled={!editable} defaultValue={society.societyGeoLocation} className="form-control" {...register("societyGeoLocation")} />
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Society Towers</label>
-      <input type="number" className="form-control" {...register("societyTowers", { required: true })} />
+      <input disabled={!editable} type="number" defaultValue={society.societyTowers} className="form-control" {...register("societyTowers", { required: true })} />
       {errors.societyTowers && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Status</label>
       <label className="form-label">
-        <input type="radio"{...register("status", { required: true })} value="active" />
+        <input 
+        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
+        checked={statusDefaultValue} 
+        disabled={!editable} 
+        type="radio"{...register("status", { required: true })} value="active" />
         Active
       </label>
       <label className="form-label">
-        <input type="radio" {...register("status", { required: true })} value="inactive" />
+        <input 
+        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
+        checked={!statusDefaultValue} 
+        disabled={!editable} 
+        type="radio" {...register("status", { required: true })} value="inactive" />
         Inactive
       </label >
       {errors.status && <span className="form-error">This field is required</span>}
@@ -82,13 +103,39 @@ function SocietyForm() {
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Society Image</label>
-      <input type="file" className="form-control" {...register("photo", { required: true })} />
+      <input disabled={!editable} type="file" className="form-control" {...register("photo", { required: true })} />
       {errors.photo && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={4}>
-    <button type="submit" className="form-submit">Submit</button>
+    {editable && isObjectNew &&
+    <Grid item xs={12} md={6} lg={2}>
+    <button type="submit" className="form-submit" onClick={()=>handleSubmit(onSubmit)}>Submit</button>
     </Grid>
+    }
+
+    {editable && !isObjectNew &&
+    <Grid item xs={12} md={6} lg={2}>
+    <button type="save" className="form-submit" onClick={()=>{setEditable(false),setIsNewObject(false)}}>Save</button>
+    </Grid>
+    }
+
+    {editable &&
+    <Grid item xs={12} md={6} lg={2}>
+    <button type="cancel" className="form-submit" onClick={()=>{setEditable(false),setIsNewObject(false)}}>Cancel</button>
+    </Grid>
+    }
+
+    {!editable &&
+    <Grid item xs={12} md={6} lg={2}>
+    <button type="edit" className="form-submit" onClick={()=>{setEditable(true),setIsNewObject(false)}}>Edit</button>
+    </Grid>
+    }
+
+    {!editable &&
+    <Grid item xs={12} md={6} lg={2}>
+    <button type="back" className="form-submit">Back</button>
+    </Grid>
+    }
 
     </Grid>
     </form>
