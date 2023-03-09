@@ -15,6 +15,7 @@ const carouselSchema = new mongoose.Schema({
     endDate:Date,
     kitchens:[{
         type: Schema.Types.ObjectId,
+        ref: 'Kitchen'
     }],
     createdOn:{
         type: Date,

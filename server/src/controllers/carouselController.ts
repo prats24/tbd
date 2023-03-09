@@ -123,6 +123,9 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
   export const createCarousel =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     const{carouselName, description, startDate, endDate, kitchens} = req.body;
     const carouselPhoto = (req as any).uploadUrl;
+
+    console.log('kitchens', kitchens);
+    console.log(req.body);
     //Check for required fields 
     if(!(carouselName))return next(createCustomError('Enter all mandatory fields.', 400));
 
@@ -138,7 +141,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 });
 
 export const getCarousels = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const carousels = await Carousel.find({isDeleted: false})
+    const carousels = await Carousel.find({isDeleted: false}).populate({path: 'kitchens', populate:{path:'society', model:'Society'}});
 
 
     if(!carousels) return next(createCustomError('No users found.', 404));
@@ -165,7 +168,8 @@ export const deleteCarousel = CatchAsync(async (req:Request, res: Response, next
 export const getCarousel = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const user = await Carousel.findOne({_id: id, isDeleted: false}).select('-__v -password');
+    const user = await Carousel.findOne({_id: id, isDeleted: false}).select('-__v -password').
+    populate({path: 'kitchens', populate:{path:'society', model:'Society'}});
 
     if(!user) return next(createCustomError('No such carousel found.', 404));
     
