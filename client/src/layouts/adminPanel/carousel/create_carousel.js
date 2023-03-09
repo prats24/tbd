@@ -3,25 +3,74 @@ import Api from "../../../helpers/api";
 import React from "react";
 import '../styles/inputFormStyle.css';
 import Box from '@mui/material/Box';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import {Link} from 'react-router-dom'
 import { Typography } from "@mui/material";
 import { object } from "prop-types";
+import TextField from '@mui/material/TextField';
 import { MultiSelect } from "react-multi-select-component";
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+import { withStyles } from "@material-ui/core/styles";
 
-function CarouselForm() {
+function CarouselForm({carousel}) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
+  const [initialValues,setInitialValues] = useState(carousel);
   let [photo,setPhoto] = useState('/default/chef.gif')
   const [kitchens, setKitchens] = useState([]);
+  const [kitchenNames,setKitchenNames] = useState([]);
   const options = [
     { label: "Anamika's Kitchen", value: "Anamika's Kitchen" },
     { label: "Kavita's Kitchen", value: "Kavita's Kitchen" },
     { label: "Mummy's Kitchen", value: "Mummy's Kitchen", disabled: true },
   ];
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 200,
+      },
+    },
+  };
+
+  useEffect(async()=>{
+    let res = await Api.getKitchen()
+    console.log(res.data.data)
+    setKitchens(res.data.data);
+    },[])
+
+  kitchens?.map((e)=>{
+    kitchenNames?.push(e.kitchenName)
+  })
+  
+
+  useEffect(async()=>{
+    let res = await Api.getKitchens()
+    console.log(res.data.data)
+    setKitchens(res.data.data);
+    },[])
+
+  const [editable,setEditable] = useState('') 
+  const [isObjectNew,setIsNewObject] = useState('');
+  const [statusDefaultValue, setStatusDefaultValue] = useState(false);
 
   React.useEffect(async()=>{
-    let res = await Api.getKitchens()
+    setEditable(carousel.length === 0 ? true : false)
+    console.log("Editable set as: ",editable)
+    setIsNewObject(carousel.length === 0 ? true : false)
+    console.log(carousel.length,editable,isObjectNew)
+  },[carousel])
+
+  React.useEffect(async()=>{
+    let res = await Api.getKitchen()
     console.log(res.data.data)
     setKitchens(res.data.data);
     },[])
@@ -43,6 +92,33 @@ function CarouselForm() {
   };
   // const inputValue = watch("photo");
   // console.log(inputValue)
+  function getFormattedDate(dateStr) {
+    if (!dateStr) return '';
+    const dateParts = dateStr.split('-');
+    if (dateParts.length !== 3) return '';
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
+    const dateObj = new Date(year, month, day);
+    return dateObj.toISOString().split('T')[0];
+  }
+
+  // const handleSelectedOptions = (selectedOptions) => {
+  //   console.log("Inside Handle Selected Option Function")
+  //   setKitchens(selectedOptions);
+  //   field.onChange(selectedOptions.map(option => option.value));
+  // };
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
 
   return (
     <>
@@ -58,51 +134,87 @@ function CarouselForm() {
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Carousel Title</label>
-      <input className="form-control" {...register("carouselName", { required: true })} />
-      {errors.title && <span className="form-error">This field is required</span>}
+      <input disabled={!editable} defaultValue={carousel.carouselName} className="form-control" {...register("carouselName", { required: true })} />
+      {errors.carouselName && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Carousel Description</label>
-      <input className="form-control" {...register("description", { required: true })} />
+      <input disabled={!editable} defaultValue={carousel.description} className="form-control" {...register("description", { required: true })} />
       {errors.description && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
       <label className="form-label">Start Date</label>
-      <input type="date" className="form-control" {...register("startDate")} />
+      <input disabled={!editable} defaultValue={getFormattedDate(carousel.startDate)} type="date" className="form-control" {...register("startDate")} />
       {errors.startDate && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
       <label className="form-label">End Date</label>
-      <input type="date" className="form-control" {...register("endDate", { required: true })} />
+      <input disabled={!editable} defaultValue={getFormattedDate(carousel.endDate)} type="date" className="form-control" {...register("endDate", { required: true })} />
       {errors.endDate && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Select Kitchens which will show up in the Carousel</label>
-      {/* <input type="text" className="form-control" {...register("password", { required: true })} /> */}
-      <MultiSelect
+      {/* <MultiSelect
         name="kitchens"
-        options={options}
+        options=
+        { carousel ? kitchens?.map((elem) => ({
+          label: elem.kitchenName,
+          value: elem._id,
+        })) : []}
         value={kitchens}
-        onChange={setKitchens}
+        getOptionLabel={(option) => option.label || carousel?.kitchen?.kitchenName || ""}
+        onSelected={handleSelectedOptions}
         labelledBy="Select"
+        disabled={!editable}
+        renderInput={(params) => (
+          <TextField {...params} variant="outlined" />
+        )}
         // {...register("kitchens[0].value")}
-      />
-      {errors.password && <span className="form-error">This field is required</span>}
+      /> */}
+      <Select
+          labelId="demo-multiple-checkbox-label"
+          id="demo-multiple-checkbox"
+          multiple
+          value={kitchenNames}
+          onChange={handleChange}
+          input={<OutlinedInput label="Tag" />}
+          renderValue={(selected) => selected.join(', ')}
+          MenuProps={MenuProps}
+        >
+          {kitchenNames.map((kitchen) => (
+            <MenuItem key={kitchen} value={kitchen}>
+              <Checkbox 
+              // checked={kitchenNames.indexOf(kitchen) > -1}
+              checked={false}
+               />
+              <ListItemText primary={kitchen} />
+            </MenuItem>
+          ))}
+        </Select>
+      {errors.kitchen && <span className="form-error">This field is required</span>}
     </Grid>
 
 
     <Grid item xs={12} md={6} lg={6}>
       <label className="form-label">Status</label>
       <label className="form-label">
-        <input type="radio"{...register("status", { required: true })} value="active" />
+        <input 
+        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
+        checked={statusDefaultValue} 
+        disabled={!editable} 
+        type="radio"{...register("status", { required: true })} value="active" />
         Active
       </label>
       <label className="form-label">
-        <input type="radio" {...register("status", { required: true })} value="inactive" />
+        <input 
+        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
+        checked={!statusDefaultValue} 
+        disabled={!editable} 
+        type="radio" {...register("status", { required: true })} value="inactive" />
         Inactive
       </label >
       {errors.status && <span className="form-error">This field is required</span>}
@@ -110,7 +222,7 @@ function CarouselForm() {
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Carousel Image</label>
-      <input type="file" className="form-control" {...register("carouselPhoto", { required: true })} />
+      <input disabled={!editable} type="file" className="form-control" {...register("carouselPhoto", { required: true })} />
       {errors.carouselPhoto && <span className="form-error">This field is required</span>}
     </Grid>
 

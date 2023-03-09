@@ -15,9 +15,6 @@ import CarouselKitchen from '../pages/CarouselKitchen'
 import AdminLogin from '../pages/AdminLogin'
 import AdminPanel from '../pages/Admin_Panel'
 import CreateSociety from '../pages/Create_Society'
-import ViewSociety from '../pages/View_Society'
-import ViewHomeChef from '../pages/View_HomeChef'
-import ViewKitchen from '../pages/View_Kitchen'
 import ViewCarousel from '../pages/View_Carousel'
 import AdminCarousel from '../pages/Admin_Carousel'
 import CreateHomeChef from '../pages/Create_Homechef'
@@ -44,18 +41,6 @@ const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/createcarousel',
     element: <CreateCarousel />,
-  },
-  {
-    path: '/viewsociety',
-    element: <ViewSociety />,
-  },
-  {
-    path: '/viewhomechef',
-    element: <ViewHomeChef />,
-  },
-  {
-    path: '/viewkitchen',
-    element: <ViewKitchen />,
   },
   {
     path: '/viewcarousel',

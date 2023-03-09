@@ -39,7 +39,7 @@ export default function ComplexGrid () {
       <Grid container spacing={2} mt={0.1}>
       {
       kitchens?.map((e)=>{
-        console.log(e._id)
+        console.log(e.society.oid)
       return(
         <Grid item xs={12} md={6} lg={4}>
     <Paper
@@ -64,6 +64,9 @@ export default function ComplexGrid () {
               <Typography gutterBottom variant="subtitle1" component="div">
                 {e.kitchenName}
               </Typography>
+              <Typography gutterBottom variant="subtitle1" component="div">
+                {e.society.societyName}
+              </Typography>
               <Typography variant="body2" color="text.secondary">
                 {e.email}
               </Typography>
@@ -71,10 +74,7 @@ export default function ComplexGrid () {
                 Mobile No.: {e.phone}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                HC ID: {e.costForOne}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                ID: {e._id}
+                Cost for One: ₹{e.costForOne}
               </Typography>
             </Grid>
             <Grid item>

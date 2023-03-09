@@ -81,7 +81,7 @@ export default function ComplexGrid () {
                 variant="outlined"
                 component={Link}
               >
-                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewhomechef' state={{id:e._id}}> View Details </Link>
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/createhomechef' state={{id:e._id}}> View Details </Link>
               </Button>
             </Grid>
           </Grid>

@@ -134,7 +134,14 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
 export const getSocieties = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
   
-    const societies = await Society.find({isDeleted: false}).sort({societyId:-1});
+    // const societies = await Society.find({isDeleted: false})
+    //                                .populate({path : "societies", select: "societyName"})
+    //                                .sort({societyId:-1});
+
+    const societies = await Society
+  .find({ isDeleted: false })
+  // .populate({ path: "Society", select: "societyName"})
+  .sort({ createdOn: -1 });
 
 
     if(!societies) return next(createCustomError('No societies found.', 404));

@@ -5,6 +5,7 @@ import CatchAsync from '../middlewares/CatchAsync';
 import sharp from 'sharp';
 import multer from 'multer';
 import AWS from 'aws-sdk';
+import Society from '../models/Society'
 
 interface Kitchen{
     kitchenName: string,
@@ -44,7 +45,7 @@ if (file.mimetype.startsWith("image/")) {
   
 const upload = multer({ storage, fileFilter }).single("displayPhoto");
 const uploadMultiple = multer({ storage, fileFilter}).fields([{ name: 'displayPhoto', maxCount: 1 }, 
-{ name: 'coverPhoto', maxCount: 1 }]);
+{ name: 'coverPhoto', maxCount: 1 }, { name: 'foodLicensePhoto', maxCount: 1 }]);
 
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -64,7 +65,7 @@ export const resizePhoto = async (req: Request, res: Response, next: NextFunctio
       next();
       return;
     }
-    const { displayPhoto, coverPhoto } = (req.files)as any;
+    const { displayPhoto, coverPhoto, foodLicensePhoto } = (req.files)as any;
 
     if (displayPhoto && displayPhoto[0].buffer) {
         const resizedDisplayPhoto = await sharp(displayPhoto[0].buffer)
@@ -78,6 +79,13 @@ export const resizePhoto = async (req: Request, res: Response, next: NextFunctio
           .resize({ width: 1000, height: 500 })
           .toBuffer();
           (req.files as any).coverPhotoBuffer = resizedCoverPhoto;
+      }
+
+      if (foodLicensePhoto && foodLicensePhoto[0].buffer) {
+        const resizedfoodLicensePhoto = await sharp(foodLicensePhoto[0].buffer)
+          .resize({ width: 1000, height: 500 })
+          .toBuffer();
+          (req.files as any).foodLicensePhotoBuffer = resizedfoodLicensePhoto;
       }
       next();
 }; 
@@ -141,6 +149,30 @@ export const uploadToS3 = async (req: Request, res: Response, next: NextFunction
         console.log(s3Data.Location);
         (req as any).coverPhotoUrl = s3Data.Location;
       }
+
+      if ((req.files as any).foodLicensePhoto) {
+        let kitchenName;
+        if (req.body.kitchenName) {
+          kitchenName = req.body.kitchenName;
+        } else {
+          const kitchen = await Kitchen.findById(req.params.id);
+          kitchenName = `${kitchen?.kitchenName}`;
+        }
+        const key = `homechefs/${kitchenName}/photos/foodlicense/${Date.now() + (req.files as any).foodLicensePhoto[0].originalname}`;
+        const params = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: key,
+          Body: (req.files as any).foodLicensePhotoBuffer,
+          ContentType: (req.files as any).foodLicensePhoto.mimetype,
+          ACL: 'public-read',
+        };
+  
+        // upload image to S3 bucket
+        const s3Data = await s3.upload(params as any).promise();
+        console.log('file uploaded');
+        console.log(s3Data.Location);
+        (req as any).foodLicensePhotoUrl = s3Data.Location;
+      }
   
       console.log('calling next of s3 upload func');
       next();
@@ -165,14 +197,16 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
   export const createKitchen =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     console.log('createKitchen', req.body);
-    let coverPhoto, displayPhoto;
+    let coverPhoto, displayPhoto, foodLicensePhoto;
     if(req.files){
         if((req as any).displayPhotoUrl) displayPhoto = (req as any).displayPhotoUrl;
         if((req as any).coverPhotoUrl) coverPhoto = (req as any).coverPhotoUrl;
+        if((req as any).foodLicensePhotoUrl) foodLicensePhoto = (req as any).foodLicensePhotoUrl;
 
     }
     console.log(displayPhoto);
     console.log(coverPhoto);
+    console.log(foodLicensePhoto);
     // const{kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
     //     deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
     //     description, homeChef, kitchenPinCode} = req.body;
@@ -190,7 +224,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('Kitchen with this email already exists.', 401));
     const kitchen = await Kitchen.create({kitchenName, kitchenType,liveDate, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
         deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo,floor, tower, society, 
-        description,status, homeChef, displayPhoto, coverPhoto});
+        description,status, homeChef, displayPhoto, coverPhoto, foodLicensePhoto});
 
     if(!kitchen) return next(createCustomError('Couldn\'t create kithcen', 400));
 
@@ -226,7 +260,7 @@ export const deleteKitchen = CatchAsync(async (req:Request, res: Response, next:
 export const getKitchen = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const kitchen = await Kitchen.findOne({_id: id, isDeleted: false}).select('-__v');
+    const kitchen = await Kitchen.findOne({_id: id, isDeleted: false}).populate('society', 'societyName').populate('homeChef','firstName lastName').select('-__v');
 
     if(!kitchen) return next(createCustomError('No such user found.', 404));
     
@@ -249,6 +283,7 @@ export const editKitchen = CatchAsync(async (req: Request, res: Response, next: 
     filteredBody.lastModifiedBy = id;
     if((req as any).displayPhotoUrl) filteredBody.displayPhoto = (req as any).displayPhotoUrl;
     if((req as any).coverPhotoUrl) filteredBody.coverPhoto = (req as any).coverPhotoUrl;
+    if((req as any).foodLicensePhotoUrl) filteredBody.foodLicensePhoto = (req as any).foodLicensePhotoUrl;
     
     
     const updatedKitchen = await Kitchen.findByIdAndUpdate(id, filteredBody, {

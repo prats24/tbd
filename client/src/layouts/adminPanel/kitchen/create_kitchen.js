@@ -13,21 +13,52 @@ import Api from '../../../helpers/api'
 import { withStyles } from "@material-ui/core/styles";
 
 function KitchenForm({kitchen}) {
-  console.log(kitchen)
+  console.log("Kitchen Value: ",kitchen)
   const [initialValues,setInitialValues] = useState(kitchen);
-  const { register, handleSubmit,formState: { errors }, watch, control } = useForm(!kitchen ? "" : initialValues);
+  const { register, handleSubmit,formState: { errors }, watch, control } = useForm(kitchen.length === 0 ? "" : initialValues);
   let [photo,setPhoto] = useState('/default/chef.gif')
-  const [editable,setEditable] = useState(true) 
-  const [isObjectNew,setIsNewObject] = useState(true);
+  let [cphoto,setCPhoto] = useState('/default/kitchencoverphoto.jpg')
+  const [editable,setEditable] = useState('') 
+  const [isObjectNew,setIsNewObject] = useState('');
   const [societies,setSocieties] = useState([]);
   const [homeChefs,setHomeChefs] = useState([]);
   const [homeChef,setHomeChef] = useState([]);
   const [society,setSociety] = useState([]);
+  const [societyName, setSocietyName] = useState([]);
   const [deliveryChargeType, setDeliveryChargeType] = useState([]);
+  const [statusDefaultValue, setStatusDefaultValue] = useState(false);
+  const [statusKitchenType, setStatusKitchenType] = useState();
+  const [gstApplicable, setGSTApplicable] = useState();
+
+
+    useEffect(() => {
+      if (kitchen.length !== 0 && kitchen.status === "active") {
+        setStatusDefaultValue(true);
+      } else {
+        setStatusDefaultValue(false);
+      }
+      if (kitchen.length !== 0 && kitchen.kitchenType === "veg") {
+        setStatusKitchenType(true);
+      } else {
+        setStatusKitchenType(false);
+      }
+      if (kitchen.length !== 0 && kitchen.gstApplicable === "Yes") {
+        setGSTApplicable(true);
+      } else {
+        setGSTApplicable(false);
+      }
+      if (kitchen.length !== 0) {
+        setPhoto(kitchen.displayPhoto);
+      }
+      if (kitchen.length !== 0) {
+        setCPhoto(kitchen.coverPhoto);
+      }
+    }, [kitchen]);
 
   // setEditable(!kitchen ? true : false)
   // setIsNewObject(!kitchen ? true : false)
-  photo = isObjectNew ? photo : kitchen.displayPhoto
+  // photo = isObjectNew ? photo : kitchen.displayPhoto
+  // cphoto = isObjectNew ? cphoto : kitchen.coverPhoto
   const deliveryChargeTypes = ['Flat','Percentage']
 
   const NoPaddingAutocomplete = withStyles({
@@ -47,17 +78,19 @@ function KitchenForm({kitchen}) {
     },
     input: {}
   })(Autocomplete);
+
+  useEffect(async()=>{
+    setEditable(kitchen.length === 0 ? true : false)
+    console.log("Editable set as: ",editable)
+    setIsNewObject(kitchen.length === 0 ? true : false)
+    console.log(kitchen.length,editable,isObjectNew)
+  },[kitchen])
   
   useEffect(async()=>{
     let res = await Api.getSocieties()
     console.log(res.data.data)
     setSocieties(res.data.data);
-    console.log("Kitchen Value: ",kitchen)
-    setEditable(kitchen.length === 0 || !kitchen ? true : false)
-    console.log("Editable set as: ",editable)
-    setIsNewObject(kitchen.length === 0 || !kitchen ? true : false)
-    console.log(kitchen.length,editable,isObjectNew)
-    },[editable])
+    },[])
   
   useEffect(async()=>{
       let res = await Api.getHomeChef()
@@ -74,6 +107,7 @@ function KitchenForm({kitchen}) {
       Object.keys(data).forEach((key) => {if(key!='displayPhoto' && data[key] && key!='coverPhoto')formData.append(key, data[key])});
       if(data.displayPhoto[0])formData.append('displayPhoto', data?.displayPhoto[0]);
       if(data.coverPhoto[0])formData.append('coverPhoto', data?.coverPhoto[0]);
+      if(data.foodLicensePhoto[0])formData.append('foodLicensePhoto', data?.foodLicensePhoto[0]);
       const res = await Api.createKitchen(formData);
       console.log('response', res.data.data);
       if(res.data.status === 'success'){
@@ -91,19 +125,48 @@ function KitchenForm({kitchen}) {
     }
   };
 
+  function getFormattedDate(dateStr) {
+    if (!dateStr) return '';
+    const dateParts = dateStr.split('-');
+    if (dateParts.length !== 3) return '';
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
+    const dateObj = new Date(year, month, day);
+    return dateObj.toISOString().split('T')[0];
+  }
+
+  console.log(kitchen?.status,(kitchen?.status === 'active'),(kitchen?.status === 'inactive'))
+  console.log(kitchen?.kitchenType)
+  let chefName = kitchen.length != 0 ? (kitchen?.homeChef?.firstName + " " + kitchen?.homeChef?.lastName) : undefined
+  console.log(chefName)
+  
+  console.log(statusDefaultValue,kitchen?.status,kitchen.length != 0,kitchen?.status === "active")
+
   return (
     <>
-    <Box sx={{marginTop:2}}>
-        <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, marginBottom:2, borderRadius:1}}>
+    {isObjectNew && <Box sx={{marginTop:2}}>
+        <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, borderRadius:1}}>
           Create a Kitchen
         </Typography>
-        </Box>
+    </Box>}
+
+    {!isObjectNew && <Box sx={{marginTop:2}}>
+        <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, borderRadius:1}}>
+          Kitchen Details
+        </Typography>
+    </Box>}
+
+    <Box>
+    <img src={cphoto} height="300px" width="100%" style={{marginTop:"10px",marginRight:"5px", borderRadius:"5px", border:"1px #ced4da solid"}}></img>
+    </Box>
       <Box sx={{marginTop:2,display:"flex"}}>
     <Box sx={{marginRight:3}}>
     <form onSubmit={handleSubmit(onSubmit)}>
     <Grid container spacing={1}>
 
-    <Grid item xs={12} md={6} lg={12}>
+    <Grid item xs={12} md={6} lg={6}>
       <label className="form-label">Kitchen Name</label>
       <input disabled={!editable} defaultValue={kitchen.kitchenName} className="form-control" {...register("kitchenName", { required: true })} />
       {/* {errors.kitchenName && <span className="form-error">This field is required</span>} */}
@@ -114,16 +177,16 @@ function KitchenForm({kitchen}) {
     <Controller
         name="society"
         control={control}
-        defaultValue={kitchen.society}
         render={({ field }) => (
           <NoPaddingAutocomplete
             disabled={!editable}
-            options={societies?.map((elem) => ({
+            options=
+            { kitchen ? societies?.map((elem) => ({
               societyName: elem.societyName,
               societyId: elem._id,
-            }))}
-            getOptionLabel={(option) => option.societyName}
+            })) : []}
             value={society}
+            getOptionLabel={(option) => option.societyName || kitchen?.society?.societyName || ""}
             onChange={(event, newValue) => {
               setSociety(newValue);
               field.onChange(newValue ? newValue.societyId : "");
@@ -136,7 +199,7 @@ function KitchenForm({kitchen}) {
       />
     </Grid>
 
-    <Grid item xs={12} md={6} lg={6}>
+    <Grid item xs={12} md={6} lg={4}>
     <label className="form-label">HomeChef Name</label>
     <Controller
         name="homeChef"
@@ -150,7 +213,7 @@ function KitchenForm({kitchen}) {
               homeChefName: elem.firstName +' '+ elem.lastName,
               homeChefId: elem._id,
             }))}
-            getOptionLabel={(option) => option.homeChefName}
+            getOptionLabel={(option) => option.homeChefName || chefName || ""}
             value={homeChef}
             onChange={(event, newValue) => {
               setHomeChef(newValue);
@@ -182,15 +245,15 @@ function KitchenForm({kitchen}) {
       {errors.phone && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={4}>
+    <Grid item xs={12} md={6} lg={1}>
       <label className="form-label">Flat No.</label>
       <input disabled={!editable} 
       defaultValue={kitchen.flatNo} 
-      type="text" className="form-control" {...register("flatno", { required: true })} />
-      {errors.flatno && <span className="form-error">This field is required</span>}
+      type="text" className="form-control" {...register("flatNo", { required: true })} />
+      {errors.flatNo && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={4}>
+    <Grid item xs={12} md={6} lg={1}>
       <label className="form-label">Floor</label>
       <input disabled={!editable} 
       defaultValue={kitchen.floor} 
@@ -198,7 +261,7 @@ function KitchenForm({kitchen}) {
       {errors.floor && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={4}>
+    <Grid item xs={12} md={6} lg={1}>
       <label className="form-label">Tower</label>
       <input disabled={!editable} 
       defaultValue={kitchen.tower} 
@@ -206,20 +269,12 @@ function KitchenForm({kitchen}) {
       {errors.tower && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={4}>
+    <Grid item xs={12} md={6} lg={2}>
       <label className="form-label">Live Date</label>
       <input disabled={!editable} 
-      defaultValue={kitchen.liveDate} 
+      defaultValue={getFormattedDate(kitchen.liveDate)}
       type="date" className="form-control" {...register("liveDate")} />
       {errors.liveDate && <span className="form-error">This field is required</span>}
-    </Grid>
-
-    <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Description</label>
-      <input disabled={!editable} 
-      defaultValue={kitchen.description} 
-      className="form-control" {...register("description", { required: true })} />
-      {errors.description && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={2}>
@@ -230,23 +285,24 @@ function KitchenForm({kitchen}) {
       {errors.costForOne && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={2}>
+    <Grid item xs={12} md={6} lg={3}>
     <label className="form-label">Del. Chg. Type</label>
-    <Controller
+     <Controller
         name="deliveryChargeType"
         control={control}
-        defaultValue={kitchen.deliveryChargeType}
         render={({ field }) => (
           <NoPaddingAutocomplete
+            value={deliveryChargeType ? deliveryChargeType : ""}
             disabled={!editable}
-            options={deliveryChargeTypes?.map((elem) => ({
-              delChargeType: elem,
-            }))}
-            getOptionLabel={(option) => option.delChargeType}
-            value={deliveryChargeType}
+            options={deliveryChargeTypes ? deliveryChargeTypes?.map((elem) => ({
+              label: elem,
+            })) : ""}
+            getOptionLabel={(option) => option.label || kitchen?.deliveryChargeType || ""}
+            getOptionSelected={(option, value) => option.label === value.value}
+            
             onChange={(event, newValue) => {
               setDeliveryChargeType(newValue);
-              field.onChange(newValue ? newValue.delChargeType : "");
+              field.onChange(newValue ? newValue.label : "");
             }}
             renderInput={(params) => (
               <TextField {...params} variant="outlined" />
@@ -265,25 +321,57 @@ function KitchenForm({kitchen}) {
       {errors.deliveryCharges && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={3}>
+    <Grid item xs={12} md={6} lg={12}>
+      <label className="form-label">Description</label>
+      <input disabled={!editable} 
+      defaultValue={kitchen.description} 
+      className="form-control" {...register("description", { required: true })} />
+      {errors.description && <span className="form-error">This field is required</span>}
+    </Grid>
+
+    <Grid item xs={12} md={6} lg={2}>
       <label className="form-label" style={{margin:1}}>Kitchen Type</label>
-        <input disabled={!editable} 
-        defaultValue={kitchen.kitchenType} 
-        // style={{marginLeft:5,marginTop:20}} 
+        <input disabled={!editable}
+        checked={statusKitchenType} 
+        onClick={()=>{setStatusKitchenType(!statusKitchenType)}} 
         type="radio"{...register("kitchenType", { required: true })} value="veg" />
         Veg
-        <input disabled={!editable} style={{marginLeft:5,marginTop:20}} type="radio" {...register("kitchenType", { required: true })} value="non-veg" />
+        <input 
+        onClick={()=>{setStatusKitchenType(!statusKitchenType)}}
+        checked={!statusKitchenType} disabled={!editable} style={{marginLeft:5,marginTop:20}} type="radio" {...register("kitchenType", { required: true })} value="non-veg" />
         Non-Veg
       {errors.status && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={3}>
       <label className="form-label" style={{margin:1}}>Status</label>
-        <input disabled={!editable} style={{marginLeft:5, marginTop:20}} type="radio"{...register("status", { required: true })} value="active" />
+        <input 
+        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
+        // onSelect={setStatusDefaultValue(!statusDefaultValue)}
+        checked={statusDefaultValue} 
+        disabled={!editable} 
+        style={{marginLeft:5, marginTop:20}} type="radio"{...register("status", { required: true })} value="active" />
         Active
-        <input disabled={!editable} style={{marginLeft:5, marginTop:20}} type="radio" {...register("status", { required: true })} value="inactive" />
+        <input onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}} checked={!statusDefaultValue} disabled={!editable} style={{marginLeft:5, marginTop:20}} type="radio" {...register("status", { required: true })} value="inactive" />
         Inactive
       {errors.status && <span className="form-error">This field is required</span>}
+    </Grid>
+    
+    <Grid item xs={12} md={6} lg={3}>
+      <label className="form-label" style={{margin:1}}>GST Applicable</label>
+        <input 
+        onClick={()=>{setGSTApplicable(!gstApplicable)}}
+        // onSelect={setStatusDefaultValue(!statusDefaultValue)}
+        checked={gstApplicable} 
+        disabled={!editable} 
+        style={{marginLeft:5, marginTop:20}} type="radio"{...register("gstApplicable", { required: true })} value="true" />
+        Yes
+        <input onClick={()=>{setGSTApplicable(!gstApplicable)}} checked={!gstApplicable} disabled={!editable} style={{marginLeft:5, marginTop:20}} type="radio" {...register("gstApplicable", { required: true })} value="false" />
+        No
+      {errors.gstApplicable && <span className="form-error">This field is required</span>}
+    </Grid>
+
+    <Grid item xs={12} md={6} lg={7}>
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
@@ -300,9 +388,27 @@ function KitchenForm({kitchen}) {
       <input 
       disabled={!editable} 
       type="file" 
-      className="form-control" {...register("coverPhoto")} />
+      className="form-control" {...register("coverPhoto")}
+      />
       {errors.coverPhoto && <span className="form-error">This field is required</span>}
-    </Grid> 
+    </Grid>
+
+    <Grid item xs={12} md={6} lg={6}>
+      <label className="form-label">Food License Image</label>
+      <input 
+      disabled={!editable} 
+      type="file" 
+      className="form-control" {...register("foodLicensePhoto")} />
+      {/* {errors.foodLicensePhoto && <span className="form-error">This field is required</span>} */}
+    </Grid>
+
+    <Grid item xs={12} md={6} lg={6}>
+      <label className="form-label">Food License Number</label>
+      <input disabled={!editable} 
+      defaultValue={kitchen.foodLicenseNumber} 
+      className="form-control" {...register("foodLicenseNumber", { required: false })} />
+      {/* {errors.foodLicenseNumber && <span className="form-error">This field is required</span>} */}
+    </Grid>  
     
     {editable && isObjectNew &&
     <Grid item xs={12} md={6} lg={2}>
