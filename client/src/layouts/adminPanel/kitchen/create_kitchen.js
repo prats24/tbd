@@ -13,21 +13,24 @@ import Api from '../../../helpers/api'
 import { withStyles } from "@material-ui/core/styles";
 
 function KitchenForm({kitchen}) {
-  console.log(kitchen)
+  console.log("Kitchen Value: ",kitchen)
   const [initialValues,setInitialValues] = useState(kitchen);
-  const { register, handleSubmit,formState: { errors }, watch, control } = useForm(!kitchen ? "" : initialValues);
+  const { register, handleSubmit,formState: { errors }, watch, control } = useForm(kitchen.length === 0 || !kitchen ? "" : initialValues);
   let [photo,setPhoto] = useState('/default/chef.gif')
-  const [editable,setEditable] = useState(true) 
-  const [isObjectNew,setIsNewObject] = useState(true);
+  let [cphoto,setCPhoto] = useState('/default/chef.gif')
+  const [editable,setEditable] = useState('') 
+  const [isObjectNew,setIsNewObject] = useState('');
   const [societies,setSocieties] = useState([]);
   const [homeChefs,setHomeChefs] = useState([]);
   const [homeChef,setHomeChef] = useState([]);
   const [society,setSociety] = useState([]);
+  const [societyName, setSocietyName] = useState([]);
   const [deliveryChargeType, setDeliveryChargeType] = useState([]);
 
   // setEditable(!kitchen ? true : false)
   // setIsNewObject(!kitchen ? true : false)
   photo = isObjectNew ? photo : kitchen.displayPhoto
+  cphoto = isObjectNew ? cphoto : kitchen.coverPhoto
   const deliveryChargeTypes = ['Flat','Percentage']
 
   const NoPaddingAutocomplete = withStyles({
@@ -47,17 +50,19 @@ function KitchenForm({kitchen}) {
     },
     input: {}
   })(Autocomplete);
+
+  useEffect(async()=>{
+    setEditable(kitchen.length === 0 || !kitchen ? true : false)
+    console.log("Editable set as: ",editable)
+    setIsNewObject(kitchen.length === 0 || !kitchen ? true : false)
+    console.log(kitchen.length,editable,isObjectNew)
+  },[kitchen])
   
   useEffect(async()=>{
     let res = await Api.getSocieties()
     console.log(res.data.data)
     setSocieties(res.data.data);
-    console.log("Kitchen Value: ",kitchen)
-    setEditable(kitchen.length === 0 || !kitchen ? true : false)
-    console.log("Editable set as: ",editable)
-    setIsNewObject(kitchen.length === 0 || !kitchen ? true : false)
-    console.log(kitchen.length,editable,isObjectNew)
-    },[editable])
+    },[])
   
   useEffect(async()=>{
       let res = await Api.getHomeChef()
@@ -91,13 +96,28 @@ function KitchenForm({kitchen}) {
     }
   };
 
+  function getFormattedDate(dateStr) {
+    if (!dateStr) return '';
+    const dateParts = dateStr.split('-');
+    if (dateParts.length !== 3) return '';
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
+    const dateObj = new Date(year, month, day);
+    return dateObj.toISOString().split('T')[0];
+  }
+
   return (
     <>
     <Box sx={{marginTop:2}}>
-        <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, marginBottom:2, borderRadius:1}}>
+        <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, borderRadius:1}}>
           Create a Kitchen
         </Typography>
-        </Box>
+    </Box>
+    {!isObjectNew && <Box>
+    <img src={cphoto} height="300px" width="100%" style={{marginTop:"10px",marginRight:"5px", borderRadius:"5px", border:"1px #ced4da solid"}}></img>
+    </Box>}
       <Box sx={{marginTop:2,display:"flex"}}>
     <Box sx={{marginRight:3}}>
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -114,7 +134,7 @@ function KitchenForm({kitchen}) {
     <Controller
         name="society"
         control={control}
-        defaultValue={kitchen.society}
+        // defaultValue={kitchen.society}
         render={({ field }) => (
           <NoPaddingAutocomplete
             disabled={!editable}
@@ -122,8 +142,9 @@ function KitchenForm({kitchen}) {
               societyName: elem.societyName,
               societyId: elem._id,
             }))}
-            getOptionLabel={(option) => option.societyName}
             value={society}
+            getOptionLabel={(option) => option.societyName}
+            defaultValue={societies[0]}
             onChange={(event, newValue) => {
               setSociety(newValue);
               field.onChange(newValue ? newValue.societyId : "");
@@ -186,8 +207,8 @@ function KitchenForm({kitchen}) {
       <label className="form-label">Flat No.</label>
       <input disabled={!editable} 
       defaultValue={kitchen.flatNo} 
-      type="text" className="form-control" {...register("flatno", { required: true })} />
-      {errors.flatno && <span className="form-error">This field is required</span>}
+      type="text" className="form-control" {...register("flatNo", { required: true })} />
+      {errors.flatNo && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
@@ -209,7 +230,7 @@ function KitchenForm({kitchen}) {
     <Grid item xs={12} md={6} lg={4}>
       <label className="form-label">Live Date</label>
       <input disabled={!editable} 
-      defaultValue={kitchen.liveDate} 
+      defaultValue={getFormattedDate(kitchen.liveDate)}
       type="date" className="form-control" {...register("liveDate")} />
       {errors.liveDate && <span className="form-error">This field is required</span>}
     </Grid>
@@ -232,21 +253,22 @@ function KitchenForm({kitchen}) {
 
     <Grid item xs={12} md={6} lg={2}>
     <label className="form-label">Del. Chg. Type</label>
-    <Controller
+     <Controller
         name="deliveryChargeType"
         control={control}
-        defaultValue={kitchen.deliveryChargeType}
         render={({ field }) => (
           <NoPaddingAutocomplete
+            value={deliveryChargeType ? deliveryChargeType : ""}
             disabled={!editable}
-            options={deliveryChargeTypes?.map((elem) => ({
-              delChargeType: elem,
-            }))}
-            getOptionLabel={(option) => option.delChargeType}
-            value={deliveryChargeType}
+            options={deliveryChargeTypes ? deliveryChargeTypes?.map((elem) => ({
+              label: elem,
+            })) : ""}
+            getOptionLabel={(option) => option.label}
+            getOptionSelected={(option, value) => option.label === value.value}
+            
             onChange={(event, newValue) => {
               setDeliveryChargeType(newValue);
-              field.onChange(newValue ? newValue.delChargeType : "");
+              field.onChange(newValue ? newValue.label : "");
             }}
             renderInput={(params) => (
               <TextField {...params} variant="outlined" />
@@ -255,6 +277,14 @@ function KitchenForm({kitchen}) {
         )}
       />
     </Grid>
+
+    {/* {(!isObjectNew || !editable) && <Grid item xs={12} md={6} lg={2}>
+      <label className="form-label">Del. Chg. Type</label>
+      <input 
+      disabled={!editable} 
+      defaultValue={kitchen.deliveryChargeType} 
+      type="text" className="form-control" {...register("deliveryChargeType", { required: true })} />
+    </Grid>} */}
 
     <Grid item xs={12} md={6} lg={2}>
       <label className="form-label">Del. Charges(in ₹/%)</label>
@@ -268,7 +298,7 @@ function KitchenForm({kitchen}) {
     <Grid item xs={12} md={6} lg={3}>
       <label className="form-label" style={{margin:1}}>Kitchen Type</label>
         <input disabled={!editable} 
-        defaultValue={kitchen.kitchenType} 
+        defaultValue={kitchen.kitchenType == 'Veg' ? true : false} 
         // style={{marginLeft:5,marginTop:20}} 
         type="radio"{...register("kitchenType", { required: true })} value="veg" />
         Veg
@@ -279,7 +309,7 @@ function KitchenForm({kitchen}) {
 
     <Grid item xs={12} md={6} lg={3}>
       <label className="form-label" style={{margin:1}}>Status</label>
-        <input disabled={!editable} style={{marginLeft:5, marginTop:20}} type="radio"{...register("status", { required: true })} value="active" />
+        <input defaultChecked={!kitchen.kitchenType ? true : false} disabled={!editable} style={{marginLeft:5, marginTop:20}} type="radio"{...register("status", { required: true })} value="active" />
         Active
         <input disabled={!editable} style={{marginLeft:5, marginTop:20}} type="radio" {...register("status", { required: true })} value="inactive" />
         Inactive
