@@ -32,7 +32,8 @@ export default function ComplexGrid () {
     const day = parseInt(dateParts[2]);
     if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
     const dateObj = new Date(year, month, day);
-    return dateObj.toISOString().split('T')[0];
+    const dateObjnew = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000))
+    return dateObjnew.toISOString().split('T')[0];
   }
 
   function getTodayDate() {
@@ -57,29 +58,29 @@ export default function ComplexGrid () {
       <Grid container spacing={1} item xs={12} md={6} lg={12}>
     { carousels.map((e)=>{
       console.log(getFormattedDate(e.endDate),getTodayDate())
-      let livecolor = (getFormattedDate(e.endDate) >= getTodayDate() && e.status === "active") ? "#48C479" : "#d32f2f"
+      let livecolor = (getFormattedDate(e.endDate) >= getTodayDate()) ? "#48C479" : "#d32f2f"
       console.log(livecolor)
       return(
-        <Grid item xs={12} md={6} lg={2} sx={{ padding: 2 }}>
+        <Grid item xs={12} md={6} lg={2} sx={{ padding: 1 }}>
         <Card>
       <CardActionArea>
         <CardMedia
           component="img"
-          height="150"
-          width="150"
-          image={e.carouselPhoto ? e.carouselPhoto : "PalmOlympia.jpeg"}
+          height="100"
+          width="100"
+          image={e.carouselPhoto ? e.carouselPhoto : "carousel.gif"}
           alt="green iguana"
         />
         <CardContent>
-          <Grid item xs container direction="column" spacing={2}>
+          <Grid item xs container direction="column" spacing={1}>
             <Grid item xs>
-              <Typography sx={{fontWeight:500}} gutterBottom variant="subtitle1" component="div">
+              <Typography sx={{fontWeight:500, fontSize:14}} gutterBottom variant="subtitle1" component="div">
                 {e.carouselName}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{fontWeight:500, fontSize:10}}>
                 Start Dates: {getFormattedDate(e.startDate)}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{fontWeight:500, fontSize:10}}>
                 End Dates: {getFormattedDate(e.endDate)}
               </Typography>
             </Grid>
@@ -87,11 +88,11 @@ export default function ComplexGrid () {
           </CardContent>
       </CardActionArea>
       <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined">
+        <Button sx={{color:"error",fontSize:8}} size="small" color="error" variant="outlined">
         <Link style={{textDecoration:'none',color:'inherit'}} to='/createcarousel' state={{id:e._id}}> View Details </Link>
         </Button>
-        <Box sx={{backgroundColor:`${livecolor}`,color:"white", padding:0.5, borderRadius:2, minWidth:80, textAlign:"center"}} size="small" variant="contained">
-          {(getFormattedDate(e.endDate) >= getTodayDate() && e.status === "active") ? "Live" : "Not Live"}
+        <Box sx={{backgroundColor:`${livecolor}`,fontSize:8,fontWeight:700,color:"white", padding:0.5, borderRadius:1, minWidth:80, textAlign:"center"}} size="small" variant="contained">
+          {(getFormattedDate(e.endDate) >= getTodayDate() && getFormattedDate(e.startDate) <= getTodayDate() ) ? "Live" : "Not Live"}
         </Box>
       </CardActions>
     </Card>
@@ -103,10 +104,3 @@ export default function ComplexGrid () {
     </>
   );
 }
-
-
-  /* <Grid item>
-          <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img borderRadius="100px" alt="po" src={e.carouselPhoto ? e.carouselPhoto : "PalmOlympia.jpeg"} />
-          </ButtonBase>
-        </Grid> */
