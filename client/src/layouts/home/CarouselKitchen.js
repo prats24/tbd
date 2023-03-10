@@ -52,7 +52,7 @@ export default function CarouselKitchen() {
             Anamika's Kitchen
           </Typography>
           <Typography variant="text" color="text.secondary" fontWeight={300} fontSize={12}>
-            Anamika is a home chef from Bihar. She is a great cook. She loves making good and tasty food.
+            Anamika is a home chef from Bihar. She is a great cook. She loves making good and tasty food. Very good chef.
           </Typography>
           <Typography sx={{marginBottom:1}}></Typography>
           <Divider></Divider>
