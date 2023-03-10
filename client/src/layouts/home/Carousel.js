@@ -23,8 +23,10 @@ export default class Carousel extends Component {
       centerPadding: '5px',
       arrows: true,
     };
+    
     return (
-      <div style={{padding:"30px 80px 30px 80px", backgroundColor:"#2d2d2d"}}>
+
+      <div style={{padding:"30px 80px 30px 80px", backgroundColor:"#f3c149"}}>
         <Slider {...settings}>
         {items.map((elem)=>{
         return (<div>
@@ -35,4 +37,5 @@ export default class Carousel extends Component {
       </div>
     );
   }
+  
 }
