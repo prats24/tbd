@@ -12,8 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editHomeChef = exports.getHomeChef = exports.deleteHomeChef = exports.getHomeChefs = exports.createHomeChef = exports.uploadToS3 = exports.resizePhoto = exports.uploadMulter = void 0;
-const HomeChef_1 = __importDefault(require("../models/HomeChef"));
+exports.editCarousel = exports.getCarousel = exports.deleteCarousel = exports.getCarousels = exports.createCarousel = exports.uploadToS3 = exports.resizePhoto = exports.uploadMulter = void 0;
+const Carousel_1 = __importDefault(require("../models/Carousel"));
 const customError_1 = require("../errors/customError");
 const CatchAsync_1 = __importDefault(require("../middlewares/CatchAsync"));
 const multer_1 = __importDefault(require("multer"));
@@ -35,7 +35,7 @@ const fileFilter = (req, file, cb) => {
 //     // accessKeyId: "AKIASR77BQMICZATCLPV",
 //     // secretAccessKey: "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",
 //   });
-const upload = (0, multer_1.default)({ storage, fileFilter }).single("displayPhoto");
+const upload = (0, multer_1.default)({ storage, fileFilter }).single("carouselPhoto");
 const s3 = new aws_sdk_1.default.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -49,7 +49,7 @@ const resizePhoto = (req, res, next) => {
         next();
         return;
     }
-    (0, sharp_1.default)(req.file.buffer).resize({ width: 400, height: 400 }).toBuffer()
+    (0, sharp_1.default)(req.file.buffer).resize({ width: 600 }).toBuffer()
         .then((resizedImageBuffer) => {
         req.file.buffer = resizedImageBuffer;
         next();
@@ -67,15 +67,15 @@ const uploadToS3 = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         return;
     }
     // create S3 upload parameters
-    let homeChefName;
-    if (req.body.firstName && req.body.lastName && req.body.phone) {
-        homeChefName = req.body.firstName + req.body.lastName + req.body.phone;
+    let carouselName;
+    if (req.body.carouselName) {
+        carouselName = req.body.carouselName;
     }
     else {
-        let homeChef = yield HomeChef_1.default.findById(req.params.id);
-        homeChefName = `${homeChef === null || homeChef === void 0 ? void 0 : homeChef.firstName}` + `${homeChef === null || homeChef === void 0 ? void 0 : homeChef.lastName}` + `${homeChef === null || homeChef === void 0 ? void 0 : homeChef.phone}`;
+        let carousel = yield Carousel_1.default.findById(req.params.id);
+        carouselName = `${carousel === null || carousel === void 0 ? void 0 : carousel.carouselName}`;
     }
-    const key = `homechefs/${homeChefName}/photos/${(Date.now()) + req.file.originalname}`;
+    const key = `carousels/${carouselName}/photos/${(Date.now()) + req.file.originalname}`;
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: key,
@@ -109,35 +109,32 @@ const filterObj = (obj, ...allowedFields) => {
     });
     return newObj;
 };
-exports.createHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, } = req.body;
-    // console.log("User :",(req as any).user)
-    const displayPhoto = req.uploadUrl;
-    console.log(displayPhoto);
+exports.createCarousel = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { carouselName, description, startDate, endDate, kitchens } = req.body;
+    const carouselPhoto = req.uploadUrl;
     //Check for required fields 
-    if (!(email || password || phone || firstName || lastName || gender))
+    if (!(carouselName))
         return next((0, customError_1.createCustomError)('Enter all mandatory fields.', 400));
     //Check if user exists
-    if (yield HomeChef_1.default.findOne({ isDeleted: false, email }))
-        return next((0, customError_1.createCustomError)('User with this email already exists. Please login with existing email.', 401));
-    const homeChef = yield HomeChef_1.default.create({ firstName, lastName, gender, dateOfBirth, email, password,
-        displayPhoto, phone, city, society, address });
-    if (!homeChef)
-        return next((0, customError_1.createCustomError)('Couldn\'t create user', 400));
-    res.status(201).json({ status: "success", data: homeChef });
+    // if(await carousel.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
+    const carousel = yield Carousel_1.default.create({ carouselName, description, startDate, endDate, kitchens,
+        createdBy: req.user._id, carouselPhoto });
+    if (!carousel)
+        return next((0, customError_1.createCustomError)('Couldn\'t create carousel', 400));
+    res.status(201).json({ status: "success", data: carousel });
 }));
-exports.getHomeChefs = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const homeChefs = yield HomeChef_1.default.find({ isDeleted: false });
-    if (!homeChefs)
+exports.getCarousels = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const carousels = yield Carousel_1.default.find({ isDeleted: false });
+    if (!carousels)
         return next((0, customError_1.createCustomError)('No users found.', 404));
-    res.status(200).json({ status: "success", data: homeChefs, results: homeChefs.length });
+    res.status(200).json({ status: "success", data: carousels, results: carousels.length });
 }));
-exports.deleteHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.deleteCarousel = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const filter = { _id: id };
-    const update = { $set: { isDeleted: true } };
+    const update = { isDeleted: true };
     try {
-        const userDetail = yield HomeChef_1.default.updateOne(filter, update);
+        const userDetail = yield Carousel_1.default.findByIdAndUpdate(id, update);
         console.log("this is userdetail", userDetail);
         res.status(200).json({ massage: "data delete succesfully" });
     }
@@ -145,27 +142,26 @@ exports.deleteHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter
         res.status(500).json({ error: "Failed to delete data" });
     }
 }));
-exports.getHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getCarousel = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
-    const user = yield HomeChef_1.default.findOne({ _id: id, isDeleted: false }).select('-__v -password');
+    const user = yield Carousel_1.default.findOne({ _id: id, isDeleted: false }).select('-__v -password');
     if (!user)
-        return next((0, customError_1.createCustomError)('No such user found.', 404));
+        return next((0, customError_1.createCustomError)('No such carousel found.', 404));
     res.status(200).json({ status: "success", data: user });
 }));
-exports.editHomeChef = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.editCarousel = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
-    const { firstName, lastName, gender, dateOfBirth, email, password, phone, city, state, address } = req.body;
-    const user = yield HomeChef_1.default.findOne({ _id: id }).select('-__v -password -role');
-    if (!user)
-        return next((0, customError_1.createCustomError)('No such user found.', 404));
-    const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email', 'phone', 'profilePhoto', 'city', 'society', 'dateOfBirth', 'lastModifiedBy', 'address', 'gender');
+    const carousel = yield Carousel_1.default.findOne({ _id: id }).select('-__v -password -role');
+    if (!carousel)
+        return next((0, customError_1.createCustomError)('No such carousel found.', 404));
+    const filteredBody = filterObj(req.body, 'carouselName', 'description', 'endDate', 'startDate', 'lastModifiedBy');
     filteredBody.lastModifiedBy = id;
     console.log(req.puploadUrl);
     if (req.file)
-        filteredBody.displayPhoto = req.uploadUrl;
-    const updatedHomeChef = yield HomeChef_1.default.findByIdAndUpdate(id, filteredBody, {
+        filteredBody.carouselPhoto = req.uploadUrl;
+    const updatedCarousel = yield Carousel_1.default.findByIdAndUpdate(id, filteredBody, {
         new: true,
         runValidators: true
     }).select('-__v -password -role');
-    res.status(200).json({ status: "success", data: updatedHomeChef });
+    res.status(200).json({ status: "success", data: updatedCarousel });
 }));

@@ -112,7 +112,6 @@ exports.createSociety = (0, CatchAsync_1.default)((req, res, next) => __awaiter(
     const { societyName, societyGeoLocation, societyTowers, societyPinCode, societyAddress, societyType } = req.body;
     const societyPhoto = req.uploadUrl;
     //Check for required fields 
-    console.log(req.body);
     if (!(societyName || societyPinCode))
         return next((0, customError_1.createCustomError)('Enter all mandatory fields.', 401));
     //Check if user exists
@@ -125,7 +124,6 @@ exports.createSociety = (0, CatchAsync_1.default)((req, res, next) => __awaiter(
     res.status(201).json({ status: "success", data: society });
 }));
 exports.getSocieties = (0, CatchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('here');
     const societies = yield Society_1.default.find({ isDeleted: false }).sort({ societyId: -1 });
     if (!societies)
         return next((0, customError_1.createCustomError)('No societies found.', 404));

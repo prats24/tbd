@@ -15,10 +15,14 @@ import CarouselKitchen from '../pages/CarouselKitchen'
 import AdminLogin from '../pages/AdminLogin'
 import AdminPanel from '../pages/Admin_Panel'
 import CreateSociety from '../pages/Create_Society'
-import ViewSociety from '../pages/View_Society'
 import AdminCarousel from '../pages/Admin_Carousel'
+import AdminCuisine from '../pages/Admin_Cuisine'
 import CreateHomeChef from '../pages/Create_Homechef'
+import CreateKitchen from '../pages/Create_Kitchen'
+import CreateCarousel from '../pages/Create_Carousel'
+import CreateCuisine from '../pages/Create_Cuisine'
 
+console.log("Inside Main Route")
 const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/',
@@ -33,12 +37,24 @@ const AuthenticationRoutes = (isLoggedIn) => [
     element: <CreateHomeChef />,
   },
   {
-    path: '/viewsociety',
-    element: <ViewSociety />,
+    path: '/createkitchen',
+    element: <CreateKitchen />,
+  },
+  {
+    path: '/createcarousel',
+    element: <CreateCarousel />,
+  },
+  {
+    path: '/createcuisine',
+    element: <CreateCuisine />,
   },
   {
     path: '/admincarousel',
     element: <AdminCarousel />,
+  },
+  {
+    path: '/admincuisine',
+    element: <AdminCuisine />,
   },
   {
     path: '/adminpanel',

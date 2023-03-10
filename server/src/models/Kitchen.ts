@@ -7,7 +7,7 @@ const kitchenSchema = new mongoose.Schema({
     homeChef:{
         type: Schema.Types.ObjectId,
         ref: 'HomeChef',
-        required: true,
+        // required: true,
     },
     kitchenType:String,
     phone: String,
@@ -16,27 +16,16 @@ const kitchenSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Society'
     },
-    address: String,
-    city: String,
-    kitchenPinCode: String,
-    geoLocation:{
-        type: {
-          type: String, // Don't do `{ location: { type: String } }`
-          enum: ['Point'], // 'location.type' must be 'Point'
-        //   required: true
-        },
-        coordinates: {
-          type: [Number],
-        //   required: true
-        }
-      },
+    flatNo: String,
+    floor: String,
+    tower: String,
     foodPreference: String,
     orders: [{type: Schema.Types.ObjectId, ref: 'Order'}],
     cart:[],
     payouts:[{type: Schema.Types.ObjectId, ref: 'Payment'}],
     reviews:[{type: Schema.Types.ObjectId, ref: 'Review'}],
     customers: [{type: Schema.Types.ObjectId, ref: 'Kitchen'}],
-    kitchenCuisine:[String],
+    cuisines:[{type: Schema.Types.ObjectId, ref: 'Cuisine'}],
     description: String,
     displayPhoto: String,
     coverPhoto: String,
@@ -59,10 +48,10 @@ const kitchenSchema = new mongoose.Schema({
     gstApplicable: Boolean,
     deliveryChargeType:{
         type: String,
-        enum:['flat', 'percentage'],
+        enum:['Flat', 'Percentage'],
     },
-    deliveryCharge: String,
-    costForTwo: Number, 
+    deliveryCharges: Number,
+    costForOne: Number, 
     createdOn:{
         type: Date,
         default: new Date().toISOString().split('T').join(' ').split('.')[0],
@@ -74,6 +63,9 @@ const kitchenSchema = new mongoose.Schema({
     lastModifiedOn:{
         type: Date,
     },
+    liveDate:{
+        type: Date,
+    },
     lastModifiedBy:{
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -83,6 +75,11 @@ const kitchenSchema = new mongoose.Schema({
         default: false, 
     },
     kitchenId: String,
+    status: {
+        type: String,
+        enum:['active', 'inactive'],
+        default: 'inactive'
+    }
 });
 
 
@@ -110,5 +107,5 @@ kitchenSchema.pre('save', async function(next){
 })  
 
 
-const kitchen = mongoose.model("HomeChef", kitchenSchema);
+const kitchen = mongoose.model("Kitchen", kitchenSchema);
 export default kitchen;

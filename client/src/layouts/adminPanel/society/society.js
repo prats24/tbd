@@ -78,7 +78,7 @@ export default function ComplexGrid () {
                 variant="outlined"
                 component={Link}
               >
-                <Link style={{textDecoration:'none',color:'inherit'}} to='/viewsociety' state={{id:e._id}}> View Details </Link>
+                <Link style={{textDecoration:'none',color:'inherit'}} to='/createsociety' state={{id:e._id}}> View Details </Link>
               </Button>
             </Grid>
           </Grid>

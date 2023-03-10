@@ -73,16 +73,70 @@ class Api {
   createSociety = (data) => {
     return this.init().post('/societies', data);
   }
+  createKitchen = (data) => {
+    return this.init().post('/kitchens', data);
+  }
   getSocieties = () => {
     return this.init().get('/societies');
   }
+  getHomeChef = () => {
+    return this.init().get('/homechefs');
+  }
+  getKitchen = () => {
+    return this.init().get('/kitchens');
+  }
   getSocietyById = (id) => {
     return this.init().get(`/societies/${id}`);
+  }
+  editSociety = (id, data) =>{
+    return this.init().patch(`/societies/${id}`, data);
+  }
+  getHomeChefById = (id) => {
+    return this.init().get(`/homechefs/${id}`);
+  }
+  getKitchenById = (id) => {
+    return this.init().get(`/kitchens/${id}`);
   }
   createHomeChef = (data) => {
     console.log("Inside API File: ",data)
     return this.init().post('/homechefs', data);
   }
+  
+  editHomeChef = (id, data) =>{
+    return this.init().patch(`/homechefs/${id}`, data);
+  }
+  createCarousel = (data) => {
+    return this.init().post('/carousels',data);
+  }
+  getCarousels = () =>{
+    return this.init().get('/carousels');
+  }
+  getCarouselById = (id) =>{
+    return this.init().get(`/carousels/${id}`);
+  }
+  editCarousel = (id, data) => {
+    return this.init().patch(`/carousels/${id}`, data);
+  }
+  deleteCarousel = (id) =>{
+    return this.init().delete(`/carousels/${id}`);
+  }
+  createCuisine = (data) => {
+    console.log("Inside create cuisine api")
+    return this.init().post('/cuisines',data);
+  }
+  getCuisines = () =>{
+    return this.init().get('/cuisines');
+  }
+  getCuisineById = (id) =>{
+    return this.init().get(`/cuisines/${id}`);
+  }
+  editCuisine = (id, data) => {
+    return this.init().patch(`/cuisines/${id}`, data);
+  }
+  deleteCuisine = (id) =>{
+    return this.init().delete(`/cuisines/${id}`);
+  }
+
 }
 
 export default new Api();

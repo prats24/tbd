@@ -98,7 +98,7 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
   AdminRoutes.map((elem)=>{links.push([elem.name,elem.icon])})
   console.log(links)
   const notificationlinks = []
-  AdminNotificationRoute.map((elem)=>{links.push([elem.name,elem.icon])})
+  AdminNotificationRoute.map((elem)=>{notificationlinks.push([elem.name,elem.icon])})
   console.log(notificationlinks)
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
@@ -181,6 +181,13 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
+                }}
+                onClick={() => {
+                  if(window.location.pathname != '/adminpanel'){
+                    console.log('moving');
+                    navigate('/adminpanel');
+                  }
+                  onMenuClick(text[0]);
                 }}
               >
                 <ListItemIcon

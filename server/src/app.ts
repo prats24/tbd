@@ -9,6 +9,10 @@ import userRoutes from './routes/userRoutes';
 import roleRoutes from './routes/roleRoutes';
 import homeChefRoutes from './routes/homeChefRoutes';
 import societyRoutes from './routes/societyRoutes';
+import kitchenRoutes from './routes/kitchenRoutes';
+import carouselRoutes from './routes/carouselRoutes';
+import cuisineRoutes from './routes/cuisineRoutes';
+import orderRoutes from './routes/orderRoutes';
 import errorHandler from './middlewares/errorHandler';
 
 
@@ -40,6 +44,10 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/homechefs', homeChefRoutes);
 app.use('/api/v1/roles', roleRoutes);
 app.use('/api/v1/societies', societyRoutes);
+app.use('/api/v1/kitchens', kitchenRoutes);
+app.use('/api/v1/carousels', carouselRoutes);
+app.use('/api/v1/cuisines', cuisineRoutes);
+app.use('/api/v1/orders', orderRoutes);
 
 
 app.use(errorHandler);

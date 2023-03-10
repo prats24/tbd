@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import HomeChef from '../models/HomeChef';
+import Carousel from '../models/Carousel';
 import {createCustomError} from '../errors/customError';
 import CatchAsync from '../middlewares/CatchAsync';
 import multer from 'multer';
 import AWS from 'aws-sdk';
 import sharp from 'sharp';
 
-interface HomeChef{
+interface carousel{
     firstName: string,
     lastName: string,
     dateOfBirth: Date,
@@ -40,7 +40,7 @@ if (file.mimetype.startsWith("image/")) {
   
 //   });
   
-const upload = multer({ storage, fileFilter }).single("displayPhoto");
+const upload = multer({ storage, fileFilter }).single("carouselPhoto");
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -57,7 +57,7 @@ export const resizePhoto = (req: Request, res: Response, next: NextFunction) => 
       next();
       return;
     }
-    sharp(req.file.buffer).resize({ width: 400, height: 400 }).toBuffer()
+    sharp(req.file.buffer).resize({ width: 600}).toBuffer()
     .then((resizedImageBuffer) => {
       req.file!.buffer = resizedImageBuffer;
       next();
@@ -76,14 +76,14 @@ export const uploadToS3 = async(req: Request, res: Response, next: NextFunction)
     }
   
     // create S3 upload parameters
-    let homeChefName;
-    if(req.body.firstName && req.body.lastName && req.body.phone){
-        homeChefName = req.body.firstName + req.body.lastName + req.body.phone;
+    let carouselName;
+    if(req.body.carouselName){
+        carouselName = req.body.carouselName;
     }else{
-        let homeChef = await HomeChef.findById(req.params.id);
-        homeChefName = `${homeChef?.firstName}`+`${homeChef?.lastName}` + `${homeChef?.phone}` ;
+        let carousel = await Carousel.findById(req.params.id);
+        carouselName = `${carousel?.carouselName}` ;
     }
-    const key = `homechefs/${homeChefName}/photos/${(Date.now()) + req.file.originalname}`;
+    const key = `carousels/${carouselName}/photos/${(Date.now()) + req.file.originalname}`;
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: key,
@@ -120,42 +120,43 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     return newObj;
   };
 
-  export const createHomeChef =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
-    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, }: HomeChef = req.body;
-    // console.log("User :",(req as any).user)
-    const displayPhoto = (req as any).uploadUrl;
-    console.log(displayPhoto);
+  export const createCarousel =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
+    const{carouselName, description, startDate, endDate, kitchens, status} = req.body;
+    const carouselPhoto = (req as any).uploadUrl;
+
+    console.log('kitchens', kitchens);
+    console.log(req.body);
     //Check for required fields 
-    if(!(email ||password || phone || firstName || lastName || gender))return next(createCustomError('Enter all mandatory fields.', 400));
+    if(!(carouselName))return next(createCustomError('Enter all mandatory fields.', 400));
 
     //Check if user exists
-    if(await HomeChef.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const homeChef = await HomeChef.create({firstName, lastName, gender, dateOfBirth, email, password, 
-        displayPhoto, phone, city, society, address });
+    // if(await carousel.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
+    const carousel = await Carousel.create({carouselName, description, startDate, endDate, kitchens, status,
+      createdBy: (req as any).user._id, carouselPhoto});
 
-    if(!homeChef) return next(createCustomError('Couldn\'t create user', 400));
+    if(!carousel) return next(createCustomError('Couldn\'t create carousel', 400));
 
-    res.status(201).json({status: "success", data:homeChef});
+    res.status(201).json({status: "success", data:carousel});
     
 });
 
-export const getHomeChefs = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const homeChefs = await HomeChef.find({isDeleted: false})
+export const getCarousels = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+    const carousels = await Carousel.find({isDeleted: false}).populate({path: 'kitchens', populate:{path:'society', model:'Society'}}).sort({status:1,endDate:-1});
 
 
-    if(!homeChefs) return next(createCustomError('No users found.', 404));
+    if(!carousels) return next(createCustomError('No users found.', 404));
     
-    res.status(200).json({status:"success", data: homeChefs, results: homeChefs.length});
+    res.status(200).json({status:"success", data: carousels, results: carousels.length});
 
 });
-export const deleteHomeChef = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
+export const deleteCarousel = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     const {id} = req.params;
 
     const filter = { _id: id };
-    const update = { $set: { isDeleted: true } };
+    const update = { isDeleted: true };
 
     try{
-        const userDetail = await HomeChef.updateOne(filter, update);
+        const userDetail = await Carousel.findByIdAndUpdate(id, update);
         console.log("this is userdetail", userDetail);
         res.status(200).json({massage : "data delete succesfully"});
     } catch (e){
@@ -164,35 +165,35 @@ export const deleteHomeChef = CatchAsync(async (req:Request, res: Response, next
     
 });
 
-export const getHomeChef = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const getCarousel = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const user = await HomeChef.findOne({_id: id, isDeleted: false}).select('-__v -password');
+    const user = await Carousel.findOne({_id: id, isDeleted: false}).select('-__v -password').
+    populate({path: 'kitchens', populate:{path:'society', model:'Society'}});
 
-    if(!user) return next(createCustomError('No such user found.', 404));
+    if(!user) return next(createCustomError('No such carousel found.', 404));
     
     res.status(200).json({status:"success", data: user});
 
 });
 
-export const editHomeChef = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const editCarousel = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, state, address }: HomeChef = req.body;
-    const user = await HomeChef.findOne({_id: id}).select('-__v -password -role');
+    const carousel = await Carousel.findOne({_id: id}).select('-__v -password -role');
 
-    if(!user) return next(createCustomError('No such user found.', 404));
+    if(!carousel) return next(createCustomError('No such carousel found.', 404));
 
-    const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email', 'phone', 'profilePhoto', 'city', 'society', 'dateOfBirth', 'lastModifiedBy', 'address', 'gender');
+    const filteredBody = filterObj(req.body, 'carouselName', 'description', 'endDate', 'startDate', 'lastModifiedBy');
     
     filteredBody.lastModifiedBy = id;
     console.log((req as any).puploadUrl);
-    if ((req as any).file) filteredBody.displayPhoto = (req as any).uploadUrl;
+    if ((req as any).file) filteredBody.carouselPhoto = (req as any).uploadUrl;
 
     
-    const updatedHomeChef = await HomeChef.findByIdAndUpdate(id, filteredBody, {
+    const updatedCarousel = await Carousel.findByIdAndUpdate(id, filteredBody, {
         new: true,
         runValidators: true
       }).select('-__v -password -role');
-    res.status(200).json({status: "success", data:updatedHomeChef});
+    res.status(200).json({status: "success", data:updatedCarousel});
 
 });
