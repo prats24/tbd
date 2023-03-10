@@ -43,6 +43,7 @@ class Api {
   signIn = (data) => {
     return this.init().post('/users/login', data);
   };
+
   //user sign In
   signUp = (data) => {
     return this.init().post('/signup', data);
@@ -59,6 +60,13 @@ class Api {
   fetchmeals = () => {
     return this.init().get('/products');
   };
+  //HomeCHef Login
+  homeChefSignIn = (data) =>{
+    return this.init().post('/homechefs/login', data);
+  }
+  homeChefSignUp = (data) =>{
+    return this.init().post('/homechefs/signup', data);
+  }
   // add order
   addorder = (data) => {
     return this.init().post('/orders', data);
