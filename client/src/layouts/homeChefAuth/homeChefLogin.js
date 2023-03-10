@@ -17,10 +17,11 @@ function Login() {
     event.preventDefault();
     console.log(`Email: ${email}, Password: ${password}`);
     try{
-      const res = await Api.signIn({email, password});
+      const res = await Api.homeChefSignIn({email, password});
       console.log(res.data);
       if(res.data.status == 'success'){
-        navigate('/adminpanel');
+        setUserDetail(res.data.data);
+        navigate('/homechefdashboard');
       }
     }catch(e){
       console.log(e);
@@ -33,8 +34,13 @@ function Login() {
       if(res.data.status == 'success'){
         console.log('setting user detail');
         setUserDetail(res.data.data);
+        console.log(res.data.data);
         setLoading(false);
-        navigate('/adminpanel');
+        if(res.data.data.role.roleName == 'Admin'){
+          navigate('/adminpanel');
+        }else{
+          navigate('/');
+        }
       }
     }).catch((err)=>{
       console.log("Fail to fetch data of user");
