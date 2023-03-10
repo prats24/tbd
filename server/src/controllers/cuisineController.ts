@@ -1,26 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-import Carousel from '../models/Carousel';
+import Cuisine from '../models/Cuisine';
 import {createCustomError} from '../errors/customError';
 import CatchAsync from '../middlewares/CatchAsync';
 import multer from 'multer';
 import AWS from 'aws-sdk';
 import sharp from 'sharp';
 
-interface carousel{
-    firstName: string,
-    lastName: string,
-    dateOfBirth: Date,
-    gender: string,
-    email: string,
-    bankDetails:Object
-    password: string,
-    phone: string,
-    city: string,
-    state: string,
-    role: string,
-    address: string,
-    society?: string,
-    description?:string
+interface cuisine{
+    cuisineName: string,
+    description: string,
+    cuisineIcon: Date,
 }
 
 const storage = multer.memoryStorage();
@@ -40,7 +29,7 @@ if (file.mimetype.startsWith("image/")) {
   
 //   });
   
-const upload = multer({ storage, fileFilter }).single("carouselPhoto");
+const upload = multer({ storage, fileFilter }).single("cuisineIcon");
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -76,14 +65,14 @@ export const uploadToS3 = async(req: Request, res: Response, next: NextFunction)
     }
   
     // create S3 upload parameters
-    let carouselName;
-    if(req.body.carouselName){
-        carouselName = req.body.carouselName;
+    let cuisineName;
+    if(req.body.cuisineName){
+      cuisineName = req.body.cuisineName;
     }else{
-        let carousel = await Carousel.findById(req.params.id);
-        carouselName = `${carousel?.carouselName}` ;
+        let cuisine = await Cuisine.findById(req.params.id);
+        cuisineName = `${cuisine?.cuisineName}` ;
     }
-    const key = `carousels/${carouselName}/photos/${(Date.now()) + req.file.originalname}`;
+    const key = `cuisines/${cuisineName}/photos/${(Date.now()) + req.file.originalname}`;
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: key,
@@ -120,43 +109,42 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     return newObj;
   };
 
-  export const createCarousel =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
-    const{carouselName, description, startDate, endDate, kitchens, status} = req.body;
-    const carouselPhoto = (req as any).uploadUrl;
+  export const createCuisine =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
+    const{cuisineName, description, status} = req.body;
+    const cuisineIcon = (req as any).uploadUrl;
 
-    console.log('kitchens', kitchens);
     console.log(req.body);
     //Check for required fields 
-    if(!(carouselName))return next(createCustomError('Enter all mandatory fields.', 400));
+    if(!(cuisineName))return next(createCustomError('Enter all mandatory fields.', 400));
 
     //Check if user exists
     // if(await carousel.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const carousel = await Carousel.create({carouselName, description, startDate, endDate, kitchens, status,
-      createdBy: (req as any).user._id, carouselPhoto});
+    const cuisine = await Cuisine.create({cuisineName, description,status,
+      createdBy: (req as any).user._id, cuisineIcon});
 
-    if(!carousel) return next(createCustomError('Couldn\'t create carousel', 400));
+    if(!cuisine) return next(createCustomError('Couldn\'t create cuisine', 400));
 
-    res.status(201).json({status: "success", data:carousel});
+    res.status(201).json({status: "success", data:cuisine});
     
 });
 
-export const getCarousels = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const carousels = await Carousel.find({isDeleted: false}).populate({path: 'kitchens', populate:{path:'society', model:'Society'}}).sort({status:1,endDate:-1});
+export const getCuisines = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+    const cuisines = await Cuisine.find({isDeleted: false}).sort({status:1});
 
 
-    if(!carousels) return next(createCustomError('No users found.', 404));
+    if(!cuisines) return next(createCustomError('No users found.', 404));
     
-    res.status(200).json({status:"success", data: carousels, results: carousels.length});
+    res.status(200).json({status:"success", data: cuisines, results: cuisines.length});
 
 });
-export const deleteCarousel = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
+export const deleteCuisine = CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     const {id} = req.params;
 
     const filter = { _id: id };
     const update = { isDeleted: true };
 
     try{
-        const userDetail = await Carousel.findByIdAndUpdate(id, update);
+        const userDetail = await Cuisine.findByIdAndUpdate(id, update);
         console.log("this is userdetail", userDetail);
         res.status(200).json({massage : "data delete succesfully"});
     } catch (e){
@@ -165,35 +153,34 @@ export const deleteCarousel = CatchAsync(async (req:Request, res: Response, next
     
 });
 
-export const getCarousel = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const getCuisine = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const user = await Carousel.findOne({_id: id, isDeleted: false}).select('-__v -password').
-    populate({path: 'kitchens', populate:{path:'society', model:'Society'}});
+    const user = await Cuisine.findOne({_id: id, isDeleted: false}).select('-__v -password')
 
-    if(!user) return next(createCustomError('No such carousel found.', 404));
+    if(!user) return next(createCustomError('No such cuisine found.', 404));
     
     res.status(200).json({status:"success", data: user});
 
 });
 
-export const editCarousel = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const editCuisine = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const carousel = await Carousel.findOne({_id: id}).select('-__v -password -role');
+    const cuisine = await Cuisine.findOne({_id: id}).select('-__v -password -role');
 
-    if(!carousel) return next(createCustomError('No such carousel found.', 404));
+    if(!cuisine) return next(createCustomError('No such cuisine found.', 404));
 
-    const filteredBody = filterObj(req.body, 'carouselName', 'description', 'endDate', 'startDate', 'lastModifiedBy');
+    const filteredBody = filterObj(req.body, 'cuisineName', 'description', 'status', 'lastModifiedBy');
     
     filteredBody.lastModifiedBy = id;
     console.log((req as any).puploadUrl);
-    if ((req as any).file) filteredBody.carouselPhoto = (req as any).uploadUrl;
+    if ((req as any).file) filteredBody.cuisineIcon = (req as any).uploadUrl;
 
     
-    const updatedCarousel = await Carousel.findByIdAndUpdate(id, filteredBody, {
+    const updatedCuisine = await Cuisine.findByIdAndUpdate(id, filteredBody, {
         new: true,
         runValidators: true
       }).select('-__v -password -role');
-    res.status(200).json({status: "success", data:updatedCarousel});
+    res.status(200).json({status: "success", data:updatedCuisine});
 
 });

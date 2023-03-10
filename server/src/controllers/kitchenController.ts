@@ -11,7 +11,7 @@ interface Kitchen{
     kitchenName: string,
     homeChef: string,
     kitchenType: string,
-    kitchenCuisine: [string],
+    cuisines: [string],
     email: string,
     liveDate: Date,
     phone: string,
@@ -210,7 +210,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     // const{kitchenName, kitchenType, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
     //     deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
     //     description, homeChef, kitchenPinCode} = req.body;
-    const{kitchenName, kitchenType,liveDate, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+    const{kitchenName, kitchenType,liveDate, cuisines, foodLicenseNumber, discount, foodMenu, gstApplicable, 
         deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo, floor,tower, society, 
         description,status, homeChef} = req.body;
     //Check for required fields 
@@ -222,7 +222,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     //     deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
     //     description, homeChef, kitchenPinCode, displayPhoto, coverPhoto});
     if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('Kitchen with this email already exists.', 401));
-    const kitchen = await Kitchen.create({kitchenName, kitchenType,liveDate, kitchenCuisine, foodLicenseNumber, discount, foodMenu, gstApplicable, 
+    const kitchen = await Kitchen.create({kitchenName, kitchenType,liveDate, cuisines, foodLicenseNumber, discount, foodMenu, gstApplicable, 
         deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo,floor, tower, society, 
         description,status, homeChef, displayPhoto, coverPhoto, foodLicensePhoto});
 
@@ -260,7 +260,7 @@ export const deleteKitchen = CatchAsync(async (req:Request, res: Response, next:
 export const getKitchen = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 
-    const kitchen = await Kitchen.findOne({_id: id, isDeleted: false}).populate('society', 'societyName').populate('homeChef','firstName lastName').select('-__v');
+    const kitchen = await Kitchen.findOne({_id: id, isDeleted: false}).populate('society', 'societyName').populate('homeChef','firstName lastName').populate('cuisines','cuisineName').select('-__v');
 
     if(!kitchen) return next(createCustomError('No such user found.', 404));
     
@@ -275,7 +275,7 @@ export const editKitchen = CatchAsync(async (req: Request, res: Response, next: 
 
     if(!user) return next(createCustomError('No such user found.', 404));
 
-    const filteredBody = filterObj(req.body, 'kitchenName', 'kitchenType','liveDate', 'kitchenCuisine', 'foodLicenseNumber', 'discount', 
+    const filteredBody = filterObj(req.body, 'kitchenName', 'kitchenType','liveDate', 'cuisines', 'foodLicenseNumber', 'discount', 
     'foodMenu', 'gstApplicable', 
         'deliveryChargeType', 'deliveryCharges', 'costForOne', 'email', 'phone', 'flatNo','floor', 'tower', 'society', 
         'description','status', 'homeChef');

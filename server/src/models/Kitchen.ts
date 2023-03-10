@@ -25,7 +25,7 @@ const kitchenSchema = new mongoose.Schema({
     payouts:[{type: Schema.Types.ObjectId, ref: 'Payment'}],
     reviews:[{type: Schema.Types.ObjectId, ref: 'Review'}],
     customers: [{type: Schema.Types.ObjectId, ref: 'Kitchen'}],
-    kitchenCuisine:[String],
+    cuisines:[{type: Schema.Types.ObjectId, ref: 'Cuisine'}],
     description: String,
     displayPhoto: String,
     coverPhoto: String,

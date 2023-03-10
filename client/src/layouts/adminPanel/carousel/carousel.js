@@ -9,15 +9,12 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import { fontWeight } from '@mui/system';
 import { Link } from 'react-router-dom';
 import Api from '../../../helpers/api'
-
-const Img = styled('img')({
-  margin: 'auto',
-  display: 'block',
-  maxWidth: '100%',
-  maxHeight: '100%',
-});
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 
 export default function ComplexGrid () {
+
   const [carousels,setCarousels] = React.useState([])
 
   React.useEffect(async()=>{
@@ -25,6 +22,27 @@ export default function ComplexGrid () {
   console.log(res.data.data)
   setCarousels(res.data.data)
   },[])
+
+  function getFormattedDate(dateStr) {
+    if (!dateStr) return '';
+    const dateParts = dateStr.split('-');
+    if (dateParts.length !== 3) return '';
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
+    const dateObj = new Date(year, month, day);
+    return dateObj.toISOString().split('T')[0];
+  }
+
+  function getTodayDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // getMonth() returns 0-based month index
+    const day = today.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  
 
   return (
     <>
@@ -34,67 +52,61 @@ export default function ComplexGrid () {
         Create Carousel
       </Button>
     </Box>
-    <Box>
-      
-      <Grid container spacing={2} mt={0.1}>
-      {
-      carousels?.map((e)=>{
-        console.log(e._id)
+
+    <Box sx={{marginTop:2,marginLeft:1,marginRight:1}}>
+      <Grid container spacing={1} item xs={12} md={6} lg={12}>
+    { carousels.map((e)=>{
+      console.log(getFormattedDate(e.endDate),getTodayDate())
+      let livecolor = (getFormattedDate(e.endDate) >= getTodayDate() && e.status === "active") ? "#48C479" : "#d32f2f"
+      console.log(livecolor)
       return(
-        <Grid item xs={12} md={6} lg={4}>
-    <Paper
-      sx={{
-        p: 2,
-        margin: 'auto',
-        maxWidth: 500,
-        flexGrow: 1,
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-      }}
-    >
-      <Grid container spacing={2}>
-        <Grid item>
-          <ButtonBase sx={{ width: 128, height: 128 }}>
-            <Img borderRadius="100px" alt="po" src={e.carouselPhoto ? e.carouselPhoto : "PalmOlympia.jpeg"} />
-          </ButtonBase>
-        </Grid>
-        <Grid item xs={12} sm container>
+        <Grid item xs={12} md={6} lg={2} sx={{ padding: 2 }}>
+        <Card>
+      <CardActionArea>
+        <CardMedia
+          component="img"
+          height="150"
+          width="150"
+          image={e.carouselPhoto ? e.carouselPhoto : "PalmOlympia.jpeg"}
+          alt="green iguana"
+        />
+        <CardContent>
           <Grid item xs container direction="column" spacing={2}>
             <Grid item xs>
-              <Typography gutterBottom variant="subtitle1" component="div">
-                Name: {e.carouselName}
+              <Typography sx={{fontWeight:500}} gutterBottom variant="subtitle1" component="div">
+                {e.carouselName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {e.description}
+                Start Dates: {getFormattedDate(e.startDate)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Dates: {e.startDate}-{e.endDate}
+                End Dates: {getFormattedDate(e.endDate)}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                HC ID: {e.carouselId}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                sx={{ cursor: 'pointer', fontSize: 10 }}
-                font="small"
-                variant="outlined"
-                component={Link}
-              >
-                <Link style={{textDecoration:'none',color:'inherit'}} to='/createcarousel' state={{id:e._id}}> View Details </Link>
-              </Button>
             </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-    </Paper>
-        </Grid>
+          </CardContent>
+      </CardActionArea>
+      <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
+        <Button sx={{color:"error"}} size="small" color="error" variant="outlined">
+        <Link style={{textDecoration:'none',color:'inherit'}} to='/createcarousel' state={{id:e._id}}> View Details </Link>
+        </Button>
+        <Box sx={{backgroundColor:`${livecolor}`,color:"white", padding:0.5, borderRadius:2, minWidth:80, textAlign:"center"}} size="small" variant="contained">
+          {(getFormattedDate(e.endDate) >= getTodayDate() && e.status === "active") ? "Live" : "Not Live"}
+        </Box>
+      </CardActions>
+    </Card>
+        </Grid>)
+    })}
+    </Grid>
 
-      )})
-      }
-
-      </Grid>
-    </Box>
+</Box>
     </>
   );
 }
+
+
+  /* <Grid item>
+          <ButtonBase sx={{ width: 128, height: 128 }}>
+            <Img borderRadius="100px" alt="po" src={e.carouselPhoto ? e.carouselPhoto : "PalmOlympia.jpeg"} />
+          </ButtonBase>
+        </Grid> */

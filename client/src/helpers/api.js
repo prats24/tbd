@@ -120,6 +120,22 @@ class Api {
   deleteCarousel = (id) =>{
     return this.init().delete(`/carousels/${id}`);
   }
+  createCuisine = (data) => {
+    console.log("Inside create cuisine api")
+    return this.init().post('/cuisines',data);
+  }
+  getCuisines = () =>{
+    return this.init().get('/cuisines');
+  }
+  getCuisineById = (id) =>{
+    return this.init().get(`/cuisines/${id}`);
+  }
+  editCuisine = (id, data) => {
+    return this.init().patch(`/cuisines/${id}`, data);
+  }
+  deleteCuisine = (id) =>{
+    return this.init().delete(`/cuisines/${id}`);
+  }
 
 }
 

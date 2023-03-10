@@ -27,11 +27,7 @@ function CarouselForm({carousel}) {
   const [kitchenNames,setKitchenNames] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
-  const options = [
-    { label: "Anamika's Kitchen", value: "Anamika's Kitchen" },
-    { label: "Kavita's Kitchen", value: "Kavita's Kitchen" },
-    { label: "Mummy's Kitchen", value: "Mummy's Kitchen", disabled: true },
-  ];
+
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -43,8 +39,6 @@ function CarouselForm({carousel}) {
     },
   };
 
-  console.log('ck',carousel?.kitchens);
-  
 
   useEffect(async()=>{
     let res = await Api.getKitchen()
@@ -52,8 +46,8 @@ function CarouselForm({carousel}) {
     setKitchens(res.data.data);
     },[])
 
-  console.log('selected',selectedOptions);
-  console.log('first',carousel?.kitchens?.map((kitchen)=>{return kitchen.kitchenName}))
+  // console.log('selected',selectedOptions);
+  // console.log('first',carousel?.kitchens?.map((kitchen)=>{return kitchen.kitchenName}))
 
   // useEffect(async()=>{
   //   let res = await Api.getKitchens()
@@ -70,6 +64,12 @@ function CarouselForm({carousel}) {
     console.log("Editable set as: ",editable)
     setIsNewObject(carousel.length === 0 ? true : false)
     console.log(carousel.length,editable,isObjectNew)
+    // setStatusDefaultValue(carousel.length === 0 ? false  : carousel?.status === 'active')
+    if (carousel.length !== 0 && carousel.status === "active") {
+      setStatusDefaultValue(true);
+    } else {
+      setStatusDefaultValue(false);
+    }
   },[carousel])
 
   React.useEffect(async()=>{
@@ -91,8 +91,13 @@ function CarouselForm({carousel}) {
       // formData.append('kitchens', [selectedIds]);
       const res = await Api.createCarousel(formData);
       console.log('response', res.data.data);
-      setPhoto(res.data.data.carouselPhoto)
-      window.alert("Carousel Created Successfully")
+      if(res.data.status === 'success'){
+        window.alert("Carousel Created Successfully")
+        setEditable(false);
+        setIsNewObject(false);
+        setPhoto(res.data.data.carouselPhoto)
+      }
+      
     }catch(e){
       console.log(e);
     }
@@ -111,21 +116,6 @@ function CarouselForm({carousel}) {
     return dateObj.toISOString().split('T')[0];
   }
 
-  // const handleSelectedOptions = (selectedOptions) => {
-  //   console.log("Inside Handle Selected Option Function")
-  //   setKitchens(selectedOptions);
-  //   field.onChange(selectedOptions.map(option => option.value));
-  // };
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
 
   const handleSelect = (event, key) => {
     console.log('handleselect');
@@ -136,21 +126,23 @@ function CarouselForm({carousel}) {
       let ids = selectedIds?.filter((e)=>e!=key.key.substring(2));
       setSelectedIds(ids);
     }
-
-    // const options = event.target.options;
-    // console.log('selected', event.target.value);
-    // const selectedValues = [];
     setSelectedOptions(event.target.value);
   };
 
   console.log('selectedIds',selectedIds);
+  console.log('Status Selected',statusDefaultValue)
   return (
     <>
-    <Box sx={{marginTop:2}}>
+    {isObjectNew && <Box sx={{marginTop:2}}>
         <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, marginBottom:2, borderRadius:1}}>
           Create a Carousel
         </Typography>
-        </Box>
+    </Box>}
+    {!isObjectNew && <Box sx={{marginTop:2}}>
+        <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, marginBottom:2, borderRadius:1}}>
+          Carousel Details
+        </Typography>
+    </Box>}
       <Box sx={{marginTop:2,display:"flex"}}>
     <Box sx={{marginRight:3}}>
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -180,40 +172,23 @@ function CarouselForm({carousel}) {
       {errors.endDate && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={12}>
+    <Grid item xs={12} md={6} lg={12} sx={{minWidth:1000}}>
       <label className="form-label">Select Kitchens which will show up in the Carousel</label>
-      {/* <MultiSelect
-        name="kitchens"
-        options=
-        { carousel ? kitchens?.map((elem) => ({
-          label: elem.kitchenName,
-          value: elem._id,
-        })) : []}
-        value={kitchens}
-        getOptionLabel={(option) => option.label || carousel?.kitchen?.kitchenName || ""}
-        onSelected={handleSelectedOptions}
-        labelledBy="Select"
-        disabled={!editable}
-        renderInput={(params) => (
-          <TextField {...params} variant="outlined" />
-        )}
-        // {...register("kitchens[0].value")}
-      /> */}
       <Select
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
           value={isObjectNew ? selectedOptions: carousel.length!=0 ? carousel?.kitchens?.map((kitchen)=>{return kitchen.kitchenName}):[]}
-          // value={selectedOptions}
           onChange={handleSelect}
           input={<OutlinedInput label="Tag" />}
           renderValue={(selected) => selected.join(', ')}
           MenuProps={MenuProps}
+          disabled={!editable}
+          style={{ minWidth: '400px', maxWidth:"500px" }}
         >
           {kitchens.map((kitchen) => (
             <MenuItem key={kitchen._id} value={kitchen.kitchenName}>
               <Checkbox 
-              // checked={kitchenNames.indexOf(kitchen) > -1}
               checked={selectedIds.includes(kitchen._id)}
                />
               <ListItemText primary={kitchen.kitchenName} />

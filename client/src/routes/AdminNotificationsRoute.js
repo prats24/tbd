@@ -2,21 +2,30 @@ import AdminPanel from '../pages/Admin_Panel'
 import Reviews from '../layouts/adminPanel/reviews/reviews'
 import DeliveryAgents from '../layouts/adminPanel/deliveryAgent/deliveryAgent'
 import Discount from '../layouts/adminPanel/discount/discount'
-import Carousel from '../layouts/adminPanel/carousel/carousel'
+import AdminCarousel from '../layouts/adminPanel/carousel/carousel'
+import AdminCuisine from '../layouts/adminPanel/cuisine/cuisine'
 import { MdReviews } from 'react-icons/md';
 import { MdDeliveryDining } from 'react-icons/md';
 import { TbDiscount2 } from 'react-icons/tb';
 import { BiCarousel } from 'react-icons/bi';
+import { MdOutlineFastfood } from 'react-icons/md'
 
 
-
+console.log("Inside Admin Route")
 const AdminNotificationRoute = [
   {
     type: "collapse",
-    name: "Carousel",
+    name: "Carousels",
     key: "carousel",
     icon: <BiCarousel/>,
-    component: <Carousel />,
+    component: <AdminCarousel />,
+  },
+  {
+    type: "collapse",
+    name: "Cuisines",
+    key: "cuisine",
+    icon: <MdOutlineFastfood/>,
+    component: <AdminCuisine />,
   },
   {
     type: "collapse",

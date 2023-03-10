@@ -6,11 +6,16 @@ import { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import {Link} from 'react-router-dom'
 import { Typography } from "@mui/material";
+import OutlinedInput from '@mui/material/OutlinedInput';
 import { object } from "prop-types";
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import Api from '../../../helpers/api'
 import { withStyles } from "@material-ui/core/styles";
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+import MenuItem from '@mui/material/MenuItem';
 
 function KitchenForm({kitchen}) {
   console.log("Kitchen Value: ",kitchen)
@@ -21,7 +26,9 @@ function KitchenForm({kitchen}) {
   const [editable,setEditable] = useState('') 
   const [isObjectNew,setIsNewObject] = useState('');
   const [societies,setSocieties] = useState([]);
+  const [cuisines, setCuisines] = useState([]);
   const [homeChefs,setHomeChefs] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
   const [homeChef,setHomeChef] = useState([]);
   const [society,setSociety] = useState([]);
   const [societyName, setSocietyName] = useState([]);
@@ -29,6 +36,7 @@ function KitchenForm({kitchen}) {
   const [statusDefaultValue, setStatusDefaultValue] = useState(false);
   const [statusKitchenType, setStatusKitchenType] = useState();
   const [gstApplicable, setGSTApplicable] = useState();
+  const [selectedIds, setSelectedIds] = useState([]);
 
 
     useEffect(() => {
@@ -79,6 +87,17 @@ function KitchenForm({kitchen}) {
     input: {}
   })(Autocomplete);
 
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 200,
+      },
+    },
+  };
+
   useEffect(async()=>{
     setEditable(kitchen.length === 0 ? true : false)
     console.log("Editable set as: ",editable)
@@ -91,6 +110,12 @@ function KitchenForm({kitchen}) {
     console.log(res.data.data)
     setSocieties(res.data.data);
     },[])
+
+  useEffect(async()=>{
+      let res = await Api.getCuisines()
+      console.log(res.data.data)
+      setCuisines(res.data.data);
+      },[])
   
   useEffect(async()=>{
       let res = await Api.getHomeChef()
@@ -108,6 +133,9 @@ function KitchenForm({kitchen}) {
       if(data.displayPhoto[0])formData.append('displayPhoto', data?.displayPhoto[0]);
       if(data.coverPhoto[0])formData.append('coverPhoto', data?.coverPhoto[0]);
       if(data.foodLicensePhoto[0])formData.append('foodLicensePhoto', data?.foodLicensePhoto[0]);
+      selectedIds.forEach((id, index) => {
+        formData.append(`cuisines[${index}]`, id);
+      });
       const res = await Api.createKitchen(formData);
       console.log('response', res.data.data);
       if(res.data.status === 'success'){
@@ -137,8 +165,22 @@ function KitchenForm({kitchen}) {
     return dateObj.toISOString().split('T')[0];
   }
 
+  const handleSelect = (event, key) => {
+    console.log('handleselect');
+    console.log(key.key.substring(2));
+    if(!selectedIds?.includes(key.key.substring(2))){
+      setSelectedIds((prev)=> [...prev, key.key.substring(2)]);
+    }else{
+      let ids = selectedIds?.filter((e)=>e!=key.key.substring(2));
+      setSelectedIds(ids);
+    }
+    setSelectedOptions(event.target.value);
+  };
+
   console.log(kitchen?.status,(kitchen?.status === 'active'),(kitchen?.status === 'inactive'))
   console.log(kitchen?.kitchenType)
+  console.log('selected',selectedOptions);
+  console.log('first',kitchen?.cuisine?.map((cuisine)=>{return cuisine.cuisineName}))
   let chefName = kitchen.length != 0 ? (kitchen?.homeChef?.firstName + " " + kitchen?.homeChef?.lastName) : undefined
   console.log(chefName)
   
@@ -329,6 +371,32 @@ function KitchenForm({kitchen}) {
       {errors.description && <span className="form-error">This field is required</span>}
     </Grid>
 
+    <Grid item xs={12} md={6} lg={6} sx={{minWidth:600}}>
+      <label className="form-label">Select Kitchen Cuisines</label>
+      <Select
+          labelId="demo-multiple-checkbox-label"
+          id="demo-multiple-checkbox"
+          multiple
+          value={isObjectNew ? selectedOptions: kitchen.length!=0 ? kitchen?.cuisines?.map((cuisine)=>{ return cuisine.cuisineName}):[]}
+          onChange={handleSelect}
+          input={<OutlinedInput label="Tag" />}
+          renderValue={(selected) => selected.join(', ')}
+          MenuProps={MenuProps}
+          disabled={!editable}
+          style={{ minWidth: '400px', maxWidth:"100%" }}
+        >
+          {cuisines.map((cuisine) => (
+            <MenuItem key={cuisine._id} value={cuisine.cuisineName}>
+              <Checkbox 
+              checked={selectedIds.includes(cuisine._id)}
+               />
+              <ListItemText primary={cuisine.cuisineName} />
+            </MenuItem>
+          ))}
+        </Select>
+      {errors.cuisines && <span className="form-error">This field is required</span>}
+    </Grid>
+
     <Grid item xs={12} md={6} lg={2}>
       <label className="form-label" style={{margin:1}}>Kitchen Type</label>
         <input disabled={!editable}
@@ -343,7 +411,7 @@ function KitchenForm({kitchen}) {
       {errors.status && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={3}>
+    <Grid item xs={12} md={6} lg={2}>
       <label className="form-label" style={{margin:1}}>Status</label>
         <input 
         onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
@@ -357,7 +425,7 @@ function KitchenForm({kitchen}) {
       {errors.status && <span className="form-error">This field is required</span>}
     </Grid>
     
-    <Grid item xs={12} md={6} lg={3}>
+    <Grid item xs={12} md={6} lg={2}>
       <label className="form-label" style={{margin:1}}>GST Applicable</label>
         <input 
         onClick={()=>{setGSTApplicable(!gstApplicable)}}
@@ -430,13 +498,17 @@ function KitchenForm({kitchen}) {
 
     {!editable &&
     <Grid item xs={12} md={6} lg={2}>
-    <button type="edit" className="form-submit" onClick={()=>{setEditable(true),setIsNewObject(false)}}>Edit</button>
+    <button type="edit" className="form-submit" onClick={()=>{setEditable(true),setIsNewObject(false) 
+      setSelectedOptions(kitchen?.cuisines?.map((cuisine)=>{return cuisine.cuisineName}))
+      setSelectedIds((kitchen?.cuisines?.map((cuisine)=>{return cuisine.cuisineName})))
+      }}
+    >Edit</button>
     </Grid>
     }
 
     {!editable &&
     <Grid item xs={12} md={6} lg={2}>
-    <button type="back" className="form-submit">Back</button>
+    <button type="button" className="form-submit" component={Link} to={'/kitchen'}>Back</button>
     </Grid>
     }
 

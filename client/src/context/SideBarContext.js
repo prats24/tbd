@@ -10,6 +10,7 @@ import Reviews from '../layouts/adminPanel/reviews/reviews';
 import DeliveryAgents from '../layouts/adminPanel/deliveryAgent/deliveryAgent';
 import Discount from '../layouts/adminPanel/discount/discount';
 import AdminCarousel from '../layouts/adminPanel/carousel/carousel';
+import AdminCuisine from '../layouts/adminPanel/cuisine/cuisine';
 
 export const ViewContext = React.createContext();
 
@@ -40,8 +41,10 @@ export default function SideBarContext({children}) {
             return <DeliveryAgents />;
           case 'Discount':
             return <Discount />;
-          case 'Carousel':
+          case 'Carousels':
             return <AdminCarousel />;
+            case 'Cuisines':
+            return <AdminCuisine />;
           default:
             return null;
         }
