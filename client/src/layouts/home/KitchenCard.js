@@ -8,24 +8,27 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { Divider } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { AiOutlineArrowRight } from 'react-icons/ai';
 // import { DiscountIcon } from '@material-ui/icons/Discount';
 // import discounticon from 'react-icons/TbDiscount2'
 import { TbDiscount2 } from 'react-icons/tb';
+import { red } from '@mui/material/colors';
 
 export default function KitchensCard() {
   return (
     <>
     <Box sx={{marginTop:5,marginLeft:10,marginRight:10,fontSize:20,display:"flex",alignItems:"center"}}>
     <Box sx={{display:"flex",justifyContent:"space-between", width: "1359px"}}>
-    <Box sx={{display:"flex",alignItems:"center", fontFamily:"roboto",color:"#d32f2f"}}>121 home kitchens in your society</Box>
+    <Box sx={{display:"flex",alignItems:"center", fontFamily:"arial",color:"#696969",fontWeight:600}}>121 home kitchens</Box>
     <Box sx={{display:"flex",alignItems:"center",textAlign:"right"}}>
-    <Button sx={{color:"#d32f2f"}} variant='text'>Revelance</Button>
-    <Button sx={{color:"#d32f2f"}} variant='text'>Ratings</Button>
-    <Button sx={{color:"#d32f2f"}} variant='text'>Cost High to Low</Button>
-    <Button sx={{color:"#d32f2f"}} variant='text'>Cost Low to High</Button>
+    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Revelance</Button>
+    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Ratings</Button>
+    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Cost High to Low</Button>
+    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Cost Low to High</Button>
     </Box>
     </Box>
     </Box>
+    
     
     <Box sx={{marginTop:2,marginLeft:10,marginRight:10}}>
     <Grid container spacing={5}>
@@ -188,4 +191,6 @@ export default function KitchensCard() {
     </Box>
     </>
   );
+  
 }
+
