@@ -34,7 +34,7 @@ function KitchenForm({kitchen}) {
   const [societyName, setSocietyName] = useState([]);
   const [deliveryChargeType, setDeliveryChargeType] = useState([]);
   const [statusDefaultValue, setStatusDefaultValue] = useState(false);
-  const [statusKitchenType, setStatusKitchenType] = useState();
+  const [statusKitchenType, setStatusKitchenType] = useState(); 
   const [gstApplicable, setGSTApplicable] = useState();
   const [selectedIds, setSelectedIds] = useState([]);
 
@@ -63,10 +63,7 @@ function KitchenForm({kitchen}) {
       }
     }, [kitchen]);
 
-  // setEditable(!kitchen ? true : false)
-  // setIsNewObject(!kitchen ? true : false)
-  // photo = isObjectNew ? photo : kitchen.displayPhoto
-  // cphoto = isObjectNew ? cphoto : kitchen.coverPhoto
+
   const deliveryChargeTypes = ['Flat','Percentage']
 
   const NoPaddingAutocomplete = withStyles({

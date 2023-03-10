@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm,Controller } from "react-hook-form";
 import api from "../../../helpers/api";
 import '../styles/inputFormStyle.css';
 import Box from '@mui/material/Box';
@@ -7,21 +7,26 @@ import Grid from '@mui/material/Grid';
 import {Link} from 'react-router-dom'
 import { Typography } from "@mui/material";
 import { object } from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 function HomeChefForm({homeChef}) {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const [initialValues,setInitialValues] = useState(homeChef);
+  const { register, handleSubmit, formState: { errors }, watch, control } = useForm(homeChef.length === 0 ? "" : initialValues);
   let [photo,setPhoto] = useState('/default/chef.gif')
   const [editable,setEditable] = useState('') 
+  const [societies,setSocieties] = useState([]);
   const [isObjectNew,setIsNewObject] = useState('');
   const [statusDefaultValue, setStatusDefaultValue] = useState(false);
   const [genderValue, setGenderValue] = useState();
+  const [society,setSociety] = useState([]);
 
   useEffect(async()=>{
     setEditable(homeChef.length === 0 ? true : false)
-    console.log("Editable set as: ",editable)
+    // console.log("Editable set as: ",editable)
     setIsNewObject(homeChef.length === 0 ? true : false)
-    console.log(homeChef.length,editable,isObjectNew)
+    // console.log(homeChef.length,editable,isObjectNew)
     if (homeChef.length !== 0 && homeChef.gender === "male") {
       setGenderValue(true);
     } else {
@@ -29,14 +34,39 @@ function HomeChefForm({homeChef}) {
     }
   },[homeChef])
 
+  useEffect(async()=>{
+    let res = await api.getSocieties()
+    console.log(res.data.data)
+    setSocieties(res.data.data);
+    },[])
+
+    const NoPaddingAutocomplete = withStyles({
+      inputRoot: {
+        '&&[class*="MuiOutlinedInput-root"] $input': {
+          padding: 0
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "1px solid #ced4da"
+        },
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: "red"
+        },
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderColor: "purple"
+        }
+      },
+      input: {}
+    })(Autocomplete);
+
   const onSubmit = async (data) => {
     console.log(data);
     
     try{
       const formData = new FormData();
-      Object.keys(data).forEach((key) => {if(key!='photo')formData.append(key, data[key])});
+      Object.keys(data).forEach((key) => {if(key!='displayPhoto')formData.append(key, data[key])});
     //   Object.keys(data).forEach((key) => {if(key!='photo')console.log(key, data[key])});
-      formData.append('photo', data.photo[0]);
+      console.log(data.displayPhoto[0])
+      formData.append('displayPhoto', data.displayPhoto[0]);
       const res = await api.createHomeChef(formData);
       console.log('response', res.data.data);
       setPhoto(res.data.data.displayPhoto)
@@ -84,28 +114,61 @@ function HomeChefForm({homeChef}) {
       {errors.lastName && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={12}>
+    <Grid item xs={12} md={6} lg={4}>
       <label className="form-label">Email</label>
       <input disabled={!editable} defaultValue={homeChef.email} className="form-control" {...register("email")} />
       {errors.email && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={12}>
+    <Grid item xs={12} md={6} lg={4}>
       <label className="form-label">Mobile No.</label>
       <input disabled={!editable} defaultValue={homeChef.phone} type="number" className="form-control" {...register("phone", { required: true })} />
       {errors.phone && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={12}>
+    <Grid item xs={12} md={6} lg={4}>
+      <label className="form-label">Date Of Birth</label>
+      <input disabled={!editable} defaultValue={getFormattedDate(homeChef.dateOfBirth)} type="date" className="form-control" {...register("dateOfBirth", { required: true })} />
+      {errors.dateOfBirth && <span className="form-error">This field is required</span>}
+    </Grid>
+
+    <Grid item xs={12} md={6} lg={4}>
       <label className="form-label">Password</label>
       <input disabled={!editable} defaultValue={homeChef.password} type="text" className="form-control" {...register("password", { required: true })} />
       {errors.password && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Date Of Birth</label>
-      <input disabled={!editable} defaultValue={getFormattedDate(homeChef.dateOfBirth)} type="date" className="form-control" {...register("dateOfBirth", { required: true })} />
-      {errors.dateOfBirth && <span className="form-error">This field is required</span>}
+    <Grid item xs={12} md={6} lg={4}>
+      <label className="form-label">City</label>
+      <input disabled={!editable} defaultValue={homeChef.city} type="text" className="form-control" {...register("city", { required: true })} />
+      {errors.city && <span className="form-error">This field is required</span>}
+    </Grid>
+
+    <Grid item xs={12} md={6} lg={4}>
+    <label disabled={!editable} className="form-label">Society Name</label>
+    <Controller
+        name="society"
+        control={control}
+        render={({ field }) => (
+          <NoPaddingAutocomplete
+            disabled={!editable}
+            options=
+            { homeChef ? societies?.map((elem) => ({
+              societyName: elem.societyName,
+              societyId: elem._id,
+            })) : []}
+            value={society}
+            getOptionLabel={(option) => option.societyName || homeChef?.society?.societyName || ""}
+            onChange={(event, newValue) => {
+              setSociety(newValue);
+              field.onChange(newValue ? newValue.societyId : "");
+            }}
+            renderInput={(params) => (
+              <TextField {...params} variant="outlined" />
+            )}
+          />
+        )}
+      />
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
@@ -126,7 +189,7 @@ function HomeChefForm({homeChef}) {
         type="radio" {...register("gender", { required: true })} value="female" />
         Female
       </label >
-      {errors.status && <span className="form-error">This field is required</span>}
+      {errors.gender && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
