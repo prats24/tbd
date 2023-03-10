@@ -42,11 +42,6 @@ const carouselSchema = new mongoose.Schema({
         // required : true
     },
     carouselId: String,
-    status: {
-        type: String,
-        enum:['active', 'inactive'],
-        default: 'inactive'
-    }
 });
 
 

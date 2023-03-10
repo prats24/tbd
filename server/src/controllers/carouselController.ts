@@ -7,16 +7,7 @@ import AWS from 'aws-sdk';
 import sharp from 'sharp';
 
 interface carousel{
-    firstName: string,
-    lastName: string,
-    dateOfBirth: Date,
-    gender: string,
-    email: string,
-    bankDetails:Object
-    password: string,
-    phone: string,
-    city: string,
-    state: string,
+    carouselName: string,
     role: string,
     address: string,
     society?: string,
@@ -121,7 +112,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
   };
 
   export const createCarousel =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
-    const{carouselName, description, startDate, endDate, kitchens, status} = req.body;
+    const{carouselName, description, startDate, endDate, kitchens} = req.body;
     const carouselPhoto = (req as any).uploadUrl;
 
     console.log('kitchens', kitchens);
@@ -131,7 +122,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
     //Check if user exists
     // if(await carousel.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const carousel = await Carousel.create({carouselName, description, startDate, endDate, kitchens, status,
+    const carousel = await Carousel.create({carouselName, description, startDate, endDate, kitchens,
       createdBy: (req as any).user._id, carouselPhoto});
 
     if(!carousel) return next(createCustomError('Couldn\'t create carousel', 400));
@@ -141,7 +132,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 });
 
 export const getCarousels = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const carousels = await Carousel.find({isDeleted: false}).populate({path: 'kitchens', populate:{path:'society', model:'Society'}}).sort({status:1,endDate:-1});
+    const carousels = await Carousel.find({isDeleted: false}).populate({path: 'kitchens', populate:{path:'society', model:'Society'}}).sort({endDate:-1});
 
 
     if(!carousels) return next(createCustomError('No users found.', 404));
