@@ -36,7 +36,7 @@ export default function ComplexGrid () {
   }));
 
   React.useEffect(async()=>{
-  let res = await Api.getCuisines()
+  let res = await Api.getActiveCarousels()
   console.log(res.data.data)
   setCuisines(res.data.data)
   },[])

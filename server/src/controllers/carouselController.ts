@@ -168,6 +168,7 @@ export const getCarousel = CatchAsync(async (req: Request, res: Response, next: 
 
 });
 
+
 export const editCarousel = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const carousel = await Carousel.findOne({_id: id}).select('-__v -password -role');
@@ -186,5 +187,16 @@ export const editCarousel = CatchAsync(async (req: Request, res: Response, next:
         runValidators: true
       }).select('-__v -password -role');
     res.status(200).json({status: "success", data:updatedCarousel});
+
+});
+
+export const getActiveCarousels = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
+  let date = new Date();
+  const carousels = await Carousel.find({isDeleted: false, startDate : {$gte : date}, endDate :{$lte : date}})
+  .populate({path: 'kitchens', populate:{path:'society', model:'Society'}}).sort({endDate:-1});
+
+  if(!carousels) return next(createCustomError('No users found.', 404));
+  
+  res.status(200).json({status:"success", data: carousels, results: carousels.length});
 
 });
