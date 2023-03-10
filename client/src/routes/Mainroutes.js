@@ -20,7 +20,9 @@ import AdminCuisine from '../pages/Admin_Cuisine'
 import CreateHomeChef from '../pages/Create_Homechef'
 import CreateKitchen from '../pages/Create_Kitchen'
 import CreateCarousel from '../pages/Create_Carousel'
-import CreateCuisine from '../pages/Create_Cuisine'
+import CreateCuisine from '../pages/Create_Cuisine';
+import HomeChefLogin from '../pages/HomeChefLogin';
+import HomeChefDashboard from '../pages/HomeChef_Dashboard';
 
 console.log("Inside Main Route")
 const AuthenticationRoutes = (isLoggedIn) => [
@@ -63,6 +65,14 @@ const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/admin',
     element: <AdminLogin />,
+  },
+  {
+    path: '/homechef',
+    element: <HomeChefLogin />,
+  },
+  {
+    path: '/homechefdashboard',
+    element: <HomeChefDashboard />,
   },
   {
     path: '/allmeals',
