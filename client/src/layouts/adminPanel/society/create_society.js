@@ -20,6 +20,12 @@ function SocietyForm({society}) {
     setEditable(society.length === 0 ? true : false)
     console.log("Editable set as: ",editable)
     setIsNewObject(society.length === 0 ? true : false)
+    setPhoto(society.length === 0 ? photo : society.societyPhoto)
+    if (society.length !== 0 && society.status === "active") {
+      setStatusDefaultValue(true);
+    } else {
+      setStatusDefaultValue(false);
+    }
     console.log(society.length,editable,isObjectNew)
   },[society])
 
@@ -27,11 +33,13 @@ function SocietyForm({society}) {
     console.log(data);
     try{
       const formData = new FormData();
-      Object.keys(data).forEach((key) => {if(key!='photo')formData.append(key, data[key])});
-      formData.append('photo', data.photo[0]);
+      Object.keys(data).forEach((key) => {if(key!='societyPhoto')formData.append(key, data[key])});
+      formData.append('societyPhoto', data.societyPhoto[0]);
       const res = await api.createSociety(formData);
       console.log('response', res.data.data);
       setPhoto(res.data.data.societyPhoto)
+      setEditable(false);
+      setIsNewObject(false);
       window.alert("Society Created Successfully")
     }catch(e){
       console.log(e);
@@ -95,6 +103,7 @@ function SocietyForm({society}) {
         onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
         checked={!statusDefaultValue} 
         disabled={!editable} 
+        defaultChecked
         type="radio" {...register("status", { required: true })} value="inactive" />
         Inactive
       </label >
@@ -103,8 +112,8 @@ function SocietyForm({society}) {
 
     <Grid item xs={12} md={6} lg={12}>
       <label className="form-label">Society Image</label>
-      <input disabled={!editable} type="file" className="form-control" {...register("photo", { required: true })} />
-      {errors.photo && <span className="form-error">This field is required</span>}
+      <input disabled={!editable} type="file" className="form-control" {...register("societyPhoto", { required: true })} />
+      {errors.societyPhoto && <span className="form-error">This field is required</span>}
     </Grid>
 
     {editable && isObjectNew &&

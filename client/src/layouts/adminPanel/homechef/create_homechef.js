@@ -27,6 +27,7 @@ function HomeChefForm({homeChef}) {
     // console.log("Editable set as: ",editable)
     setIsNewObject(homeChef.length === 0 ? true : false)
     // console.log(homeChef.length,editable,isObjectNew)
+    setPhoto(homeChef.length === 0 ? photo : homeChef.displayPhoto)
     if (homeChef.length !== 0 && homeChef.gender === "male") {
       setGenderValue(true);
     } else {
@@ -70,6 +71,8 @@ function HomeChefForm({homeChef}) {
       const res = await api.createHomeChef(formData);
       console.log('response', res.data.data);
       setPhoto(res.data.data.displayPhoto)
+      setEditable(false);
+      setIsNewObject(false);
       window.alert("HomeChef Created Successfully")
     }catch(e){
       console.log(e);
@@ -93,9 +96,12 @@ function HomeChefForm({homeChef}) {
   return (
     <>
     <Box sx={{marginTop:2}}>
-        <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, marginBottom:2, borderRadius:1}}>
-          Create a HomeChef
-        </Typography>
+        {isObjectNew && <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, marginBottom:2, borderRadius:1}}>
+          Onboard a HomeChef
+        </Typography>}
+        {!isObjectNew && <Typography sx={{backgroundColor:"#e8e8e8",color:"black",fontWeight:400,padding:1, marginBottom:2, borderRadius:1}}>
+          HomeChef Details
+        </Typography>}
         </Box>
       <Box sx={{marginTop:2,display:"flex"}}>
     <Box sx={{marginRight:3}}>
@@ -103,49 +109,49 @@ function HomeChefForm({homeChef}) {
     <Grid container spacing={1}>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">First Name</label>
+      <label className="form-label">First Name*</label>
       <input disabled={!editable} defaultValue={homeChef.firstName} className="form-control" {...register("firstName", { required: true })} />
       {errors.firstName && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Last Name</label>
+      <label className="form-label">Last Name*</label>
       <input disabled={!editable} defaultValue={homeChef.lastName} className="form-control" {...register("lastName", { required: true })} />
       {errors.lastName && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
-      <label className="form-label">Email</label>
+      <label className="form-label">Email*</label>
       <input disabled={!editable} defaultValue={homeChef.email} className="form-control" {...register("email")} />
       {errors.email && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
-      <label className="form-label">Mobile No.</label>
+      <label className="form-label">Mobile No.*</label>
       <input disabled={!editable} defaultValue={homeChef.phone} type="number" className="form-control" {...register("phone", { required: true })} />
       {errors.phone && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
-      <label className="form-label">Date Of Birth</label>
+      <label className="form-label">Date Of Birth*</label>
       <input disabled={!editable} defaultValue={getFormattedDate(homeChef.dateOfBirth)} type="date" className="form-control" {...register("dateOfBirth", { required: true })} />
       {errors.dateOfBirth && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
-      <label className="form-label">Password</label>
+      <label className="form-label">Password*</label>
       <input disabled={!editable} defaultValue={homeChef.password} type="text" className="form-control" {...register("password", { required: true })} />
       {errors.password && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
-      <label className="form-label">City</label>
+      <label className="form-label">City*</label>
       <input disabled={!editable} defaultValue={homeChef.city} type="text" className="form-control" {...register("city", { required: true })} />
       {errors.city && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={4}>
-    <label disabled={!editable} className="form-label">Society Name</label>
+    <label disabled={!editable} className="form-label">Society Name*</label>
     <Controller
         name="society"
         control={control}
@@ -172,7 +178,7 @@ function HomeChefForm({homeChef}) {
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
-      <label className="form-label">Gender</label>
+      <label className="form-label">Gender*</label>
       <label className="form-label">
         <input 
         onClick={()=>{setGenderValue(!genderValue)}}
@@ -193,7 +199,7 @@ function HomeChefForm({homeChef}) {
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
-      <label className="form-label">Status</label>
+      <label className="form-label">Status*</label>
       <label className="form-label">
         <input 
         onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
@@ -207,6 +213,7 @@ function HomeChefForm({homeChef}) {
         onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
         checked={!statusDefaultValue} 
         disabled={!editable} 
+        defaultChecked
         type="radio" {...register("status", { required: true })} value="inactive" />
         Inactive
       </label >
@@ -214,7 +221,7 @@ function HomeChefForm({homeChef}) {
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">HomeChef Image</label>
+      <label className="form-label">HomeChef Image* (250px * 250px)</label>
       <input disabled={!editable} type="file" className="form-control" {...register("displayPhoto", { required: true })} />
       {errors.displayPhoto && <span className="form-error">This field is required</span>}
     </Grid>
