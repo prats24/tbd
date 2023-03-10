@@ -122,7 +122,8 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
   export const createHomeChef =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
     const{firstName, lastName, gender, dateOfBirth, email, password, phone, city, address, society, bankDetails, description, }: HomeChef = req.body;
-    // console.log("User :",(req as any).user)
+    console.log(req.body)
+    console.log("User :",(req as any).user)
     const displayPhoto = (req as any).uploadUrl;
     console.log(displayPhoto);
     //Check for required fields 
