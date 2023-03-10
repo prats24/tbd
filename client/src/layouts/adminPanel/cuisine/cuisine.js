@@ -51,8 +51,8 @@ export default function ComplexGrid () {
       </Button>
     </Box>
 
-    <Box sx={{marginTop:4,marginLeft:3,marginRight:1}}>
-      <Grid container spacing={1} item xs={12} md={6} lg={12}>
+    <Box sx={{marginTop:1,marginLeft:1,marginRight:1}}>
+      <Grid container spacing={10} item xs={12} md={6} lg={12}>
     { cuisines.map((e)=>{
 
       return(
@@ -63,18 +63,21 @@ export default function ComplexGrid () {
                 </Item> */}
               <StyledPaper
               sx={{
-                my: 1,
+                my: 0,
                 mx: 'auto',
                 p: 2,
               }}
             >
               <Link style={{textDecoration:"none", color:"inherit"}} to='/createcuisine' state={{id:e._id}}>
-              <Grid container wrap="nowrap" spacing={2} display="flex" justifyContent="space-between">
+              <Grid container spacing={1} display="flex" justifyContent="space-between">
                 <Grid item>
                   <Avatar><img width="40" height="40" src={e.cuisineIcon}/></Avatar>
                 </Grid>
                 <Grid item xs zeroMinWidth>
                   <Typography paddingTop={1} noWrap>{e.cuisineName}</Typography>
+                </Grid>
+                <Grid item>
+                  <Typography paddingTop={1}>&#128308;</Typography>
                 </Grid>
               </Grid>
               </Link>
