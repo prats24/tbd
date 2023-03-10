@@ -6,7 +6,7 @@ import Carousel from '../layouts/home/Carousel'
 export default function Kitchen() {
   return (
     <div>
-      <Carousel items={['1.jpeg','2.jpeg','3.jpeg','4.jpeg','5.jpeg']}/>
+      <Carousel items={['1.jpeg','2.jpeg','3.jpeg','4.jpeg','5.jpeg','mymithai5.jpg']}/>
       <KitchenCard />
       {/* <Testimonialsection /> */}
     </div>
