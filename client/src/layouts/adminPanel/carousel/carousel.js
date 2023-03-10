@@ -92,7 +92,7 @@ export default function ComplexGrid () {
         <Link style={{textDecoration:'none',color:'inherit'}} to='/createcarousel' state={{id:e._id}}> View Details </Link>
         </Button>
         <Box sx={{backgroundColor:`${livecolor}`,fontSize:8,fontWeight:700,color:"white", padding:0.5, borderRadius:1, minWidth:80, textAlign:"center"}} size="small" variant="contained">
-          {(getFormattedDate(e.endDate) >= getTodayDate()) ? "Live" : "Not Live"}
+          {(getFormattedDate(e.endDate) >= getTodayDate() && getFormattedDate(e.startDate) <= getTodayDate() ) ? "Live" : "Not Live"}
         </Box>
       </CardActions>
     </Card>
