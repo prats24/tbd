@@ -22,7 +22,7 @@ import { withStyles } from "@material-ui/core/styles";
 function CarouselForm({carousel}) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const [initialValues,setInitialValues] = useState(carousel);
-  let [photo,setPhoto] = useState('/default/chef.gif')
+  let [photo,setPhoto] = useState('/default/carousel.gif')
   const [kitchens, setKitchens] = useState([]);
   const [kitchenNames,setKitchenNames] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -113,7 +113,8 @@ function CarouselForm({carousel}) {
     const day = parseInt(dateParts[2]);
     if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
     const dateObj = new Date(year, month, day);
-    return dateObj.toISOString().split('T')[0];
+    const dateObjnew = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000))
+    return dateObjnew.toISOString().split('T')[0];
   }
 
 
@@ -149,31 +150,31 @@ function CarouselForm({carousel}) {
     <Grid container spacing={1}>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Carousel Title</label>
+      <label className="form-label">Carousel Title*</label>
       <input disabled={!editable} defaultValue={carousel.carouselName} className="form-control" {...register("carouselName", { required: true })} />
       {errors.carouselName && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Carousel Description</label>
+      <label className="form-label">Carousel Description*</label>
       <input disabled={!editable} defaultValue={carousel.description} className="form-control" {...register("description", { required: true })} />
       {errors.description && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
-      <label className="form-label">Start Date</label>
+      <label className="form-label">Start Date*</label>
       <input disabled={!editable} defaultValue={getFormattedDate(carousel.startDate)} type="date" className="form-control" {...register("startDate")} />
       {errors.startDate && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
-      <label className="form-label">End Date</label>
+      <label className="form-label">End Date*</label>
       <input disabled={!editable} defaultValue={getFormattedDate(carousel.endDate)} type="date" className="form-control" {...register("endDate", { required: true })} />
       {errors.endDate && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={12} sx={{minWidth:1000}}>
-      <label className="form-label">Select Kitchens which will show up in the Carousel</label>
+    <Grid item xs={12} md={6} lg={12} sx={{minWidth:500}}>
+      <label className="form-label">Select Kitchens which will show up in the Carousel*</label>
       <Select
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
@@ -198,30 +199,8 @@ function CarouselForm({carousel}) {
       {errors.kitchen && <span className="form-error">This field is required</span>}
     </Grid>
 
-
-    <Grid item xs={12} md={6} lg={6}>
-      <label className="form-label">Status</label>
-      <label className="form-label">
-        <input 
-        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
-        checked={statusDefaultValue} 
-        disabled={!editable} 
-        type="radio"{...register("status", { required: true })} value="active" />
-        Active
-      </label>
-      <label className="form-label">
-        <input 
-        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
-        checked={!statusDefaultValue} 
-        disabled={!editable} 
-        type="radio" {...register("status", { required: true })} value="inactive" />
-        Inactive
-      </label >
-      {errors.status && <span className="form-error">This field is required</span>}
-    </Grid>
-
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Carousel Image</label>
+      <label className="form-label">Carousel Image*</label>
       <input disabled={!editable} type="file" className="form-control" {...register("carouselPhoto", { required: true })} />
       {errors.carouselPhoto && <span className="form-error">This field is required</span>}
     </Grid>
