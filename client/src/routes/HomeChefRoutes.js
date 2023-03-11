@@ -1,5 +1,5 @@
 import AdminPanel from '../pages/Admin_Panel'
-import Dashboard from '../layouts/adminPanel/dashboard/dashboard'
+import Dashboard from '../layouts/homeChefDashboard/dashboard/dashboard'
 import HomeChef from '../layouts/adminPanel/homechef/homechef'
 import AdminKitchen from '../layouts/adminPanel/kitchen/kitchen'
 import Society from '../layouts/adminPanel/society/society'
@@ -18,16 +18,11 @@ import { SiFoodpanda } from 'react-icons/si';
 import { BiFoodMenu } from 'react-icons/bi'
 
 
-
-
-
-
-
 const AuthenticationRoutes = [
   {
     type: "collapse",
     name: "Dashboard",
-    key: "admindashboard",
+    key: "homechefdashboard",
     icon: <AiOutlineDashboard/>,
     component: <Dashboard />,
   },

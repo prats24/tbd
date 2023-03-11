@@ -36,7 +36,7 @@ export default function ComplexGrid () {
   }));
 
   React.useEffect(async()=>{
-  let res = await Api.getActiveCarousels()
+  let res = await Api.getCuisines()
   console.log(res.data.data)
   setCuisines(res.data.data)
   },[])
@@ -76,9 +76,13 @@ export default function ComplexGrid () {
                 <Grid item xs zeroMinWidth>
                   <Typography paddingTop={1} noWrap>{e.cuisineName}</Typography>
                 </Grid>
-                <Grid item>
+                {e.status === 'inactive' && <Grid item>
                   <Typography paddingTop={1}>&#128308;</Typography>
-                </Grid>
+                </Grid>}
+                {e.status === 'active' && <Grid item>
+                  <Typography paddingTop={1}>&#128994;</Typography>
+                </Grid>}
+                
               </Grid>
               </Link>
             </StyledPaper>

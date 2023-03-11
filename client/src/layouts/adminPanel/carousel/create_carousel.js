@@ -55,7 +55,7 @@ function CarouselForm({carousel}) {
   //   setKitchens(res.data.data);
   //   },[])
 
-  const [editable,setEditable] = useState('') 
+  const [editable,setEditable] = useState(''); 
   const [isObjectNew,setIsNewObject] = useState('');
   const [statusDefaultValue, setStatusDefaultValue] = useState(false);
 
@@ -77,7 +77,7 @@ function CarouselForm({carousel}) {
     console.log(res.data.data)
     setKitchens(res.data.data);
     },[])
-  
+
   const onSubmit = async (data) => {
     console.log(data);
     
@@ -95,6 +95,7 @@ function CarouselForm({carousel}) {
         window.alert("Carousel Created Successfully")
         setEditable(false);
         setIsNewObject(false);
+        // setKitchens();
         setPhoto(res.data.data.carouselPhoto)
       }
       
@@ -179,7 +180,7 @@ function CarouselForm({carousel}) {
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={isObjectNew ? selectedOptions: carousel.length!=0 ? carousel?.kitchens?.map((kitchen)=>{return kitchen.kitchenName}):[]}
+          value={isObjectNew ? selectedOptions: carousel.length!=0 ? carousel?.kitchens?.map((kitchen)=>{return kitchen.kitchenName}):kitchens?.map((kitchen)=>{return kitchen.kitchenName})}
           onChange={handleSelect}
           input={<OutlinedInput label="Tag" />}
           renderValue={(selected) => selected.join(', ')}
@@ -213,7 +214,7 @@ function CarouselForm({carousel}) {
 
     {editable && !isObjectNew &&
     <Grid item xs={12} md={6} lg={2}>
-    <button type="save" className="form-submit" onClick={()=>{setEditable(false),setIsNewObject(false)}}>Save</button>
+    <button type="submit" className="form-submit" onClick={()=>{setEditable(false); setIsNewObject(false);}}>Save</button>
     </Grid>
     }
 

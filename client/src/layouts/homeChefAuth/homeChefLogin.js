@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import './homeChefLoginStyle.css';
+import '../adminAuth/adminLoginStyle.css';
 import Api from '../../helpers/api';
 import {useNavigate} from 'react-router-dom';
 import AuthContext, { userContext } from "../../context/AuthContext";

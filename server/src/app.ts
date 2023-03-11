@@ -13,6 +13,7 @@ import kitchenRoutes from './routes/kitchenRoutes';
 import carouselRoutes from './routes/carouselRoutes';
 import cuisineRoutes from './routes/cuisineRoutes';
 import orderRoutes from './routes/orderRoutes';
+import myKitchenRoutes from './routes/kitchenRoutes'
 import errorHandler from './middlewares/errorHandler';
 
 
@@ -41,6 +42,7 @@ app.get('/', (req:Request,res:Response)=>{
 });
 
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/mykitchen', myKitchenRoutes);
 app.use('/api/v1/homechefs', homeChefRoutes);
 app.use('/api/v1/roles', roleRoutes);
 app.use('/api/v1/societies', societyRoutes);

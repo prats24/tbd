@@ -12,7 +12,7 @@ interface Society{
     societyTowers: Number,
     societyPinCode:string,
     societyAddress: string,
-    societyType: string,
+    status: string,
 }
 
 const storage = multer.memoryStorage();
@@ -32,7 +32,7 @@ if (file.mimetype.startsWith("image/")) {
   
 //   });
   
-const upload = multer({ storage, fileFilter }).single("photo");
+const upload = multer({ storage, fileFilter }).single("societyPhoto");
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -116,14 +116,16 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
         societyTowers,
         societyPinCode,
         societyAddress,
-        societyType }: Society = req.body;
+        status,
+       }: Society = req.body;
+       console.log(req.body)
     const societyPhoto = (req as any).uploadUrl;     
     //Check for required fields 
     if(!(societyName || societyPinCode))return next(createCustomError('Enter all mandatory fields.', 401));
 
     //Check if user exists
     if(await Society.findOne({isDeleted: false, societyName, societyPinCode})) return next(createCustomError('Society with this email already exists. Please edit the existing society.', 401));
-    const society = await Society.create({societyName, societyPinCode, societyGeoLocation, createdBy: (req as any).user._id, 
+    const society = await Society.create({societyName, societyPinCode, societyGeoLocation,status, createdBy: (req as any).user._id, 
         societyTowers, societyAddress, societyPhoto});
 
     if(!society) return next(createCustomError('Couldn\'t create user', 400));
@@ -182,13 +184,14 @@ export const editSociety = CatchAsync(async (req: Request, res: Response, next: 
         societyTowers,
         societyPinCode,
         societyAddress,
-        societyType }: Society = req.body;
+        status,
+         }: Society = req.body;
     const society = await Society.findOne({_id: id, isDeleted: false}).select('-__v');
 
     if(!society) return next(createCustomError('No such user found.', 404));
 
     const filteredBody = filterObj(req.body, 'societyName', 'societyGeoLocation', 'societyTowers', 'societyTowers',
-    'societyPinCode', 'societyAddress', 'societyType');
+    'societyPinCode', 'societyAddress', 'status');
     
     filteredBody.lastModifiedBy = id;
     if(req.file) filteredBody.societyPhoto = (req as any).uploadUrl;
