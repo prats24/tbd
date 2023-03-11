@@ -175,7 +175,8 @@ export default function MediaControlCard() {
         </Grid>
 
         { orders.map((e)=>{
-
+            let totalbill = 0
+            let totalquantity = 0
           return(
             <Grid item xs={12} md={12} lg={12}>
             <Paper
@@ -189,18 +190,18 @@ export default function MediaControlCard() {
               <Grid container xs={12} md={6} lg={12} spacing={2}>
               <Grid item container xs={12} md={6} lg={12} spacing={1} padding={0} fontSize={18} display="flex" justifyContent="space-around">
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700}>Order ID: {e.orderid}</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Order ID: {e.orderid}</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700}>Customer Name: {e.customerName}</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Customer Name: {e.customerName}</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700}>Order Time: {e.orderTime}</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Order Time: {e.orderTime}</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700}>Total Amount:{e.totalAmount}</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Total Amount:{e.totalAmount}</Typography>
                 </Grid>
-                <Grid item xs={12} md={12} lg={2.4}>
+                <Grid item xs={12} md={12} lg={2.4} textAlign="center">
                     <button>Prepared</button>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
@@ -208,47 +209,79 @@ export default function MediaControlCard() {
                     <Divider light style={{marginTop:10}}/>
                 </Grid>
                 
-                <Grid item container xs={12} md={6} lg={12} spacing={1} padding={0} fontSize={18}>
+                <Grid item container xs={12} md={6} lg={12} spacing={1} padding={0} fontSize={18} backgroundColor="rgb(243, 193, 73)">
                 <Grid item xs={12} md={12} lg={1}>
-                    <Typography fontSize={12} fontWeight={700}>#</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">#</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={3}>
-                    <Typography fontSize={12} fontWeight={700}>Item Name</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Item Name</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={3}>
-                    <Typography fontSize={12} fontWeight={700}>Quantity</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Quantity</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={3}>
-                    <Typography fontSize={12} fontWeight={700}>Variant</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Variant</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2}>
-                    <Typography fontSize={12} fontWeight={700}>Amount</Typography>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Amount</Typography>
                 </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Typography>
+                    <Divider light style={{marginTop:1}}/>
+                    </Typography>
+                    </Grid>
                 </Grid>
                 {e.menuItems.map((elem,index)=>{
-
+                    totalbill = totalbill += elem.amount
+                    totalquantity = totalquantity += elem.quantity
                   return(
                     <Grid item container xs={12} md={6} lg={12} spacing={1} padding={0} fontSize={18} display="flex" justifyContent="space-around">
                     <Grid item xs={12} md={12} lg={1}>
-                        <Typography fontSize={12} fontWeight={700}>{index + 1}</Typography>
+                        <Typography fontSize={12} fontWeight={700} textAlign="center">{index + 1}</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={3}>
-                        <Typography fontSize={12} fontWeight={700}>{elem.itemName}</Typography>
+                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.itemName}</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={3}>
-                        <Typography fontSize={12} fontWeight={700}>{elem.quantity}</Typography>
+                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.quantity}</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={3}>
-                        <Typography fontSize={12} fontWeight={700}>{elem.variant}</Typography>
+                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.variant}</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={2}>
-                        <Typography fontSize={12} fontWeight={700}>{elem.amount}</Typography>
+                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.amount}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={12}>
+                    <Typography>
+                    <Divider light style={{marginTop:1}}/>
+                    </Typography>
                     </Grid>
                       </Grid>
-
                   )
                 })
                 }
+                  <Grid item container xs={12} md={6} lg={12} spacing={1} padding={0} fontSize={18} backgroundColor="rgb(243, 193, 73)">
+                <Grid item xs={12} md={12} lg={1}>
+                    
+                </Grid>
+                <Grid item xs={12} md={12} lg={3}>
+                   
+                </Grid>
+                <Grid item xs={12} md={12} lg={3}>
+                    <Typography fontSize={12} textAlign="center" fontWeight={700}>Total Items : {totalquantity}</Typography>
+                </Grid>
+                <Grid item xs={12} md={12} lg={3}>
+                    
+                </Grid>
+                <Grid item xs={12} md={12} lg={2}>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Bill Amount : {totalbill}</Typography>
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Typography>
+                    <Divider light style={{marginTop:1}}/>
+                    </Typography>
+                    </Grid>
+                </Grid>
 
                   </Grid>
               </Grid>
