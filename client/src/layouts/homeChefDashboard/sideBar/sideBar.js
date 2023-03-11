@@ -99,12 +99,12 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
   const {userDetail} = React.useContext(userContext);
   console.log(userDetail);
 
-  React.useEffect(async()=>{
-    console.log(userDetail.kitchenProfile[0])
-    let res = await Api.getKitchenById(userDetail.kitchenProfile[0])
-    console.log(res.data.data)
-    setMyKitchen(res.data.data)
-    },[])
+  // React.useEffect(async()=>{
+  //   console.log(userDetail.kitchenProfile[0])
+  //   let res = await Api.getKitchenById(userDetail.kitchenProfile[0])
+  //   console.log(res.data.data)
+  //   setMyKitchen(res.data.data)
+  //   },[])
 
   console.log(activeMenuItem,onMenuClick)
   const links = []

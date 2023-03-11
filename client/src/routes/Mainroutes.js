@@ -21,6 +21,7 @@ import CreateHomeChef from '../pages/Create_Homechef'
 import CreateKitchen from '../pages/Create_Kitchen'
 import CreateCarousel from '../pages/Create_Carousel'
 import CreateCuisine from '../pages/Create_Cuisine';
+import CreateMenuItem from '../pages/Create_MenuItems'
 import HomeChefLogin from '../pages/HomeChefLogin';
 import HomeChefDashboard from '../pages/HomeChef_Dashboard';
 
@@ -33,6 +34,10 @@ const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/createsociety',
     element: <CreateSociety />,
+  },
+  {
+    path: '/createmenuitem',
+    element: <CreateMenuItem />,
   },
   {
     path: '/createhomechef',
