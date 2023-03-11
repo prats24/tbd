@@ -231,7 +231,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
         const homeChefNew = await HomeChef.findById(homeChef);
         if(!homeChefNew) return next(createCustomError('No such homechef found', 404));
         homeChefNew.kitchen = kitchen._id;
-        await homeChef.save(); 
+        await homeChefNew.save(); 
     }
     
     if(!kitchen) return next(createCustomError('Couldn\'t create kithcen', 400));
@@ -304,6 +304,7 @@ export const editKitchen = CatchAsync(async (req: Request, res: Response, next: 
         const homeChefNew = await HomeChef.findById(filteredBody.homeChef);
         if(!homeChefNew) return next(createCustomError('No such homechef found', 404));
         homeChefNew.kitchen = updatedKitchen!._id;
+        await homeChefNew.save();
     }
     res.status(200).json({status: "success", data:updatedKitchen});
 
