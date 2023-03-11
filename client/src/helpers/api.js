@@ -151,6 +151,10 @@ class Api {
     return this.init().delete(`/cuisines/${id}`);
   }
 
+  createMenuItem = (data) => {
+    return this.init().post('/menuitems', data);
+  }
+
 }
 
 export default new Api();
