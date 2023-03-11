@@ -8,6 +8,7 @@ import TodaysOrders from '../layouts/adminPanel/orders/todaysOrders'
 import OrderHistory from '../layouts/adminPanel/orders/orderHistory'
 import Reviews from '../layouts/adminPanel/reviews/reviews'
 import Menus from '../layouts/homeChefDashboard/menus/createMenu';
+import CreateMenuItem from '../layouts/homeChefDashboard/menus/createMenuItems';
 
 import { GiChefToque } from 'react-icons/gi';
 import { TbToolsKitchen } from 'react-icons/tb';
