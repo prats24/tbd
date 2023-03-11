@@ -29,21 +29,18 @@ function Login() {
   };
 
   useEffect(()=>{
-    Api.getLoginDetails()
+    Api.getHomeChefLoginDetails()
     .then((res)=>{
       if(res.data.status == 'success'){
         console.log('setting user detail');
         setUserDetail(res.data.data);
         console.log(res.data.data);
         setLoading(false);
-        if(res.data.data.role.roleName == 'Admin'){
-          navigate('/adminpanel');
-        }else{
-          navigate('/');
-        }
+        navigate('/homechefdashboard');
       }
     }).catch((err)=>{
       console.log("Fail to fetch data of user");
+      console.log(err);
       setLoading(false);
       return;
     })

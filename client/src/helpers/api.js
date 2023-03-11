@@ -78,6 +78,9 @@ class Api {
   getLoginDetails = () => {
     return this.init().get('/users/me');
   }
+  getHomeChefLoginDetails = () => {
+    return this.init().get('/homechefs/me');
+  }
   createSociety = (data) => {
     return this.init().post('/societies', data);
   }
