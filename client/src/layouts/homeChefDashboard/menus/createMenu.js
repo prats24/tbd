@@ -9,6 +9,17 @@ import Api from '../../../helpers/api'
 
 
 const renderDetailsButton = (params) => {
+
+  const [menuItems,setMenuItems] = React.useState([])
+
+  React.useEffect(async()=>{
+  let res = await Api.getMenuItems()
+  console.log(res.data.data)
+  setMenuItems(res.data.data)
+  },[])
+
+
+
   return (
           <button
           style={{backgroundColor:"none",borderColor:"none", border:"none",maxWidth:0,cursor:"auto"}}
@@ -62,8 +73,8 @@ const columns = [
     editable: true
   },
   {
-    field: 'status',
-    headerName: 'Status',
+    field: 'availability',
+    headerName: 'Available',
     width: 150,
     editable: true
   },
@@ -71,8 +82,8 @@ const columns = [
 ];
 
 const rows = [
-  { id: 1,image: 'default/kitchen.gif' , itemName: 'Butter Chicken',category : 'Curry', type: 'Non-Veg', price: '35', status: 'Available' },
-  { id: 2,image: 'default/rejected.gif' , itemName: 'Butter Naan',category : 'Curry', type: 'Veg', price: '35', status: 'Available' },
+  { id: 1,image: 'default/kitchen.gif' , itemName: 'Butter Chicken',category : 'Curry', type: 'Non-Veg', price: '35', availability: 'Available' },
+  { id: 2,image: 'default/rejected.gif' , itemName: 'Butter Naan',category : 'Curry', type: 'Veg', price: '35', availability: 'Available' },
 ];
 
 export default function DataGridMenu() {
