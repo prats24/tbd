@@ -122,8 +122,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
     //Check if user exists
     // if(await carousel.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const menuItem = await Carousel.create({menuItemName, type, category,price, kitchen, status,
-      createdBy: (req as any).user._id, dishPhoto: menuItemPhoto});
+    const menuItem = await MenuItem.create({menuItemName, type, category,price, kitchen, status, dishPhoto: menuItemPhoto});
 
     if(!menuItem) return next(createCustomError('Couldn\'t create menu item', 400));
 
@@ -184,7 +183,7 @@ export const editMenuItem = CatchAsync(async (req: Request, res: Response, next:
     if ((req as any).file) filteredBody.dishPhoto = (req as any).uploadUrl;
 
     
-    const updatedMenuItem = await Carousel.findByIdAndUpdate(id, filteredBody, {
+    const updatedMenuItem = await MenuItem.findByIdAndUpdate(id, filteredBody, {
         new: true,
         runValidators: true
       }).select('-__v');

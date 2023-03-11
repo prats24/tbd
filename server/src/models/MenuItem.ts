@@ -34,7 +34,7 @@ const menuItemSchema = new mongoose.Schema({
     createdBy:{
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required : true
+        // required : true
     },
     lastModifiedOn:{
         type: Date,
