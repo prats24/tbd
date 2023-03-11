@@ -13,6 +13,8 @@
     "@material-ui/styles": "^4.11.4",
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.10",
+    "@mui/x-data-grid-generator": "^6.0.1",
+    "@mui/x-data-grid-pro": "^6.0.1",
     "@reduxjs/toolkit": "^1.9.3",
     "@tabler/icons": "^1.41.2",
     "@testing-library/jest-dom": "^5.14.1",
