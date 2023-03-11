@@ -194,6 +194,7 @@ export const editHomeChef = CatchAsync(async (req: Request, res: Response, next:
         new: true,
         runValidators: true
       }).select('-__v -password -role');
+    
     res.status(200).json({status: "success", data:updatedHomeChef});
 
 });

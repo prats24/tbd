@@ -23,9 +23,9 @@ const homeChefSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Society'
     },
-    kitchenProfile:{
-        type: [Schema.Types.ObjectId],
-        ref: 'KitchenProfile'
+    kitchen:{
+        type: Schema.Types.ObjectId,
+        ref: 'Kitchen'
     },
     description: String,
     displayPhoto: String,

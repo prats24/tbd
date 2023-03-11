@@ -5,7 +5,7 @@ import CatchAsync from '../middlewares/CatchAsync';
 import sharp from 'sharp';
 import multer from 'multer';
 import AWS from 'aws-sdk';
-import Society from '../models/Society'
+import HomeChef from '../models/HomeChef'
 
 interface Kitchen{
     kitchenName: string,
@@ -222,10 +222,18 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
     //     deliveryChargeType, deliveryCharge, costForTwo, email, phone, city, address, society, 
     //     description, homeChef, kitchenPinCode, displayPhoto, coverPhoto});
     if(await Kitchen.findOne({isDeleted: false, email, society})) return next(createCustomError('Kitchen with this email already exists.', 401));
+    
     const kitchen = await Kitchen.create({kitchenName, kitchenType,liveDate, cuisines, foodLicenseNumber, discount, foodMenu, gstApplicable, 
         deliveryChargeType, deliveryCharges, costForOne, email, phone, flatNo,floor, tower, society, 
         description,status, homeChef, displayPhoto, coverPhoto, foodLicensePhoto});
-
+    //Update the  homeChef as well
+    if(homeChef){
+        const homeChefNew = await HomeChef.findById(homeChef);
+        if(!homeChefNew) return next(createCustomError('No such homechef found', 404));
+        homeChefNew.kitchen = kitchen._id;
+        await homeChef.save(); 
+    }
+    
     if(!kitchen) return next(createCustomError('Couldn\'t create kithcen', 400));
 
     res.status(201).json({status: "success", data:kitchen});
@@ -290,6 +298,12 @@ export const editKitchen = CatchAsync(async (req: Request, res: Response, next: 
         new: true,
         runValidators: true
       }).select('-__v');
+
+    if(filteredBody.homeChef){
+        const homeChefNew = await HomeChef.findById(filteredBody.homeChef);
+        if(!homeChefNew) return next(createCustomError('No such homechef found', 404));
+        homeChefNew.kitchen = updatedKitchen!._id;
+    }
     res.status(200).json({status: "success", data:updatedKitchen});
 
 });
