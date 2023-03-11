@@ -17,11 +17,10 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useNavigate, useRoutes } from 'react-router-dom';
-import AdminRoutes from '../../../routes/Adminroutes';
 import HomeChefRoutes from '../../../routes/HomeChefRoutes';
-import AdminNotificationRoute from '../../../routes/AdminNotificationsRoute';
 import HomeChefNotificationRoute from '../../../routes/HomeChefNotificationsRoute';
 import {userContext} from '../../../context/AuthContext';
+import Api from '../../../helpers/api'
 
 const drawerWidth = 240;
 
@@ -94,9 +93,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer({activeMenuItem, onMenuClick}) {
 
+  const [myKitchen,setMyKitchen] = React.useState([])
+
   const navigate = useNavigate();
   const {userDetail} = React.useContext(userContext);
   console.log(userDetail);
+
+  React.useEffect(async()=>{
+    console.log(userDetail.kitchenProfile[0])
+    let res = await Api.getKitchenById(userDetail.kitchenProfile[0])
+    console.log(res.data.data)
+    setMyKitchen(res.data.data)
+    },[])
 
   console.log(activeMenuItem,onMenuClick)
   const links = []
@@ -134,7 +142,7 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Welcome {userDetail.firstName}
+            Welcome {userDetail.firstName} {userDetail.lastName}
           </Typography>
         </Toolbar>
       </AppBar>

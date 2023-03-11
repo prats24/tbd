@@ -119,6 +119,9 @@ class Api {
   getCarousels = () =>{
     return this.init().get('/carousels');
   }
+  getActiveCarousels = () =>{
+    return this.init().get('/carousels/active');
+  }
   getCarouselById = (id) =>{
     return this.init().get(`/carousels/${id}`);
   }

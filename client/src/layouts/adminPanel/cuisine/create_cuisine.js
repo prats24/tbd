@@ -6,16 +6,18 @@ import Box from '@mui/material/Box';
 import { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import { Typography } from "@mui/material";
+import Switch from '@mui/material/Switch';
 
 
 function CuisineForm({cuisine}) {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const [initialValues,setInitialValues] = useState(cuisine);
-  let [photo,setPhoto] = useState('/default/chef.gif')
+  const { register, handleSubmit, formState: { errors }, watch } = useForm(cuisine.length === 0 ? '' : initialValues);
+  let [photo,setPhoto] = useState('/default/cuisine.gif')
   const [kitchens, setKitchens] = useState([]);
   const [kitchenNames,setKitchenNames] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
+  const label = { inputProps: { 'aria-label': 'Size switch demo' } };
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -84,40 +86,51 @@ function CuisineForm({cuisine}) {
     <Grid container spacing={1}>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Cuisine Name</label>
+      <label className="form-label">Cuisine Name*</label>
       <input disabled={!editable} defaultValue={cuisine.cuisineName} className="form-control" {...register("cuisineName", { required: true })} />
       {errors.cuisineName && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Cuisine Description</label>
+      <label className="form-label">Cuisine Description*</label>
       <input disabled={!editable} defaultValue={cuisine.description} className="form-control" {...register("description", { required: true })} />
       {errors.description && <span className="form-error">This field is required</span>}
     </Grid>
 
     <Grid item xs={12} md={6} lg={6}>
-      <label className="form-label">Status</label>
+      <label className="form-label">Status*</label>
       <label className="form-label">
         <input 
         onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
         checked={statusDefaultValue} 
         disabled={!editable} 
-        type="radio"{...register("status", { required: true })} value="active" />
+        type="radio"
+        {...register("status", { required: true })} value="active" />
         Active
       </label>
       <label className="form-label">
         <input 
-        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
+        onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}} 
         checked={!statusDefaultValue} 
         disabled={!editable} 
-        type="radio" {...register("status", { required: true })} value="inactive" />
+        defaultChecked
+        type="radio" 
+        {...register("status", { required: true })} value="inactive" />
         Inactive
       </label >
       {errors.status && <span className="form-error">This field is required</span>}
     </Grid>
 
+    {/* <Grid item xs={12} md={6} lg={6}>
+      <label className="form-label">Status*</label>
+      <Switch {...label} defaultChecked size="small" {...register("status", { required: true })} />
+      {errors.status && <span className="form-error">This field is required</span>}
+    </Grid> */}
+
+    
+
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Cuisine Icon</label>
+      <label className="form-label">Cuisine Icon*</label>
       <input disabled={!editable} type="file" className="form-control" {...register("cuisineIcon", { required: true })} />
       {errors.cuisineIcon && <span className="form-error">This field is required</span>}
     </Grid>

@@ -95,6 +95,7 @@ function CarouselForm({carousel}) {
         window.alert("Carousel Created Successfully")
         setEditable(false);
         setIsNewObject(false);
+        // setKitchens();
         setPhoto(res.data.data.carouselPhoto)
       }
       
@@ -179,7 +180,7 @@ function CarouselForm({carousel}) {
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={isObjectNew ? selectedOptions: carousel.length!=0 ? carousel?.kitchens?.map((kitchen)=>{return kitchen.kitchenName}):[]}
+          value={isObjectNew ? selectedOptions: carousel.length!=0 ? carousel?.kitchens?.map((kitchen)=>{return kitchen.kitchenName}):kitchens?.map((kitchen)=>{return kitchen.kitchenName})}
           onChange={handleSelect}
           input={<OutlinedInput label="Tag" />}
           renderValue={(selected) => selected.join(', ')}

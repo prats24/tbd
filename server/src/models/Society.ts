@@ -52,6 +52,10 @@ const societySchema = new mongoose.Schema({
     societyId:{
         type: String,
     },
+    status:{
+        type: String,
+        enum: ['active','inactive'],
+    },
 });
 
 societySchema.pre('save', async function(next){

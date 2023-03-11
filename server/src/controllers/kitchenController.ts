@@ -276,6 +276,7 @@ export const getKitchen = CatchAsync(async (req: Request, res: Response, next: N
 
 });
 
+
 export const editKitchen = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
 

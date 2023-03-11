@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Dashboard from '../layouts/adminPanel/dashboard/dashboard';
+import Dashboard from '../layouts/homeChefDashboard/dashboard/dashboard';
 import HomeChef from '../layouts/adminPanel/homechef/homechef';
 import AdminKitchen from '../layouts/adminPanel/kitchen/kitchen';
 import Socities from '../layouts/adminPanel/society/society';
