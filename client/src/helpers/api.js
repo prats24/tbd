@@ -108,6 +108,10 @@ class Api {
   getKitchenById = (id) => {
     return this.init().get(`/kitchens/${id}`);
   }
+
+  getMyKitchen = (id) => {
+    return this.init().get(`/kitchens/mykitchen/${id}`);
+  }
   createHomeChef = (data) => {
     console.log("Inside API File: ",data)
     return this.init().post('/homechefs', data);
@@ -153,6 +157,10 @@ class Api {
 
   createMenuItem = (data) => {
     return this.init().post('/menuitems', data);
+  }
+
+  getMenuItemByKitchenId = (id) =>{
+    return this.init().get(`/menuitems?kitchen=${id}`);
   }
 
 }
