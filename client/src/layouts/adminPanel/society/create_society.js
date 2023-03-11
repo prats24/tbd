@@ -6,11 +6,14 @@ import { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import {Link} from 'react-router-dom'
 import { Typography } from "@mui/material"; 
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 function SocietyForm({society}) {
   console.log("Society Value: ",society)
   const [initialValues,setInitialValues] = useState(society);
-  const { register, handleSubmit, formState: { errors }, watch } = useForm();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm(society.length === 0 ? '' : initialValues);
   let [photo,setPhoto] = useState('/default/building.gif')
   const [editable,setEditable] = useState('') 
   const [isObjectNew,setIsNewObject] = useState('');
@@ -89,7 +92,7 @@ function SocietyForm({society}) {
     </Grid>
 
     <Grid item xs={12} md={6} lg={12}>
-      <label className="form-label">Status</label>
+      <label className="form-label">Status*</label>
       <label className="form-label">
         <input 
         onClick={()=>{setStatusDefaultValue(!statusDefaultValue)}}
