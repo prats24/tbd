@@ -31,6 +31,7 @@ const kitchenSchema = new mongoose.Schema({
     coverPhoto: String,
     foodLicenseNumber: String,
     foodLicensePhoto: String,
+    menuItemCategories:[String],
     platformRating:[
         {rating: Number, createdOn: Date}
     ],
