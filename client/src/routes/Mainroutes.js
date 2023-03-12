@@ -5,7 +5,7 @@ import Mydetails from '../layouts/user_profile/Mydetails';
 import Userorders from '../layouts/user_profile/Userorders';
 import Myminiorders from '../layouts/user_profile/Myminiorders';
 import Home from '../pages/Home';
-import Allfoods from '../pages/Allfoods';
+import KitchenDetails from '../pages/KitchenDetails';
 import Checkout from '../pages/Checkout';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
@@ -80,8 +80,8 @@ const AuthenticationRoutes = (isLoggedIn) => [
     element: <HomeChefDashboard />,
   },
   {
-    path: '/allmeals',
-    element: <Allfoods />,
+    path: '/kitchendetails',
+    element: <KitchenDetails />,
   },
   {
     path: '/carouselkitchen',

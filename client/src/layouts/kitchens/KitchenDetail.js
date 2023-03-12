@@ -107,7 +107,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Resturantdetail() {
+export default function KitchenDetail({kitchen}) {
+  console.log("Kitchen ID: ",kitchen)
   const {
     root,
     root_img,
@@ -121,10 +122,10 @@ export default function Resturantdetail() {
   } = useStyles();
   return (
     <div className={root}>
-      <img className={root_img} src="./252.png"></img>
+      <img className={root_img} src={kitchen?.displayPhoto}></img>
       <div>
         <Typography className={resturant_name} variant="h2" component="h1">
-          Theomeals restaurant
+          {kitchen?.kitchenName}
         </Typography>
         <Typography className={resturant_description} component="p">
           nigerian &nbsp; ghanian &nbsp; south-african &nbsp; delicacies
@@ -132,11 +133,11 @@ export default function Resturantdetail() {
         <div className={location_container}>
           <LocationOnOutlinedIcon className={location_icon} />
           <Typography className={resturant_location} component="p">
-            Moremi Hall, Tafawa Balewa Way, University Of Lagos
+            Flat No. {kitchen?.flatNo},{kitchen?.floor} Floor, Tower No. {kitchen?.tower}, {kitchen?.society?.societyName}
           </Typography>
         </div>
         <Typography className={opening_time} component="p">
-          RESTAURANT TIMING - 12:00 AM TO 11:30 PM
+          RESTAURANT TIMING - {kitchen[0]}
         </Typography>
 
         <div className={dpa_section}>

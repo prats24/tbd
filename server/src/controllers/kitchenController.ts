@@ -241,7 +241,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 });
 
 export const getKitchens = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const kitchens = await Kitchen.find({isDeleted: false})
+    const kitchens = await Kitchen.find({isDeleted: false}).populate('homeChef','firstName lastName').populate('cuisines','cuisineName')
 
 
     if(!kitchens) return next(createCustomError('No users found.', 404));
