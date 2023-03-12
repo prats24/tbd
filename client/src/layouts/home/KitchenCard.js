@@ -1,194 +1,115 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
+import Api from '../../helpers/api'
+import {Link, useResolvedPath} from 'react-router-dom'
+import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import {Card,CardActions} from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import { Divider } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import { AiOutlineArrowRight } from 'react-icons/ai';
-// import { DiscountIcon } from '@material-ui/icons/Discount';
-// import discounticon from 'react-icons/TbDiscount2'
-import { TbDiscount2 } from 'react-icons/tb';
-import { red } from '@mui/material/colors';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import {Button, Grid} from '@mui/material'
 
 export default function KitchensCard() {
+  const theme = useTheme();
+  const [kitchens,setKitchens] = React.useState([])
+  const [countOfKitchens,setCountOfKitchens] = React.useState()
+
+  React.useEffect(async()=>{
+  let res = await Api.getKitchen()
+  console.log(res.data.data)
+  setKitchens(res.data.data)
+  setCountOfKitchens(res.data.results)
+  },[])
+
   return (
     <>
-    <Box sx={{marginTop:5,marginLeft:10,marginRight:10,fontSize:20,display:"flex",alignItems:"center"}}>
-    <Box sx={{display:"flex",justifyContent:"space-between", width: "1359px"}}>
-    <Box sx={{display:"flex",alignItems:"center", fontFamily:"arial",color:"#696969",fontWeight:600}}>121 home kitchens</Box>
-    <Box sx={{display:"flex",alignItems:"center",textAlign:"right"}}>
-    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Revelance</Button>
+    <Box sx={{overflowX: 'hidden',width: '100%' }}>
+    <Grid sx={{marginTop:0.5,display:"flex",alignItems:"center", overflowX: 'auto'}} container spacing={2} item xs={12} md={6} lg={12}>
+    <Grid item xs={12} md={6} lg={0.5} sx={{ paddingLeft: 2 }}>
+    </Grid>
+    <Grid item xs={0} md={6} lg={3.5} sx={{ paddingLeft: 2 }}>
+    {countOfKitchens} Home Kitchens
+    </Grid>
+    <Grid item xs={12} md={6} lg={7.5} sx={{ paddingLeft: 2, display:"flex",alignItems:"center",justifyContent: 'flex-end' }}>
     <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Ratings</Button>
-    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Cost High to Low</Button>
-    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Cost Low to High</Button>
-    </Box>
-    </Box>
+    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Delivery Time</Button>
+    <Button sx={{color:"#696969",":hover":{color:'#c23539'}}} variant='text'>Cost</Button>
+    </Grid>
+    <Grid item xs={0} md={6} lg={0.5} sx={{ paddingLeft: 2 }}>
+    </Grid>
+    </Grid>
     </Box>
     
     
-    <Box sx={{marginTop:2,marginLeft:10,marginRight:10}}>
-    <Grid container spacing={5}>
+    <Box sx={{marginTop:2, alignContent:"center", marginLeft:7.5, marginRight:7.5}} xs={12} md={6} lg={12}>
+    <Grid container spacing={2} sx={{overflowX: 'auto'}}>
+    {kitchens?.map((e)=>{
+      console.log(e.cuisines)
+      return(
+        <Grid item xs={12} md={6} lg={3} sx={{marginBottom:0.5}}>
+            
+            <Card sx={{ display: 'flex', alignItems: 'center' }}>
+              
+              <CardContent sx={{ flex: '1 0 auto' }}>
+                <Typography component="div" fontSize={15} sx={{ 
+                  '@media (max-width: 600px)': {
+                    fontSize: '13px',
+                  }
+                }}>
+                  {e.kitchenName}
+                </Typography>
+                <Typography component="div" fontSize={14} sx={{ 
+                  '@media (max-width: 600px)': {
+                    fontSize: '12px',
+                  }
+                }}>
+                  {e.homeChef.firstName + ' ' + e.homeChef.lastName}
+                </Typography>
+                <Typography color="text.secondary" fontSize={13} component="div">
+                  {e.kitchenType}
+                </Typography>
+                <Typography color="text.secondary" fontSize={13} component="div">
+                  Cost for One: {e.costForOne}
+                </Typography>
+                <Typography color="text.secondary" component="div">
+                  {e.cuisines.map((elem)=>{
+                    <Box>{elem.cuisineName}</Box>
+                  })}
+                </Typography>
+                <Typography sx={{display:"flex",alignItems:"center"}}  fontSize={10} color="text.secondary" component="div">
+                  <Box sx={{backgroundColor:"#48C479",color:"white", padding:"0px 2px 0px 2px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px"}}>&#x2605; 4.3</Box> - Delivery in 38 mins
+                </Typography>
+              </CardContent>
+              
+              <Box sx={{ position: 'relative' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <CardMedia
+                    component="img"
+                    sx={{ width: 100, height: 100, borderRadius: 8, margin: 1 }}
+                    image={e.displayPhoto}
+                    alt="Home Kitchen"
+                  />
+                  <Button sx={{ width: 100, height: 20, color: 'error', fontSize: '10', marginBottom: 1 }} size="small" color="error" variant="outlined" component={Link} to={'/kitchendetails'} state={{id:e._id}}>
+                    Order Now
+                  </Button>
+                </Box>
+              </Box>
+              
 
-    <Grid item xs={12} md={6} lg={3}>
-    <Card sx={{ maxWidth: 300 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image="anamika.jpeg"
-          alt="green iguana"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="text" fontWeight={700} fontSize={20} component="div">
-            Anamika's Kitchen
-          </Typography>
-          <Typography variant="text" color="text.secondary" fontWeight={300} fontSize={12}>
-            Anamika is a home chef from Bihar. She is a great cook. She loves making good and tasty food.
-          </Typography>
-          <Typography sx={{marginBottom:1}}></Typography>
-          <Divider></Divider>
-          <Typography variant="text" color="#8A584B" fontWeight={300} fontSize={12} marginTop={1} component="div">
-            Next Available Slot : Today's Dinner (8:00 PM)
-          </Typography>
-          <Typography variant="text" color="#DB7C38" fontWeight={300} fontSize={12} marginTop={1.5} display="flex" alignItems="center" component="div">
-            <TbDiscount2/>&nbsp; Flat 10% off | USE CODE : MUMMY
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      
-      <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
-        Order Now
-        </Button>
-        <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
-        &#x2605; 4.3
-        </Box>
-      </CardActions>
-    </Card>
-    </Grid>
-
-    <Grid item xs={12} md={6} lg={3}>
-    <Card sx={{ maxWidth: 300 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image="Mummy.jpeg"
-          alt="green iguana"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="text" fontWeight={700} fontSize={20} component="div">
-            Mummy's Kitchen
-          </Typography>
-          <Typography variant="text" color="text.secondary" fontWeight={300} fontSize={12}>
-            Anamika is a home chef from Bihar. She is a great cook. She loves making good and tasty food.
-          </Typography>
-          <Typography sx={{marginBottom:1}}></Typography>
-          <Divider></Divider>
-          <Typography variant="text" color="#8A584B" fontWeight={300} fontSize={12} marginTop={1} component="div">
-            Next Available Slot : Today's Dinner (8:00 PM)
-          </Typography>
-          <Typography variant="text" color="#DB7C38" fontWeight={300} fontSize={12} marginTop={1.5} display="flex" alignItems="center" component="div">
-            <TbDiscount2/>&nbsp; Flat 10% off | USE CODE : MUMMY
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      
-      <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
-        Order Now
-        </Button>
-        <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
-        &#x2605; 4.3
-        </Box>
-      </CardActions>
-    </Card>
-    </Grid>
-
-    <Grid item xs={12} md={6} lg={3}>
-    <Card sx={{ maxWidth: 300 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image="Kavita.jpeg"
-          alt="green iguana"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="text" fontWeight={700} fontSize={20} component="div">
-            Kavita's Kitchen
-          </Typography>
-          <Typography variant="text" color="text.secondary" fontWeight={300} fontSize={12}>
-            Anamika is a home chef from Bihar. She is a great cook. She loves making good and tasty food.
-          </Typography>
-          <Typography sx={{marginBottom:1}}></Typography>
-          <Divider></Divider>
-          <Typography variant="text" color="#8A584B" fontWeight={300} fontSize={12} marginTop={1} component="div">
-            Next Available Slot : Today's Dinner (8:00 PM)
-          </Typography>
-          <Typography variant="text" color="#DB7C38" fontWeight={300} fontSize={12} marginTop={1.5} display="flex" alignItems="center" component="div">
-            <TbDiscount2/>&nbsp; Flat 10% off | USE CODE : MUMMY
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      
-      <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
-        Order Now
-        </Button>
-        <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
-        &#x2605; 4.3
-        </Box>
-      </CardActions>
-    </Card>
-    </Grid>
-
-    <Grid item xs={12} md={6} lg={3}>
-    <Card sx={{ maxWidth: 300 }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="140"
-          image="anamika.jpeg"
-          alt="green iguana"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="text" fontWeight={700} fontSize={20} component="div">
-            Anamika's Kitchen
-          </Typography>
-          <Typography variant="text" color="text.secondary" fontWeight={300} fontSize={12}>
-            Anamika is a home chef from Bihar. She is a great cook. She loves making good and tasty food.
-          </Typography>
-          <Typography sx={{marginBottom:1}}></Typography>
-          <Divider></Divider>
-          <Typography variant="text" color="#8A584B" fontWeight={300} fontSize={12} marginTop={1} component="div">
-            Next Available Slot : Today's Dinner (8:00 PM)
-          </Typography>
-          <Typography variant="text" color="#DB7C38" fontWeight={300} fontSize={12} marginTop={1.5} display="flex" alignItems="center" component="div">
-            <TbDiscount2/>&nbsp; Flat 10% off | USE CODE : MUMMY
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      
-      <CardActions sx={{display:"flex",justifyContent:"space-between"}}>
-        <Button sx={{color:"error"}} size="small" color="error" variant="outlined" component={Link} to={'/allmeals'}>
-        Order Now
-        </Button>
-        <Box sx={{backgroundColor:"#48C479",color:"white", padding:"3px 7px 4px 5px", borderRadius:"4px", marginLeft:"2px", marginRight:"2px", display:"flex",alignItems:"center"}} size="small" color="success" variant="contained">
-        &#x2605; 4.3
-        </Box>
-      </CardActions>
-    </Card>
-    </Grid>
+            </Card>
+        </Grid>)
+  })
+}
 
     
 
     </Grid>
     </Box>
+    
     </>
   );
   

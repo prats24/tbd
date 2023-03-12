@@ -16,6 +16,7 @@ import { Link as NavLink } from 'react-router-dom';
 import SearchIcon from '@material-ui/icons/Search';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import { useDispatch, useSelector } from 'react-redux';
+// import hooks from '../../hooks/useOnline'
 
 import SingleFoodItem from './SingleFoodItem';
 import menudata2 from '../../utils/menudata2';
@@ -299,7 +300,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Foodlist() {
+export default function Foodlist({kitchen}) {
+  console.log(kitchen)
   // hooks
   // const dispatch = useDispatch();
   // const { products, totalQuantities, totalPrice } = useSelector(

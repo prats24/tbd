@@ -5,7 +5,7 @@ import Mydetails from '../layouts/user_profile/Mydetails';
 import Userorders from '../layouts/user_profile/Userorders';
 import Myminiorders from '../layouts/user_profile/Myminiorders';
 import Home from '../pages/Home';
-import Allfoods from '../pages/Allfoods';
+import KitchenDetails from '../pages/KitchenDetails';
 import Checkout from '../pages/Checkout';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
@@ -21,6 +21,7 @@ import CreateHomeChef from '../pages/Create_Homechef'
 import CreateKitchen from '../pages/Create_Kitchen'
 import CreateCarousel from '../pages/Create_Carousel'
 import CreateCuisine from '../pages/Create_Cuisine';
+import CreateMenuItem from '../pages/Create_MenuItems'
 import HomeChefLogin from '../pages/HomeChefLogin';
 import HomeChefDashboard from '../pages/HomeChef_Dashboard';
 
@@ -33,6 +34,10 @@ const AuthenticationRoutes = (isLoggedIn) => [
   {
     path: '/createsociety',
     element: <CreateSociety />,
+  },
+  {
+    path: '/createmenuitem',
+    element: <CreateMenuItem />,
   },
   {
     path: '/createhomechef',
@@ -75,8 +80,8 @@ const AuthenticationRoutes = (isLoggedIn) => [
     element: <HomeChefDashboard />,
   },
   {
-    path: '/allmeals',
-    element: <Allfoods />,
+    path: '/kitchendetails',
+    element: <KitchenDetails />,
   },
   {
     path: '/carouselkitchen',

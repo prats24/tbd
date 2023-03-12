@@ -231,7 +231,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
         const homeChefNew = await HomeChef.findById(homeChef);
         if(!homeChefNew) return next(createCustomError('No such homechef found', 404));
         homeChefNew.kitchen = kitchen._id;
-        await homeChef.save(); 
+        await homeChefNew.save(); 
     }
     
     if(!kitchen) return next(createCustomError('Couldn\'t create kithcen', 400));
@@ -241,7 +241,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 });
 
 export const getKitchens = CatchAsync(async (req: Request, res: Response, next: NextFunction)=>{
-    const kitchens = await Kitchen.find({isDeleted: false})
+    const kitchens = await Kitchen.find({isDeleted: false}).populate('homeChef','firstName lastName').populate('cuisines','cuisineName')
 
 
     if(!kitchens) return next(createCustomError('No users found.', 404));
@@ -304,7 +304,64 @@ export const editKitchen = CatchAsync(async (req: Request, res: Response, next: 
         const homeChefNew = await HomeChef.findById(filteredBody.homeChef);
         if(!homeChefNew) return next(createCustomError('No such homechef found', 404));
         homeChefNew.kitchen = updatedKitchen!._id;
+        await homeChefNew.save();
     }
     res.status(200).json({status: "success", data:updatedKitchen});
 
 });
+
+
+export const addKitchenCategory = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const {category} = req.body;
+    const kitchen = await Kitchen.findById(id);
+    if(!kitchen) return next(createCustomError('No such kitchen found', 404));
+
+    if(kitchen.menuItemCategories.includes(category.toLowerCase())) return next(createCustomError('Category already present', 400));
+
+    kitchen.menuItemCategories = [...kitchen?.menuItemCategories, category.toLowerCase()];
+    await kitchen.save({validateBeforeSave: false});
+
+    res.status(201).json({status: 'success', message: 'Category added.'});
+
+});
+
+export const getKitchenCategories = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    
+    const kitchen = await Kitchen.findById(id);
+    if(!kitchen) return next(createCustomError('No such kitchen found', 404));
+
+    res.status(200).json({status: 'success', data: kitchen.menuItemCategories, results: kitchen.menuItemCategories.length});
+
+});
+
+export const deleteKitchenCategory = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const {category} = req.query;
+    const id = req.params.id;
+
+    const kitchen = await Kitchen.findById(id);
+    if(!kitchen) return next(createCustomError('No such kitchen found', 404));
+
+    kitchen.menuItemCategories = kitchen.menuItemCategories.filter((e)=> e!= category);
+
+    await kitchen.save({validateBeforeSave: false});
+
+    res.status(200).json({status: 'success', message: 'Category deleted.'});
+
+});
+export const editKitchenCategory = CatchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const {oldCategory, newCategory} = req.body; 
+
+    const kitchen = await Kitchen.findById(id);
+    if(!kitchen) return next(createCustomError('No such kitchen found', 404));
+
+    kitchen.menuItemCategories[kitchen.menuItemCategories.indexOf(oldCategory)] = newCategory;
+    
+    const updatedKitchen = await kitchen.save({validateBeforeSave: false});
+
+    res.status(200).json({status: 'success', message: 'Category updated', data: updatedKitchen.menuItemCategories});
+
+});
+
