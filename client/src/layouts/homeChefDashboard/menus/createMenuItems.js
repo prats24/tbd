@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useForm } from "react-hook-form";
 import api from "../../../helpers/api";
 import '../styles/inputFormStyle.css';
@@ -8,16 +9,22 @@ import {Link} from 'react-router-dom'
 import { Typography } from "@mui/material";
 import { object } from "prop-types";
 import { useAlert } from 'react-alert'
+import {userContext} from '../../../context/AuthContext';
+import Switch from '@mui/material/Switch';
 
 function MenuItemsForm({menuItem}) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
   const [initialValues,setInitialValues] = useState(menuItem);
-  let [dishPhoto,setdishPhoto] = useState('/default/chef.gif')
+  let [dishPhoto,setDishPhoto] = useState('/default/chef.gif')
   const [editable,setEditable] = useState('') 
   const [isObjectNew,setIsNewObject] = useState('');
   const [statusDefaultValue, setStatusDefaultValue] = useState(false);
-  const [availability, setAvailability] = useState();
+  const [availability, setAvailability] = useState(true);
 //   const alert = useAlert()
+
+const label = { inputProps: { 'aria-label': 'Size switch demo' } };
+  const {userDetail} = React.useContext(userContext);
+  console.log(userDetail);
 
   useEffect(async()=>{
     setEditable(menuItem.length === 0 ? true : false)
@@ -39,9 +46,10 @@ function MenuItemsForm({menuItem}) {
       Object.keys(data).forEach((key) => {if(key!='dishPhoto')formData.append(key, data[key])});
     //   Object.keys(data).forEach((key) => {if(key!='photo')console.log(key, data[key])});
       formData.append('dishPhoto', data.dishPhoto[0]);
+      formData.append('kitchen', userDetail.kitchen);
       const res = await api.createMenuItem(formData);
       console.log('response', res.data.data);
-      setPhoto(res.data.data.dishPhoto)
+      setDishPhoto(res.data.data.dishPhoto)
       window.alert("Item Created Successfully")
     //   alert.show('Menu Item Created!')
     }catch(e){
@@ -92,10 +100,17 @@ function MenuItemsForm({menuItem}) {
       {errors.description && <span className="form-error">This field is required</span>}
     </Grid>
 
-    <Grid item xs={12} md={6} lg={12}>
+    <Grid item xs={12} md={6} lg={10}>
       <label className="form-label">Dish Image*</label>
       <input disabled={!editable} type="file" className="form-control" {...register("dishPhoto", { required: true })} />
       {errors.dishPhoto && <span className="form-error">This field is required</span>}
+    </Grid>
+
+    <Grid item xs={12} md={6} lg={2}>
+      <label className="form-label">Available*</label>
+      {/* <input disabled={!editable} type="file" className="form-control" {...register("dishPhoto", { required: true })} /> */}
+      <Switch {...label} defaultChecked size="small" {...register("availability", { required: true })} />
+      {/* {errors.availability && <span className="form-error">This field is required</span>} */}
     </Grid>
 
     {editable && isObjectNew &&

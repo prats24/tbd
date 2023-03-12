@@ -113,7 +113,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
   };
 
   export const createMenuItem =CatchAsync(async (req:Request, res: Response, next:NextFunction) => {
-    const{menuItemName, type, category, price, kitchen, status} = req.body;
+    const{menuItemName, type, category, price, kitchen, description, availability} = req.body;
     const menuItemPhoto = (req as any).uploadUrl;
 
     console.log(req.body);
@@ -122,7 +122,7 @@ const filterObj = <T extends object>(obj: T, ...allowedFields: (keyof T| string)
 
     //Check if user exists
     // if(await carousel.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const menuItem = await MenuItem.create({menuItemName, type, category,price, kitchen, status, dishPhoto: menuItemPhoto});
+    const menuItem = await MenuItem.create({menuItemName, type, category,price, kitchen, description, availability, dishPhoto: menuItemPhoto});
 
     if(!menuItem) return next(createCustomError('Couldn\'t create menu item', 400));
 

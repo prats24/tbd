@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
@@ -21,6 +23,8 @@ import HomeChefRoutes from '../../../routes/HomeChefRoutes';
 import HomeChefNotificationRoute from '../../../routes/HomeChefNotificationsRoute';
 import {userContext} from '../../../context/AuthContext';
 import Api from '../../../helpers/api'
+import Avatar from '@material-ui/core/Avatar';
+import PersonIcon from '@material-ui/icons/Person';
 
 const drawerWidth = 240;
 
@@ -93,18 +97,28 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer({activeMenuItem, onMenuClick}) {
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open1 = Boolean(anchorEl);
   const [myKitchen,setMyKitchen] = React.useState([])
 
   const navigate = useNavigate();
   const {userDetail} = React.useContext(userContext);
   console.log(userDetail);
 
-  // React.useEffect(async()=>{
-  //   console.log(userDetail.kitchenProfile[0])
-  //   let res = await Api.getKitchenById(userDetail.kitchenProfile[0])
-  //   console.log(res.data.data)
-  //   setMyKitchen(res.data.data)
-  //   },[])
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  React.useEffect(async()=>{
+    console.log(userDetail.kitchen)
+    let res = await Api.getMyKitchen(userDetail.kitchen)
+    console.log(res.data.data)
+    setMyKitchen(res.data.data)
+    },[])
 
   console.log(activeMenuItem,onMenuClick)
   const links = []
@@ -141,8 +155,46 @@ export default function MiniDrawer({activeMenuItem, onMenuClick}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Welcome {userDetail.firstName} {userDetail.lastName}
+          <Typography 
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              right: 0, 
+              bottom: 0, 
+              padding: '1rem' 
+            }}
+            >
+          <Typography variant="h6" noWrap component="div" style={{marginLeft:50}}>
+            {myKitchen.kitchenName || undefined} 
+          </Typography>
+          <Typography display={"flex"} flexDirection={"row"}>
+      
+          <Typography variant="h6" noWrap component="div" style={{marginTop:12}}>
+            {userDetail.firstName + ' ' + userDetail.lastName || undefined}
+          </Typography>
+          <IconButton onClick={handleClick}>
+            <Avatar 
+              alt="Profile picture"
+              src="/path/to/profile/picture"
+              onClick={handleClick}
+              style={{ cursor: 'pointer' }}
+            />
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              open1={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem onClick={handleClose}>Settings</MenuItem>
+            </Menu>
+          </IconButton>
+
+        </Typography>
           </Typography>
         </Toolbar>
       </AppBar>
