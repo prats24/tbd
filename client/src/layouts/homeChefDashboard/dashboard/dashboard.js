@@ -10,6 +10,13 @@ import { fontWeight } from '@mui/system';
 import { Link } from 'react-router-dom';
 import Api from '../../../helpers/api'
 import Divider from '@mui/material/Divider';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    fontFamily: theme.typography.fontFamily,
+  },
+}));
 
 const Img = styled('img')({
   margin: 'auto',
@@ -19,6 +26,8 @@ const Img = styled('img')({
 });
 
 export default function MediaControlCard() {
+
+  const classes=useStyles();
   
   const orders = [{orderid : '202303110001',customerName : 'Prateek Pawan', orderTime: '2023-03-11 13:04:40',totalAmount : 240, address: 'Flat No. 121, Tower: 10, Palm Olympia, Gaur City 2, Gautam Buddha Nagar, Noida', 
   menuItems:[{itemName : 'Chicken Butter Masala', quantity : 2, variant: 'Large', type: 'Non-Veg', amount : 240},
@@ -168,7 +177,7 @@ export default function MediaControlCard() {
           >
             <Grid container xs={12} md={6} lg={12} spacing={2}>
             <Grid item container xs={12} md={6} lg={8} spacing={0} padding={0} fontSize={18}>
-                  <Typography fontSize={16} fontWeight={700}>Active Order(s)</Typography>
+                  <Typography className={classes.root} fontSize={16} fontWeight={700} color='#c23539'>Active Order(s)</Typography>
                 </Grid>
             </Grid>
           </Paper>
@@ -190,27 +199,27 @@ export default function MediaControlCard() {
               <Grid container xs={12} md={6} lg={12} spacing={2}>
               <Grid item container xs={12} md={6} lg={12} spacing={1} padding={0} fontSize={18} display="flex" justifyContent="space-around">
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700} textAlign="center">Order ID: {e.orderid}</Typography>
+                    <Typography fontSize={12} fontWeight={500} textAlign="left">Order ID: {e.orderid}</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700} textAlign="center">Customer Name: {e.customerName}</Typography>
+                    <Typography fontSize={12} fontWeight={500} textAlign="center">Customer Name: {e.customerName}</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700} textAlign="center">Order Time: {e.orderTime}</Typography>
+                    <Typography fontSize={12} fontWeight={500} textAlign="center">Order Time: {e.orderTime}</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2.4}>
-                    <Typography fontSize={12} fontWeight={700} textAlign="center">Total Amount:{e.totalAmount}</Typography>
+                    <Typography fontSize={12} fontWeight={500} textAlign="center">Total Amount:{e.totalAmount}</Typography>
                 </Grid>
-                <Grid item xs={12} md={12} lg={2.4} textAlign="center">
+                {/* <Grid item xs={12} md={12} lg={2.4} textAlign="center">
                     <button>Prepared</button>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} md={12} lg={10}>
-                    <Typography fontSize={12} fontWeight={500}>Address: {e.address}</Typography>
+                    <Typography fontSize={12} fontWeight={500} marginLeft={0.5}>Address: {e.address}</Typography>
                     <Divider light style={{marginTop:10}}/>
                 </Grid>
                 <div style={{ textAlign:'end'}}>
                 <Grid item xs={12} md={12} lg={2}>
-                <button style={{backgroundColor: '#4CAF50', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer',textDecoration: 'none'}}>Prepared</button>
+                <button style={{backgroundColor: '#4CAF50', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer',textDecoration: 'none',marginBottom:'18px', marginTop:'6px' }}>Prepared</button>
                 </Grid>
                 </div>
                 
@@ -221,11 +230,14 @@ export default function MediaControlCard() {
                 <Grid item xs={12} md={12} lg={3}>
                     <Typography fontSize={12} fontWeight={700} textAlign="center">Item Name</Typography>
                 </Grid>
-                <Grid item xs={12} md={12} lg={3}>
+                <Grid item xs={12} md={12} lg={2}>
                     <Typography fontSize={12} fontWeight={700} textAlign="center">Quantity</Typography>
                 </Grid>
-                <Grid item xs={12} md={12} lg={3}>
+                <Grid item xs={12} md={12} lg={2}>
                     <Typography fontSize={12} fontWeight={700} textAlign="center">Variant</Typography>
+                </Grid>
+                <Grid item xs={12} md={12} lg={2}>
+                    <Typography fontSize={12} fontWeight={700} textAlign="center">Type</Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={2}>
                     <Typography fontSize={12} fontWeight={700} textAlign="center">Amount</Typography>
@@ -242,19 +254,22 @@ export default function MediaControlCard() {
                   return(
                     <Grid item container xs={12} md={6} lg={12} spacing={1} padding={0} fontSize={18} display="flex" justifyContent="space-around">
                     <Grid item xs={12} md={12} lg={1}>
-                        <Typography fontSize={12} fontWeight={700} textAlign="center">{index + 1}</Typography>
+                        <Typography fontSize={12} fontWeight={500} textAlign="center">{index + 1}</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={3}>
-                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.itemName}</Typography>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={3}>
-                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.quantity}</Typography>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={3}>
-                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.variant}</Typography>
+                        <Typography fontSize={12} fontWeight={500} textAlign="center">{elem.itemName}</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={2}>
-                        <Typography fontSize={12} fontWeight={700} textAlign="center">{elem.amount}</Typography>
+                        <Typography fontSize={12} fontWeight={500} textAlign="center">{elem.quantity}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={2}>
+                        <Typography fontSize={12} fontWeight={500} textAlign="center">{elem.variant}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={2}>
+                        <Typography fontSize={12} fontWeight={500} textAlign="center">{elem.type}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={2}>
+                        <Typography fontSize={12} fontWeight={500} textAlign="center">{elem.amount}</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={12}>
                     <Typography>

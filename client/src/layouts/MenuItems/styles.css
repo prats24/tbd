@@ -1,0 +1,142 @@
+
+  .menu-item {
+    display: flex;
+    flex-direction: row;
+    height: 150px;
+    border-bottom: 1px solid #ccc;
+    font-family: "Poppins";
+  }
+  
+  .menu-item-image-container {
+    width: 20%;
+    margin-right: 20px;
+    /*margin-bottom: 10px;*/
+    padding: 10px;
+  }
+  
+  .menu-item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .menu-item-details {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-family: "arial";
+  }
+  
+  .menu-item-details h3 {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+  
+  .menu-item-details p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #a6a2a2;
+  }
+  
+  .menu-item-rating {
+    font-size: 1.05rem;
+    margin-top: 10px;
+  }
+  
+  .menu-item-quantity {
+    display: flex;
+    align-items: center;
+  }
+  
+  .menu-item-quantity button {
+    font-size: 1rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: #c23539;
+    border-radius: 5px;
+  }
+  
+  .menu-item-quantity p {
+    margin: 0 10px;
+    font-size: 1.2rem;
+  }
+  
+  .menu-item-quantity button:hover {
+    background-color: #c23539;
+    color: white;
+  }
+  
+  .menu-item-quantity button:active {
+    background-color: #e6e6e6;
+  }
+  
+  .menu-item-quantity button:focus {
+    outline: none;
+  }
+  
+  .menu-item-quantity button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .menu-item-quantity button:disabled:hover {
+    background-color: #fff;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .menu-item {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .menu-item-image-container {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  
+    .menu-item-details {
+      width: 100%;
+    }
+  
+    .menu-item-quantity {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  
+    .menu-item-quantity p {
+      margin: 0;
+    }
+  
+    .menu-item-quantity button {
+      padding: 5px;
+    }
+  }
+  .PriceCart {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+  }
+  .NameType {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 15px;
+  }
+  .Type {
+    width: 20px;
+    height: 20px;
+    overflow: none;
+  }
+  .Type img{
+    width: 100%;
+    height:100%;
+    object-fit:cover;
+    border-radius: 2px;
+  }
+  

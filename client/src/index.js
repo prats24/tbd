@@ -8,19 +8,23 @@ import SideBarContext from './context/SideBarContext'
 import HomeChefSideBarContext from './context/HomeChefSideBarContext'
 import App from './App';
 import AuthContext from './context/AuthContext';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './theme';
 
 ReactDOM.render(
 
       <React.StrictMode>
+        <ThemeProvider theme={theme}>
         <AuthContext> 
         <SideBarContext> 
         <HomeChefSideBarContext> 
         <Router>
-          <App />
+        <App />
         </Router>
         </HomeChefSideBarContext> 
         </SideBarContext>
         </AuthContext>
+        </ThemeProvider>
       </React.StrictMode>
 ,
   document.getElementById('root')

@@ -46,8 +46,6 @@
     "react-scroll": "^1.8.4",
     "react-slick": "^0.29.0",
     "react-syntax-highlighter": "^15.5.0",
-    "redux-devtools-extension": "^2.13.9",
-    "redux-persist": "^6.0.0",
     "simplebar-react": "^3.2.1",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^1.1.2",

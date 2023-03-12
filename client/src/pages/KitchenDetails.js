@@ -4,6 +4,7 @@ import Foodlist from '../layouts/kitchens/Foodlist';
 import Navbar from '../layouts/reusables/Navbar';
 import Api from '../helpers/api'
 import { useLocation } from 'react-router-dom';
+import MenuItem from '../layouts/MenuItems/menuItem';
  
 export default function KitchenDetails() {
 
@@ -36,7 +37,6 @@ export default function KitchenDetails() {
   return (
     <div>
       <KitchenDetail  kitchen={kitchen} />
-      <Foodlist kitchen={kitchen} />
     </div>
   );
 }

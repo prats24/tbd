@@ -89,11 +89,11 @@ export default function KitchensCard() {
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <CardMedia
                     component="img"
-                    sx={{ width: 100, height: 100, borderRadius: 8, margin: 1 }}
+                    sx={{ width: 100, height: 100, borderRadius: 3, margin: 1 }}
                     image={e.displayPhoto}
                     alt="Home Kitchen"
                   />
-                  <Button sx={{ width: 100, height: 20, color: 'error', fontSize: '10', marginBottom: 1 }} size="small" color="error" variant="outlined" component={Link} to={'/kitchendetails'} state={{id:e._id}}>
+                  <Button sx={{ width: 100, height: 20, color: 'error', fontSize: '12px', marginBottom: 1 }} size="small" color="error" variant="outlined" component={Link} to={'/kitchendetails'} state={{id:e._id}}>
                     Order Now
                   </Button>
                 </Box>
