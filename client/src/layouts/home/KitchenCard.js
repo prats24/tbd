@@ -89,7 +89,7 @@ export default function KitchensCard() {
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <CardMedia
                     component="img"
-                    sx={{ width: 100, height: 100, borderRadius: 8, margin: 1 }}
+                    sx={{ width: 100, height: 100, borderRadius: 3, margin: 1 }}
                     image={e.displayPhoto}
                     alt="Home Kitchen"
                   />

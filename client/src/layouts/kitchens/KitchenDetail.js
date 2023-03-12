@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import DPA from '../partials/allfoods/DPA';
+import Grid from '@mui/material/Grid';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -121,6 +122,7 @@ export default function KitchenDetail({kitchen}) {
     dpa_section,
   } = useStyles();
   return (
+    <>
     <div className={root}>
       <img className={root_img} src={kitchen?.displayPhoto}></img>
       <div>
@@ -151,5 +153,19 @@ export default function KitchenDetail({kitchen}) {
         </div>
       </div>
     </div>
+    <div style={{display:"flex",justifyContent:"space-around"}}>
+    <div style={{width: "20%", border: "1px solid #ccc", borderRadius: "5px", padding: "10px"}}>
+        <h2 style={{textAlign: "center"}}>Breakfast</h2>
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+          <Grid>Breakfast Item 1</Grid>
+          <Grid>Breakfast Item 2</Grid>
+          <Grid>Breakfast Item 3</Grid>
+        </div>
+      </div>
+        <div style={{width:"60%"}}>2</div>
+        <div style={{width:"20%"}}>3</div>
+      </div>
+    </>
+    
   );
 }

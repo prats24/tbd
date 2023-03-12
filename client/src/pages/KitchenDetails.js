@@ -36,7 +36,6 @@ export default function KitchenDetails() {
   return (
     <div>
       <KitchenDetail  kitchen={kitchen} />
-      <Foodlist kitchen={kitchen} />
     </div>
   );
 }
