@@ -203,7 +203,7 @@ export default function MediaControlCard() {
                 </Grid>
                 <Grid item xs={12} md={12} lg={2.4} textAlign="center">
                     <button>Prepared</button>
-                </Grid> */}
+                </Grid>
                 <Grid item xs={12} md={12} lg={10}>
                     <Typography fontSize={12} fontWeight={500}>Address: {e.address}</Typography>
                     <Divider light style={{marginTop:10}}/>
