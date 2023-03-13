@@ -4,6 +4,8 @@ import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import DPA from '../partials/allfoods/DPA';
 import Grid from '@mui/material/Grid';
 import MenuItem from '../MenuItems/menuItem';
+import { useCart } from '../../context/CartContext';
+import CartItem from '../CartItem/cartItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function KitchenDetail({kitchen}) {
 
+  const { cartItems, addToCart } = useCart();
   
   function getMealTime() {
     const now = new Date(); // Get current date and time
@@ -129,14 +132,14 @@ export default function KitchenDetail({kitchen}) {
     }
     const [selectedMenu, setSelectedMenu] = useState(getMealTime());
     console.log(selectedMenu);
-    const breakfastMenu = [{name: 'Poha', description:'Poha is good'},{name: 'Idli', description:'Idli is good'},
-      {name: 'Upma', description:'Upma is good'},{name: 'Upma', description:'Upma is good'}
+    const breakfastMenu = [{ id: 1, name: 'Poha', description:'Poha is good'},{id: 2, name: 'Idli', description:'Idli is good'},
+      {id: 3, name: 'Upma', description:'Upma is good'},{id: 4, name: 'French Toast', description:'Upma is good'}
     ];
-    const lunchMenu = [{name: 'Rice', description:'Poha is good'},{name: 'Dal', description:'Idli is good'},
-      {name: 'Chicken Punjabi', description:'Upma is good'}
+    const lunchMenu = [{id: 5, name: 'Rice', description:'Poha is good'},{id:6, name: 'Dal', description:'Idli is good'},
+      {id:7, name: 'Chicken Punjabi', description:'Upma is good'}
     ];
-    const dinnerMenu = [{name: 'Roti', description:'Roti is good'},{name: 'Chole', description:'Idli is good'},
-      {name: 'Gulab Jamun', description:'Upma is good'}
+    const dinnerMenu = [{id:8, name: 'Roti', description:'Roti is good'},{id: 9, name: 'Chole', description:'Idli is good'},
+      {id:10, name: 'Gulab Jamun', description:'Upma is good'}
     ];
 
     const handleMenuClick = (e) =>{
@@ -191,9 +194,12 @@ export default function KitchenDetail({kitchen}) {
     <div style={{width: "20%", border: "1px solid #ccc", borderRadius: "5px", padding: "10px"}}>
       <h1 style={{textAlign: "center", marginBottom:'10px'}}>Menu</h1>
       <div>
-        <h2 style={{textAlign: "center", cursor:'pointer'}} onClick = {handleMenuClick}>Breakfast</h2>
-        <h2 style={{textAlign: "center", cursor:'pointer'}} onClick = {handleMenuClick}>Lunch</h2>
-        <h2 style={{textAlign: "center", cursor:'pointer'}} onClick = {handleMenuClick}>Dinner</h2>
+        <h2 style={{textAlign: "center", cursor:'pointer', color: selectedMenu == 'breakfast'? '#c23539': 'black'}} 
+        onClick = {handleMenuClick}>Breakfast</h2>
+        <h2 style={{textAlign: "center", cursor:'pointer', color: selectedMenu == 'lunch'? '#c23539': 'black'}} 
+        onClick = {handleMenuClick}>Lunch</h2>
+        <h2 style={{textAlign: "center", cursor:'pointer', color: selectedMenu == 'dinner'? '#c23539': 'black'}} 
+        onClick = {handleMenuClick}>Dinner</h2>
       </div>
         {/* <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
           <Grid>Breakfast Item 1</Grid>
@@ -202,11 +208,16 @@ export default function KitchenDetail({kitchen}) {
         </div> */}
       </div>
         <div style={{width:"60%"}}>
-          {selectedMenu == 'breakfast' && breakfastMenu.map((e)=>{return <MenuItem name = {e.name} />})}
-          {selectedMenu == 'lunch' && lunchMenu.map((e)=>{return <MenuItem name = {e.name}/>})}
-          {selectedMenu == 'dinner' && dinnerMenu.map((e)=>{return <MenuItem name = {e.name}/>})}
+          {selectedMenu == 'breakfast' && breakfastMenu.map((e)=>{return <MenuItem id= {e.id} name = {e.name} />})}
+          {selectedMenu == 'lunch' && lunchMenu.map((e)=>{return <MenuItem id= {e.id} name = {e.name}/>})}
+          {selectedMenu == 'dinner' && dinnerMenu.map((e)=>{return <MenuItem id= {e.id} name = {e.name}/>})}
         </div>
-        <div style={{width:"20%"}}>3</div>
+        <div style={{width:"20%"}}>
+          <div>
+            <h3>Cart</h3>
+            {cartItems.map((item)=>{return <CartItem name={item.name} quantity={item.quantity} id={item.id}/>})}
+          </div>
+        </div>
       </div>
     </>
     

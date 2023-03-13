@@ -10,19 +10,22 @@ import App from './App';
 import AuthContext from './context/AuthContext';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
+import {CartProvider} from './context/CartContext';
 
 ReactDOM.render(
 
       <React.StrictMode>
         <ThemeProvider theme={theme}>
         <AuthContext> 
-        <SideBarContext> 
-        <HomeChefSideBarContext> 
-        <Router>
-        <App />
-        </Router>
-        </HomeChefSideBarContext> 
-        </SideBarContext>
+          <CartProvider>    
+            <SideBarContext> 
+              <HomeChefSideBarContext> 
+                <Router>
+                  <App />
+                </Router>
+              </HomeChefSideBarContext> 
+            </SideBarContext>
+          </CartProvider>  
         </AuthContext>
         </ThemeProvider>
       </React.StrictMode>
