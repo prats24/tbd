@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
 import LocationOnOutlinedIcon from '@material-ui/icons/LocationOnOutlined';
 import DPA from '../partials/allfoods/DPA';
@@ -110,6 +110,39 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function KitchenDetail({kitchen}) {
+
+  
+  function getMealTime() {
+    const now = new Date(); // Get current date and time
+    const hour = now.getHours(); // Get the current hour (0-23)
+    
+    switch (true) {
+      case (hour >= 5 && hour < 12):
+        return 'breakfast';
+        case (hour >= 12 && hour < 16):
+          return 'lunch';
+          case (hour >= 18):
+            return 'dinner';
+            default:
+              return 'breakfast'; // Default to breakfast for any other time
+      }
+    }
+    const [selectedMenu, setSelectedMenu] = useState(getMealTime());
+    console.log(selectedMenu);
+    const breakfastMenu = [{name: 'Poha', description:'Poha is good'},{name: 'Idli', description:'Idli is good'},
+      {name: 'Upma', description:'Upma is good'},{name: 'Upma', description:'Upma is good'}
+    ];
+    const lunchMenu = [{name: 'Rice', description:'Poha is good'},{name: 'Dal', description:'Idli is good'},
+      {name: 'Chicken Punjabi', description:'Upma is good'}
+    ];
+    const dinnerMenu = [{name: 'Roti', description:'Roti is good'},{name: 'Chole', description:'Idli is good'},
+      {name: 'Gulab Jamun', description:'Upma is good'}
+    ];
+
+    const handleMenuClick = (e) =>{
+      setSelectedMenu(e.target.innerText.toLowerCase()); 
+    }
+          
   console.log("Kitchen ID: ",kitchen)
   const {
     root,
@@ -156,14 +189,20 @@ export default function KitchenDetail({kitchen}) {
     </div>
     <div style={{display:"flex",justifyContent:"space-around"}}>
     <div style={{width: "20%", border: "1px solid #ccc", borderRadius: "5px", padding: "10px"}}>
-        <h2 style={{textAlign: "center"}}>Breakfast</h2>
-        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+        <h2 style={{textAlign: "center"}} onClick = {handleMenuClick}>Breakfast</h2>
+        <h2 style={{textAlign: "center"}} onClick = {handleMenuClick}>Lunch</h2>
+        <h2 style={{textAlign: "center"}} onClick = {handleMenuClick}>Dinner</h2>
+        {/* <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
           <Grid>Breakfast Item 1</Grid>
           <Grid>Breakfast Item 2</Grid>
           <Grid>Breakfast Item 3</Grid>
-        </div>
+        </div> */}
       </div>
-        <div style={{width:"60%"}}><MenuItem/><MenuItem/><MenuItem/></div>
+        <div style={{width:"60%"}}>
+          {selectedMenu == 'breakfast' && breakfastMenu.map((e)=>{return <MenuItem name = {e.name} />})}
+          {selectedMenu == 'lunch' && lunchMenu.map((e)=>{return <MenuItem name = {e.name}/>})}
+          {selectedMenu == 'dinner' && dinnerMenu.map((e)=>{return <MenuItem name = {e.name}/>})}
+        </div>
         <div style={{width:"20%"}}>3</div>
       </div>
     </>

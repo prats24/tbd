@@ -24,7 +24,7 @@ const MenuItem = ({ name, description, image, rating }) => {
       </div>
       <div className="menu-item-details">
         <div className="NameType">
-        <h3>Biggies Burger</h3>
+        <h3>{name}</h3>
         <div className="Type">
           <img src='NonVeg.png' alt={name}/>
           </div>
