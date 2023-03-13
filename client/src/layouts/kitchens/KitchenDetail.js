@@ -189,9 +189,12 @@ export default function KitchenDetail({kitchen}) {
     </div>
     <div style={{display:"flex",justifyContent:"space-around"}}>
     <div style={{width: "20%", border: "1px solid #ccc", borderRadius: "5px", padding: "10px"}}>
-        <h2 style={{textAlign: "center"}} onClick = {handleMenuClick}>Breakfast</h2>
-        <h2 style={{textAlign: "center"}} onClick = {handleMenuClick}>Lunch</h2>
-        <h2 style={{textAlign: "center"}} onClick = {handleMenuClick}>Dinner</h2>
+      <h1 style={{textAlign: "center", marginBottom:'10px'}}>Menu</h1>
+      <div>
+        <h2 style={{textAlign: "center", cursor:'pointer'}} onClick = {handleMenuClick}>Breakfast</h2>
+        <h2 style={{textAlign: "center", cursor:'pointer'}} onClick = {handleMenuClick}>Lunch</h2>
+        <h2 style={{textAlign: "center", cursor:'pointer'}} onClick = {handleMenuClick}>Dinner</h2>
+      </div>
         {/* <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
           <Grid>Breakfast Item 1</Grid>
           <Grid>Breakfast Item 2</Grid>
